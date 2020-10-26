@@ -96,4 +96,11 @@
             </plugin>
         </plugins>
     </build>
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>Eredrim - GitHub Packages</name>
+            <url>https://maven.pkg.github.com/Eredrim/pvparena</url>
+        </repository>
+    </distributionManagement>
 </project>
