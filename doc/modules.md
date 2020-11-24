@@ -8,8 +8,6 @@ or spectating...
 To manage your arena mods (download, install, remove, etc), please check [documentation](commands/modules.md) of 
 `/pa modules` command.
 
-To enable a module for an arena, use [`/pa togglemod`](commands/togglemod.md) command.
-
 ## PVP Arena Mods
 
 Hook into many different aspects of the game!
@@ -54,7 +52,7 @@ Mod | Description | Status
 [StartFreeze](mods/startfreeze.md) | freeze players at start | ⚠
 [TeamSizeRestrict](mods/teamsizerestrict.md) | a small mod to restrict the size of specific teams | ⚠
 [Titles](mods/titles.md) | send messages to players as the "title" command would do | ✔
-[TempPerms](mods/tempperms.md) | add temporary perms | ⚠
+[TempPerms](mods/tempperms.md) | add temporary perms | ✔
 [Turrets](mods/turrets.md) | add turrets where players fire projectiles | ⚠
 [Vault](mods/vault.md) | add economy | ✔
 [Walls](mods/walls.md) | define wall regions to simulate "The Walls" | ⚠
@@ -70,3 +68,31 @@ updates will be to make a great check-up of all of them and fix all eventual iss
 
 Anyway, don't hesitate to test legacy modules by yourself, a big part of them work normally or have trivial issues. Obviously
 if you encounter one, you can [report it](https://github.com/Eredrim/pvparena/issues) 😉
+
+## Installing a module
+
+### Download the module pack
+
+> ℹ This has to be done only once
+ 
+Use the [`/pa modules download`](commands/modules.md) command to download the release version of modules. If you want to
+install a dev build version, download the zip archive on [jenkins](https://ci.craftyn.com/job/PVP%20Arena%20Modules/) 
+and deflate it in the `/files` directory of pvparena.
+
+After this step, if you type [`/pa modules list`](commands/modules.md), you will show the list of all installable 
+modules.
+
+### Installing a module
+
+> ℹ This has to be done for each module you want to install
+
+Modules aren't loaded by default, a quick installation is required. 
+Type [`/pa modules install [moduleName]`](commands/modules.md) to install one of them.
+
+
+### Enable a module for an arena
+
+> ℹ This has to be done for each arena
+
+Last step: your module is installed and you want to use it in some of your arenas. 
+Type [`/pa [arena] !tm [moduleName]`](commands/togglemod.md) to enable it in your arena.
