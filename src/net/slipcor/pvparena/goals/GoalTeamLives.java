@@ -118,10 +118,10 @@ public class GoalTeamLives extends ArenaGoal {
             final ArenaTeam respawnTeam = ArenaPlayer
                     .parsePlayer(player.getName()).getArenaTeam();
 
-            if (getLifeMap().get(respawnTeam.getName()) != null) {
+            if (this.getTeamLives(respawnTeam) != null) {
                 return res;
             }
-            if (getLifeMap().get(respawnTeam.getName()) <= 1) {
+            if (this.getTeamLives(respawnTeam) <= 1) {
                 res.setError(this, "0");
             }
 
@@ -185,28 +185,14 @@ public class GoalTeamLives extends ArenaGoal {
                 .parsePlayer(respawnPlayer.getName()).getArenaTeam();
         reduceLives(arena, respawnTeam);
 
-        if (getLifeMap().get(respawnTeam.getName()) != null) {
-            if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-                if (arena.getArenaConfig().getBoolean(CFG.GENERAL_SHOWREMAININGLIVES)) {
-                    arena.broadcast(Language.parse(arena,
-                            MSG.FIGHT_KILLED_BY_REMAINING_TEAM,
-                            respawnTeam.colorizePlayer(respawnPlayer)
-                                    + ChatColor.YELLOW, arena.parseDeathCause(
-                                    respawnPlayer, event.getEntity()
-                                            .getLastDamageCause().getCause(), event
-                                            .getEntity().getKiller()), String
-                                    .valueOf(getLifeMap().get(respawnTeam.getName())),
-                            respawnTeam.getColoredName()));
+        if (this.getTeamLives(respawnTeam) != null) {
+            if (this.arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
+                if (this.arena.getArenaConfig().getBoolean(CFG.GENERAL_SHOWREMAININGLIVES)) {
+                    this.broadcastDeathMessage(MSG.FIGHT_KILLED_BY_REMAINING_TEAM, respawnPlayer, event,
+                            this.getTeamLives(respawnTeam));
                 } else {
-                    arena.broadcast(Language.parse(arena,
-                            MSG.FIGHT_KILLED_BY,
-                            respawnTeam.colorizePlayer(respawnPlayer)
-                                    + ChatColor.YELLOW, arena.parseDeathCause(
-                                    respawnPlayer, event.getEntity()
-                                            .getLastDamageCause().getCause(), event
-                                            .getEntity().getKiller())));
+                    this.broadcastSimpleDeathMessage(respawnPlayer, event);
                 }
-
             }
 
             final List<ItemStack> returned;
@@ -216,8 +202,7 @@ public class GoalTeamLives extends ArenaGoal {
                 returned = InventoryManager.drop(respawnPlayer);
                 event.getDrops().clear();
             } else {
-                returned = new ArrayList<>();
-                returned.addAll(event.getDrops());
+                returned = new ArrayList<>(event.getDrops());
             }
 
             PACheck.handleRespawn(arena,
@@ -288,7 +273,7 @@ public class GoalTeamLives extends ArenaGoal {
     }
 
     private void reduceLives(final Arena arena, final ArenaTeam team) {
-        final int iLives = getLifeMap().get(team.getName());
+        final int iLives = this.getTeamLives(team);
 
         if (iLives <= 1) {
             getLifeMap().remove(team.getName());
@@ -345,8 +330,7 @@ public class GoalTeamLives extends ArenaGoal {
     public Map<String, Double> timedEnd(final Map<String, Double> scores) {
 
         for (final ArenaTeam team : arena.getTeams()) {
-            double score = getLifeMap().containsKey(team.getName()) ? getLifeMap().get(team
-                    .getName()) : 0;
+            double score = this.getLifeMap().containsKey(team.getName()) ? this.getTeamLives(team) : 0;
             if (scores.containsKey(team.getName())) {
                 scores.put(team.getName(), scores.get(team.getName()) + score);
             } else {
@@ -355,5 +339,9 @@ public class GoalTeamLives extends ArenaGoal {
         }
 
         return scores;
+    }
+
+    private Integer getTeamLives(ArenaTeam respawnTeam) {
+        return this.getLifeMap().get(respawnTeam.getName());
     }
 }

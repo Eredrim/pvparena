@@ -22,7 +22,6 @@ import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -232,29 +231,20 @@ public class GoalTank extends ArenaGoal {
             iLives--;
             getLifeMap().put(player.getName(), iLives);
 
-            final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
-                    .getArenaTeam();
-            if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-                arena.broadcast(Language.parse(arena,
-                        MSG.FIGHT_KILLED_BY_REMAINING,
-                        respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
-                        arena.parseDeathCause(player, event.getEntity()
-                                        .getLastDamageCause().getCause(),
-                                player.getKiller()), String.valueOf(iLives)));
+            if (this.arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
+                this.broadcastDeathMessage(MSG.FIGHT_KILLED_BY_REMAINING, player, event, iLives);
             }
             final List<ItemStack> returned;
 
-            if (arena.getArenaConfig().getBoolean(
+            if (this.arena.getArenaConfig().getBoolean(
                     CFG.PLAYER_DROPSINVENTORY)) {
                 returned = InventoryManager.drop(player);
                 event.getDrops().clear();
             } else {
-                returned = new ArrayList<>();
-                returned.addAll(event.getDrops());
+                returned = new ArrayList<>(event.getDrops());
             }
 
-            PACheck.handleRespawn(arena,
-                    ArenaPlayer.parsePlayer(player.getName()), returned);
+            PACheck.handleRespawn(this.arena, ArenaPlayer.parsePlayer(player.getName()), returned);
         }
     }
 

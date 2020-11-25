@@ -28,11 +28,14 @@ import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import java.util.*;
+
+import static java.util.Optional.ofNullable;
 
 /**
  * <pre>
@@ -413,12 +416,7 @@ public class GoalLiberation extends ArenaGoal {
                 final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
                         .getArenaTeam();
                 if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-                    arena.broadcast(Language.parse(arena,
-                            MSG.FIGHT_KILLED_BY,
-                            respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
-                            arena.parseDeathCause(player, event.getEntity()
-                                            .getLastDamageCause().getCause(),
-                                    player.getKiller()), String.valueOf(lives)));
+                    this.broadcastSimpleDeathMessage(player, event);
                 }
                 final List<ItemStack> returned;
 
@@ -427,8 +425,7 @@ public class GoalLiberation extends ArenaGoal {
                     returned = InventoryManager.drop(player);
                     event.getDrops().clear();
                 } else {
-                    returned = new ArrayList<>();
-                    returned.addAll(event.getDrops());
+                    returned = new ArrayList<>(event.getDrops());
                 }
                 new InventoryRefillRunnable(arena, aPlayer.get(), returned);
 
@@ -436,7 +433,7 @@ public class GoalLiberation extends ArenaGoal {
 
                 Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RespawnRunnable(arena, aPlayer, teamName + "jail"), 1L);
 
-                arena.unKillPlayer(aPlayer.get(), aPlayer.get().getLastDamageCause() == null ? null : aPlayer.get().getLastDamageCause().getCause(), aPlayer.get().getKiller());
+                this.arena.unKillPlayer(aPlayer.get(), ofNullable(aPlayer.get().getLastDamageCause()).map(EntityDamageEvent::getCause).orElse(null), aPlayer.get().getKiller());
 
                 if (arena.getArenaConfig().getBoolean(CFG.GOAL_LIBERATION_JAILEDSCOREBOARD)) {
                     aPlayer.get().getScoreboard().getObjective("lives").getScore(aPlayer.getName()).setScore(101);
@@ -450,8 +447,7 @@ public class GoalLiberation extends ArenaGoal {
                     returned = InventoryManager.drop(player);
                     event.getDrops().clear();
                 } else {
-                    returned = new ArrayList<>();
-                    returned.addAll(event.getDrops());
+                    returned = new ArrayList<>(event.getDrops());
                 }
 
                 PACheck.handleRespawn(arena,
@@ -462,12 +458,7 @@ public class GoalLiberation extends ArenaGoal {
                 final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
                         .getArenaTeam();
                 if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-                    arena.broadcast(Language.parse(arena,
-                            MSG.FIGHT_KILLED_BY,
-                            respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
-                            arena.parseDeathCause(player, event.getEntity()
-                                            .getLastDamageCause().getCause(),
-                                    player.getKiller()), String.valueOf(lives)));
+                    this.broadcastSimpleDeathMessage(player, event);
                 }
 
                 PACheck.handleEnd(arena, false);
@@ -480,12 +471,7 @@ public class GoalLiberation extends ArenaGoal {
             final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
                     .getArenaTeam();
             if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-                arena.broadcast(Language.parse(arena,
-                        MSG.FIGHT_KILLED_BY_REMAINING,
-                        respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
-                        arena.parseDeathCause(player, event.getEntity()
-                                        .getLastDamageCause().getCause(),
-                                player.getKiller()), String.valueOf(lives)));
+                this.broadcastDeathMessage(MSG.FIGHT_KILLED_BY_REMAINING, player, event, lives);
             }
 
             final List<ItemStack> returned;
@@ -495,8 +481,7 @@ public class GoalLiberation extends ArenaGoal {
                 returned = InventoryManager.drop(player);
                 event.getDrops().clear();
             } else {
-                returned = new ArrayList<>();
-                returned.addAll(event.getDrops());
+                returned = new ArrayList<>(event.getDrops());
             }
 
             PACheck.handleRespawn(arena,

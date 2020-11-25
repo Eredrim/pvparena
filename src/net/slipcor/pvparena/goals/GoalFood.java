@@ -277,17 +277,8 @@ public class GoalFood extends ArenaGoal implements Listener {
     public void commitPlayerDeath(final Player respawnPlayer, final boolean doesRespawn,
                                   final String error, final PlayerDeathEvent event) {
 
-        final ArenaTeam respawnTeam = ArenaPlayer
-                .parsePlayer(respawnPlayer.getName()).getArenaTeam();
-
-        if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-            arena.broadcast(Language.parse(arena,
-                    MSG.FIGHT_KILLED_BY,
-                    respawnTeam.colorizePlayer(respawnPlayer)
-                            + ChatColor.YELLOW, arena.parseDeathCause(
-                            respawnPlayer, event.getEntity()
-                                    .getLastDamageCause().getCause(), event
-                                    .getEntity().getKiller())));
+        if (this.arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
+            this.broadcastSimpleDeathMessage(respawnPlayer, event);
         }
 
         final List<ItemStack> returned;
@@ -297,12 +288,10 @@ public class GoalFood extends ArenaGoal implements Listener {
             returned = InventoryManager.drop(respawnPlayer);
             event.getDrops().clear();
         } else {
-            returned = new ArrayList<>();
-            returned.addAll(event.getDrops());
+            returned = new ArrayList<>(event.getDrops());
         }
 
-        PACheck.handleRespawn(arena,
-                ArenaPlayer.parsePlayer(respawnPlayer.getName()), returned);
+        PACheck.handleRespawn(this.arena, ArenaPlayer.parsePlayer(respawnPlayer.getName()), returned);
 
     }
 

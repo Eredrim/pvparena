@@ -484,12 +484,7 @@ public class GoalInfect extends ArenaGoal {
                 }
 
                 if (this.arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-                    this.arena.broadcast(Language.parse(this.arena,
-                            MSG.FIGHT_KILLED_BY,
-                            respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
-                            this.arena.parseDeathCause(player, event.getEntity()
-                                            .getLastDamageCause().getCause(),
-                                    player.getKiller()), String.valueOf(iLives)));
+                    this.broadcastSimpleDeathMessage(player, event);
                 }
 
                 final List<ItemStack> returned;
@@ -519,12 +514,7 @@ public class GoalInfect extends ArenaGoal {
             final ArenaTeam respawnTeam = aPlayer
                     .getArenaTeam();
             if (this.arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-                this.arena.broadcast(Language.parse(this.arena,
-                        MSG.FIGHT_KILLED_BY_REMAINING,
-                        respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
-                        this.arena.parseDeathCause(player, event.getEntity()
-                                        .getLastDamageCause().getCause(),
-                                player.getKiller()), String.valueOf(iLives)));
+                this.broadcastDeathMessage(MSG.FIGHT_KILLED_BY_REMAINING, player, event, iLives);
             }
 
             final List<ItemStack> returned;
@@ -534,8 +524,7 @@ public class GoalInfect extends ArenaGoal {
                 returned = InventoryManager.drop(player);
                 event.getDrops().clear();
             } else {
-                returned = new ArrayList<>();
-                returned.addAll(event.getDrops());
+                returned = new ArrayList<>(event.getDrops());
             }
 
             PACheck.handleRespawn(this.arena,
@@ -551,12 +540,7 @@ public class GoalInfect extends ArenaGoal {
             final ArenaTeam respawnTeam = aPlayer
                     .getArenaTeam();
             if (this.arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-                this.arena.broadcast(Language.parse(this.arena,
-                        MSG.FIGHT_KILLED_BY_REMAINING,
-                        respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
-                        this.arena.parseDeathCause(player, event.getEntity()
-                                        .getLastDamageCause().getCause(),
-                                player.getKiller()), String.valueOf(iLives)));
+                this.broadcastDeathMessage(MSG.FIGHT_KILLED_BY_REMAINING, player, event, iLives);
             }
 
             final List<ItemStack> returned;

@@ -252,53 +252,30 @@ public class GoalTeamDeathMatch extends ArenaGoal {
                 PACheck.handleRespawn(arena,
                         ArenaPlayer.parsePlayer(respawnPlayer.getName()), returned);
                 ArenaPlayer.parsePlayer(respawnPlayer.getName()).setStatus(Status.LOST);
-
-
-//				arena.getDebugger().i("faking player death", respawnPlayer);
-//				PlayerListener.finallyKillPlayer(arena, respawnPlayer, event);
             }
             return;
 
 
         }
 
-        if (getLifeMap().get(killerTeam.getName()) != null) {
-            if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-
+        if (this.getLifeMap().get(killerTeam.getName()) != null) {
+            if (this.arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
                 if (killerTeam.equals(respawnTeam) || !arena.getArenaConfig().getBoolean(CFG.GENERAL_SHOWREMAININGLIVES)) {
-                    arena.broadcast(Language.parse(arena,
-                            MSG.FIGHT_KILLED_BY,
-                            respawnTeam.colorizePlayer(respawnPlayer)
-                                    + ChatColor.YELLOW, arena.parseDeathCause(
-                                    respawnPlayer, event.getEntity()
-                                            .getLastDamageCause().getCause(), event
-                                            .getEntity().getKiller())));
+                    this.broadcastSimpleDeathMessage(respawnPlayer, event);
                 } else {
-                    arena.broadcast(Language.parse(arena,
-                            MSG.FIGHT_KILLED_BY_REMAINING_TEAM_FRAGS,
-                            respawnTeam.colorizePlayer(respawnPlayer)
-                                    + ChatColor.YELLOW, arena.parseDeathCause(
-                                    respawnPlayer, event.getEntity()
-                                            .getLastDamageCause().getCause(), event
-                                            .getEntity().getKiller()), String
-                                    .valueOf(getLifeMap().get(killerTeam.getName())),
-                            killerTeam.getColoredName()));
+                    this.broadcastDeathMessage(MSG.FIGHT_KILLED_BY_REMAINING_TEAM_FRAGS, respawnPlayer, event, this.getLifeMap().get(killerTeam.getName()));
                 }
             }
             final List<ItemStack> returned;
 
-            if (arena.getArenaConfig().getBoolean(
-                    CFG.PLAYER_DROPSINVENTORY)) {
+            if (this.arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
                 returned = InventoryManager.drop(respawnPlayer);
                 event.getDrops().clear();
             } else {
-                returned = new ArrayList<>();
-                returned.addAll(event.getDrops());
+                returned = new ArrayList<>(event.getDrops());
             }
 
-            PACheck.handleRespawn(arena,
-                    ArenaPlayer.parsePlayer(respawnPlayer.getName()), returned);
-
+            PACheck.handleRespawn(this.arena, ArenaPlayer.parsePlayer(respawnPlayer.getName()), returned);
         }
 
     }
@@ -325,8 +302,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
                     this,
                     String.valueOf(arena.getArenaConfig()
                             .getInt(CFG.GOAL_TDM_LIVES) - (getLifeMap()
-                            .containsKey(aPlayer.getArenaTeam().getName()) ? getLifeMap()
-                            .get(aPlayer.getArenaTeam().getName()) : 0)));
+                            .getOrDefault(aPlayer.getArenaTeam().getName(), 0))));
         }
         return res;
     }

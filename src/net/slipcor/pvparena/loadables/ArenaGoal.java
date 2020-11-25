@@ -9,7 +9,9 @@ import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.commands.CommandTree;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.ncloader.NCBLoadable;
+import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -24,6 +26,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 
 import java.util.*;
+
+import static java.util.Optional.ofNullable;
 
 /**
  * <pre>
@@ -525,6 +529,32 @@ public class ArenaGoal extends NCBLoadable implements IArenaCommandHandler {
             getLifeMap().put(player.getName(), arena.getFighters().size() * value);
         } else {
             getLifeMap().put(player.getName(), value);
+        }
+    }
+
+    protected void broadcastSimpleDeathMessage(Player player, PlayerDeathEvent event) {
+        this.broadcastDeathMessage(Language.MSG.FIGHT_KILLED_BY, player, event, null);
+    }
+
+    protected void broadcastDeathMessage(Language.MSG deathMessage, Player player, PlayerDeathEvent event, Integer remainingLives) {
+        final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName()).getArenaTeam();
+
+        EntityDamageEvent.DamageCause damageCause = ofNullable(event.getEntity().getLastDamageCause())
+                .map(EntityDamageEvent::getCause)
+                .orElse(null);
+        String deathCause = this.arena.parseDeathCause(player, damageCause, event.getEntity().getKiller());
+        String coloredPlayerName = respawnTeam.colorizePlayer(player) + ChatColor.YELLOW;
+
+        if(deathMessage == Language.MSG.FIGHT_KILLED_BY_REMAINING || deathMessage == Language.MSG.FIGHT_KILLED_BY_REMAINING_FRAGS) {
+            this.arena.broadcast(Language.parse(this.arena, deathMessage,
+                    coloredPlayerName, deathCause, String.valueOf(remainingLives)));
+        } else if(deathMessage == Language.MSG.FIGHT_KILLED_BY_REMAINING_TEAM || deathMessage == Language.MSG.FIGHT_KILLED_BY_REMAINING_TEAM_FRAGS) {
+            this.arena.broadcast(Language.parse(this.arena, deathMessage,
+                    coloredPlayerName,deathCause, String.valueOf(remainingLives),
+                    respawnTeam.getColoredName()));
+        } else {
+            this.arena.broadcast(Language.parse(this.arena, Language.MSG.FIGHT_KILLED_BY,
+                    coloredPlayerName, deathCause));
         }
     }
 }
