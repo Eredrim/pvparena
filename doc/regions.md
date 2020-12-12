@@ -86,3 +86,8 @@ Example: `/pa !p main break on` - disallow players to break blocks in "main" reg
 
 > 🚩 **Tip:**  
 > There is an "ALL" protection argument that toggle all protections
+
+## Remove Region
+
+First, you need to known the region's name. List regions with`/pa <arenaname> regions`.  
+Then, use `/pa <arenaName> region <regionName> remove` to remove the region.
