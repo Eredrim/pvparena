@@ -107,7 +107,8 @@ public class PAI_Info extends AbstractArenaCommand {
 
             arena.msg(sender,
                     "gameMode: " + arena.getArenaConfig().getInt(CFG.GENERAL_GAMEMODE) + " | " +
-                            "time: " + arena.getArenaConfig().getInt(CFG.GENERAL_TIME) + " | " +
+                            "time end: " + arena.getArenaConfig().getInt(CFG.GENERAL_TIME) + " | " +
+                            "time end winner: " + arena.getArenaConfig().getInt(CFG.GENERAL_TIME_WINNER) + " | " +
                             "wand: " + arena.getArenaConfig().getString(CFG.GENERAL_WAND));
 
         }
@@ -169,7 +170,9 @@ public class PAI_Info extends AbstractArenaCommand {
                     "exhaustion: " + arena.getArenaConfig().getDouble(CFG.PLAYER_EXHAUSTION) + " | " +
                             "foodLevel: " + arena.getArenaConfig().getInt(CFG.PLAYER_FOODLEVEL) + " | " +
                             "health: " + healthDisplay + " | " +
-                            "saturation: " + arena.getArenaConfig().getInt(CFG.PLAYER_SATURATION));
+                            "saturation: " + arena.getArenaConfig().getInt(CFG.PLAYER_SATURATION) + " | " +
+                            "time: " + arena.getArenaConfig().getInt(CFG.PLAYER_TIME)
+            );
         }
 
         if (displayMode == null || "protect".equals(displayMode)) {

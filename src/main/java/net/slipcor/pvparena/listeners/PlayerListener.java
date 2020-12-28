@@ -387,8 +387,12 @@ public class PlayerListener implements Listener {
             arena.broadcast(Language.parse(arena,
                     MSG.FIGHT_KILLED_BY,
                     playerName + ChatColor.YELLOW,
-                    arena.parseDeathCause(player, cause == null ? EntityDamageEvent.DamageCause.VOID : cause.getCause(),
-                            ArenaPlayer.getLastDamagingPlayer(cause, player))));
+                    arena.parseDeathCause(
+                            player,
+                            cause == null ? EntityDamageEvent.DamageCause.VOID : cause.getCause(),
+                            ArenaPlayer.getLastDamagingPlayer(cause, player)
+                    )
+            ));
         }
 
         if (arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {

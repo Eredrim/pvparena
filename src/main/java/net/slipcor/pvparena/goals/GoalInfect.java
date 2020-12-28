@@ -537,8 +537,6 @@ public class GoalInfect extends ArenaGoal {
             iLives--;
             this.getLifeMap().put(player.getName(), iLives);
 
-            final ArenaTeam respawnTeam = aPlayer
-                    .getArenaTeam();
             if (this.arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
                 this.broadcastDeathMessage(MSG.FIGHT_KILLED_BY_REMAINING, player, event, iLives);
             }

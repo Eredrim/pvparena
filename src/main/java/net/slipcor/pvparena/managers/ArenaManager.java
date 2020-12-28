@@ -85,7 +85,7 @@ public final class ArenaManager {
 
         cfg.load();
         final List<String> list = cfg.getStringList(CFG.LISTS_GOALS.getNode(),
-                new ArrayList<String>());
+                new ArrayList<>());
 
         if (list.size() < 1) {
             return null;
@@ -295,27 +295,34 @@ public final class ArenaManager {
      */
     public static void load_arenas() {
         debug("loading arenas...");
+        Map<String, Set<String>> missingsGoals = new HashMap<>();
         try {
             final File path = new File(PVPArena.getInstance().getDataFolder().getPath(),
                     "arenas");
-            final File[] file = path.listFiles();
-            for (File aFile : file) {
-                if (!aFile.isDirectory() && aFile.getName().contains(".yml")) {
-                    String sName = aFile.getName().replace("config_", "");
+            final File[] files = path.listFiles();
+            for (File arenaConfigFile : files) {
+                if (!arenaConfigFile.isDirectory() && arenaConfigFile.getName().contains(".yml")) {
+                    String sName = arenaConfigFile.getName().replace("config_", "");
                     sName = sName.replace(".yml", "");
-                    final String error = checkForMissingGoals(sName);
-                    if (error == null) {
+                    final String missingGoal = checkForMissingGoals(sName);
+                    if (missingGoal == null) {
                         debug("arena: {}", sName);
                         if (!ARENAS.containsKey(sName.toLowerCase())) {
                             Arena arena = new Arena(sName);
                             loadArena(arena);
                         }
                     } else {
-                        PVPArena.getInstance().getLogger().warning(Language.parse(MSG.ERROR_GOAL_NOTFOUND, error, StringParser.joinSet(PVPArena.getInstance().getAgm().getAllGoalNames(), ", ")));
-                        PVPArena.getInstance().getLogger().warning(Language.parse(MSG.GOAL_INSTALLING, error));
+                        // store all arena file name with the missing goal
+                        missingsGoals.computeIfAbsent(missingGoal, k -> new HashSet<>());
+                        missingsGoals.get(missingGoal).add(arenaConfigFile.getName());
                     }
                 }
             }
+            missingsGoals.keySet().forEach(key -> {
+                PVPArena.getInstance().getLogger().warning(Language.parse(MSG.ERROR_GOAL_NOTFOUND, key,
+                        StringParser.joinSet(missingsGoals.get(key), ", "),
+                        StringParser.joinSet(PVPArena.getInstance().getAgm().getAllGoalNames(), ", ")));
+            });
         } catch (final Exception e) {
             e.printStackTrace();
         }
@@ -456,7 +463,7 @@ public final class ArenaManager {
                     debug("Arena not found: {}", arena);
                     error = true;
                 } else {
-                    debug("added {} > {}", key, arena);
+                    debug("added {} > {}" , key , arena);
                 }
             }
             if (error || strings.size() < 1) {
@@ -479,7 +486,8 @@ public final class ArenaManager {
 
 
         if (PVPArena.getInstance().getConfig().getBoolean("allow_ungrouped")) {
-            nextArena: for (Arena a : ArenaManager.getArenas()) {
+            nextArena:
+            for (Arena a : ArenaManager.getArenas()) {
                 if (!DEF_VALUES.containsKey(a.getName())) {
                     for (List<String> list : DEF_LISTS.values()) {
                         if (list.contains(a.getName())) {
@@ -549,7 +557,8 @@ public final class ArenaManager {
         boolean isUngrouped = true;
         String preciseArenaName = null;
 
-        deflists: for (List<String> values : DEF_LISTS.values()) {
+        deflists:
+        for (List<String> values : DEF_LISTS.values()) {
             for (String item : values) {
                 if (item.equals(string)) {
                     if (!PVPArena.getInstance().getConfig().getBoolean("only_shortcuts")) {
@@ -617,7 +626,7 @@ public final class ArenaManager {
                 // OR
                 // B: ungrouped and allowing ungrouped
                 if (preciseArenaName != null) {
-                    debug("priorizing actual arena name {} over {}", preciseArenaName, string);
+                    debug("priorizing actual arena name {} over {}" , preciseArenaName, string);
                     string = preciseArenaName;
                 }
                 debug("out getArenaByName: {}", string);

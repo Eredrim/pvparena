@@ -75,11 +75,10 @@ public class Config {
         GENERAL_PREFIX("general.prefix", "PVP Arena", null),
         GENERAL_SHOWREMAININGLIVES("general.showRemainingLives", true, null),
         GENERAL_SMARTSPAWN("general.smartspawn", false, null),
-        GENERAL_TIME("general.time", -1, null),
+        GENERAL_TIME("general.time.end", 0, null),
+        GENERAL_TIME_WINNER("general.time.winner", "none", null),
         GENERAL_TYPE("general.type", "none", null),
         GENERAL_WAND("general.wand", Material.STICK, null),
-
-        GOAL_ADDLIVESPERPLAYER("goal.livesPerPlayer", false, null),
 
         ITEMS_EXCLUDEFROMDROPS("items.excludeFromDrops", new ItemStack[0], null),
         ITEMS_KEEPONRESPAWN("items.keepOnRespawn", new ItemStack[0], null),
@@ -138,6 +137,7 @@ public class Config {
         PLAYER_REMOVEARROWS("player.removearrows", false, null),
         PLAYER_SATURATION("player.saturation", 20, null),
         PLAYER_QUICKLOOT("player.quickloot", false, null),
+        PLAYER_TIME("player.dayTime", -1, null),
 
         PROTECT_ENABLED("protection.enabled", true, null),
         PROTECT_PUNISH("protection.punish", false, null),
@@ -184,6 +184,8 @@ public class Config {
         USES_WOOLHEAD("uses.woolHead", false, null),
 
         // ----------
+        GOAL_ADDLIVESPERPLAYER("goal.livesPerPlayer", false, null),
+
         GOAL_BLOCKDESTROY_BLOCKTYPE("goal.blockdestroy.blocktype", Material.IRON_BLOCK, "BlockDestroy"),
         GOAL_BLOCKDESTROY_LIVES("goal.blockdestroy.bdlives", 1, "BlockDestroy"),
 
@@ -233,9 +235,6 @@ public class Config {
         GOAL_TDM_LIVES("goal.teamdm.tdlives", 10, "TeamDeathMatch"),
         GOAL_TDM_SUICIDESCORE("goal.teamdm.suicideScore", false, "TeamDeathMatch"),
         GOAL_TLIVES_LIVES("goal.teamlives.tlives", 10, "TeamLives"),
-        GOAL_TIME_END("goal.time.timedend", 0, "Time"),
-        GOAL_TIME_WINNER("goal.time.winner", "none", "Time"),
-
 
         GOAL_PILLARS_ANNOUNCETICK("goal.pillars.announcetick", true, "Pillars"),
         GOAL_PILLARS_LIVES("goal.pillars.pillives", 10, "Pillars"),

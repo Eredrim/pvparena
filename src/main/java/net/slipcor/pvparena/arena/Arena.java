@@ -2,11 +2,15 @@ package net.slipcor.pvparena.arena;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
+import net.slipcor.pvparena.arena.ArenaTimer;
 import net.slipcor.pvparena.classes.*;
 import net.slipcor.pvparena.config.Debugger;
-import net.slipcor.pvparena.core.*;
+import net.slipcor.pvparena.core.ArrowHack;
+import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.events.*;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
@@ -48,7 +52,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Optional.ofNullable;
-import static net.slipcor.pvparena.config.Debugger.*;
+import static net.slipcor.pvparena.config.Debugger.debug;
 
 /**
  * <pre>
@@ -104,6 +108,8 @@ public class Arena {
     private YamlConfiguration language = new YamlConfiguration();
     private long startTime;
     private Scoreboard scoreboard = null;
+
+    private ArenaTimer timer;
 
     public Arena(final String name) {
         this.name = name;
@@ -162,7 +168,7 @@ public class Arena {
     }
 
     public boolean addCustomScoreBoardEntry(final ArenaModule module, final String key, final int value) {
-        debug("module "+module+" tries to set custom scoreboard value '"+key+"' to score "+value);
+        debug("module " + module + " tries to set custom scoreboard value '" + key + "' to score " + value);
         if (key == null || key.isEmpty()) {
             debug("empty -> remove");
             return this.removeCustomScoreBoardEntry(module, value);
@@ -182,19 +188,19 @@ public class Arena {
                 prefix = "";
                 suffix = "";
             } else {
-                String[] split = StringParser.splitForScoreBoard(key);
+                String[] split  = StringParser.splitForScoreBoard(key);
                 prefix = split[0];
                 string = split[1];
                 suffix = split[2];
             }
             for (Team team : this.scoreboard.getTeams()) {
-                if (team.getName().equals("pa_msg_"+value)) {
+                if (team.getName().equals("pa_msg_" + value)) {
                     mTeam = team;
                 }
             }
 
             if (mTeam == null) {
-                mTeam = this.scoreboard.registerNewTeam("pa_msg_"+value);
+                mTeam = this.scoreboard.registerNewTeam("pa_msg_" + value);
             }
             mTeam.setPrefix(prefix);
             mTeam.setSuffix(suffix);
@@ -251,7 +257,7 @@ public class Arena {
      */
     public void broadcastColored(final String msg, final ChatColor color,
                                  final Player player) {
-        final String sColor = this.cfg.getBoolean(CFG.CHAT_COLORNICK)?color.toString():"";
+        final String sColor = this.cfg.getBoolean(CFG.CHAT_COLORNICK) ? color.toString() : "";
         synchronized (this) {
             this.broadcast(sColor + player.getName() + ChatColor.WHITE + ": " + msg.replace("&", "%%&%%"));
         }
@@ -574,7 +580,7 @@ public class Arena {
                     sbTeam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
                 }
 
-                if(addTeamEntry) {
+                if (addTeamEntry) {
                     sbTeam.addEntry(team.getName());
                 }
             }
@@ -751,7 +757,6 @@ public class Arena {
      * check if a custom class player is alive
      *
      * @return true if there is a custom class player alive, false otherwise
-     *
      * @deprecated - checking this method is obsolete due to preventdrops and region checks
      */
     @Deprecated
@@ -1271,7 +1276,7 @@ public class Arena {
 
     private void resetScoreboard(final Player player, final boolean force, final boolean soft) {
         if (this.getArenaConfig().getBoolean(CFG.USES_SCOREBOARD)) {
-            String msg = "ScoreBoards: "+(soft?"(soft) ":"")+"remove: " + player.getName();
+            String msg = "ScoreBoards: " + (soft ? "(soft) " : "") + "remove: " + player.getName();
             debug(this, player, msg);
             try {
                 if (this.scoreboard != null) {
@@ -1366,7 +1371,7 @@ public class Arena {
         }
         debug("Giving rewards to team " + arenaTeam.getName() + '!');
 
-        Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), new Runnable(){
+        Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), new Runnable() {
             @Override
             public void run() {
                 for (final ArenaPlayer ap : players) {
@@ -1412,7 +1417,10 @@ public class Arena {
             this.pvpRunner.cancel();
         }
         this.pvpRunner = null;
-
+        if (timer != null) {
+            timer.stop();
+            timer = null;
+        }
         ArenaModuleManager.reset(this, force);
         ArenaManager.advance(Arena.this);
         this.clearRegions();
@@ -1436,7 +1444,7 @@ public class Arena {
     }
 
     public boolean removeCustomScoreBoardEntry(final ArenaModule module, final int value) {
-        debug("module "+module+" tries to unset custom scoreboard value '"+value+"'");
+        debug("module " + module + " tries to unset custom scoreboard value '" + value + "'");
         if (this.scoreboard == null) {
             debug("scoreboard is not setup!");
             return false;
@@ -1445,7 +1453,7 @@ public class Arena {
             Team mTeam = null;
 
             for (Team team : this.scoreboard.getTeams()) {
-                if (team.getName().equals("pa_msg_"+value)) {
+                if (team.getName().equals("pa_msg_" + value)) {
                     mTeam = team;
                 }
             }
@@ -1471,9 +1479,9 @@ public class Arena {
     /**
      * reset a player to his pre-join values
      *
-     * @param player the player to reset
+     * @param player      the player to reset
      * @param destination the teleport location
-     * @param soft   if location should be preserved (another tp incoming)
+     * @param soft        if location should be preserved (another tp incoming)
      */
     private void resetPlayer(final Player player, final String destination, final boolean soft,
                              final boolean force) {
@@ -1590,7 +1598,7 @@ public class Arena {
                 if (this.getArenaConfig().getBoolean(CFG.USES_SCOREBOARDROUNDDISPLAY)) {
                     this.addCustomScoreBoardEntry(null, Language.parse(MSG.ROUNDS_DISPLAY,
                             String.valueOf(this.getRound()),
-                            String.valueOf(this.getRoundCount())),  199);
+                            String.valueOf(this.getRoundCount())), 199);
                     this.addCustomScoreBoardEntry(null, Language.parse(MSG.ROUNDS_DISPLAYSEPARATOR), 198);
                 }
             }, 1L);
@@ -1712,8 +1720,8 @@ public class Arena {
         final List<String> offsets = this.getArenaConfig().getStringList(CFG.TP_OFFSETS.getNode(), new ArrayList<String>());
 
         offsets.add(spawnName + ':' +
-                String.format("%.1f", x)+ ";" +
-                String.format("%.1f", y)+ ";" +
+                String.format("%.1f", x) + ";" +
+                String.format("%.1f", y) + ";" +
                 String.format("%.1f", z));
 
         this.getArenaConfig().setManually(CFG.TP_OFFSETS.getNode(), offsets);
@@ -1757,7 +1765,7 @@ public class Arena {
             if (this.cfg.getBoolean(CFG.GENERAL_CLASSSPAWN)) {
                 spawns = SpawnManager.getSpawnsContaining(this, "spawn");
             } else {
-                spawns = SpawnManager.getSpawnsStartingWith(this, this.free ?"spawn":sTeam + "spawn");
+                spawns = SpawnManager.getSpawnsStartingWith(this, this.free ? "spawn" : sTeam + "spawn");
             }
 
 
@@ -1847,25 +1855,18 @@ public class Arena {
         if (overRide || errror == null || errror.isEmpty()) {
             final Boolean handle = PACheck.handleStart(this, null, forceStart);
 
-            if (overRide || handle) {
+            if (overRide || Boolean.TRUE.equals(handle)) {
                 debug(this, "START!");
                 this.setFightInProgress(true);
+
+                timer = new ArenaTimer(this);
+                timer.start();
 
                 if (this.getArenaConfig().getBoolean(CFG.USES_SCOREBOARD)) {
                     Objective obj = this.getSpecialScoreboard().getObjective("lives");
                     obj.setDisplaySlot(DisplaySlot.SIDEBAR);
                 }
 
-            } else if (handle) {
-                if (errror != null) {
-                    PVPArena.getInstance().getLogger().info(errror);
-                }
-				/*
-				for (ArenaPlayer ap : getFighters()) {
-					getDebugger().i("removing player " + ap.getName());
-					playerLeave(ap.get(), CFG.TP_EXIT, false);
-				}
-				reset(false);*/
             } else {
 
                 // false
@@ -1889,7 +1890,7 @@ public class Arena {
     /**
      * send a message to every player of a given team
      *
-     * @param sTeam the team to send to
+     * @param sTeam  the team to send to
      * @param msg    the message to send
      * @param color  the color to use
      * @param player the player to prefix
@@ -1903,7 +1904,7 @@ public class Arena {
         debug(this, player, '@' + team.getName() + ": " + msg);
         synchronized (this) {
             for (final ArenaPlayer p : team.getTeamMembers()) {
-                final String reset = this.cfg.getBoolean(CFG.CHAT_COLORNICK)?"":ChatColor.RESET.toString();
+                final String reset = this.cfg.getBoolean(CFG.CHAT_COLORNICK) ? "" : ChatColor.RESET.toString();
                 if (player == null) {
                     p.get().sendMessage(
                             color + "[" + team.getName() + ']' + ChatColor.RESET
@@ -2346,9 +2347,9 @@ public class Arena {
                 } else {
                     for (ArenaTeam team : this.getTeams()) {
                         team.getTeamMembers().stream().findFirst().ifPresent(randomTeamPlayer ->
-                            currentScoreboard.getObjective("lives")
-                                .getScore(team.getName())
-                                .setScore(PACheck.handleGetLives(this, randomTeamPlayer))
+                                currentScoreboard.getObjective("lives")
+                                        .getScore(team.getName())
+                                        .setScore(PACheck.handleGetLives(this, randomTeamPlayer))
                         );
                     }
                     for (ArenaPlayer ap : this.getEveryone()) {

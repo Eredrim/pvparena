@@ -137,7 +137,7 @@ public final class Language {
         ERROR_ERROR("nulang.error.error", "&cError: %1%"),
         ERROR_FIGHT_IN_PROGRESS("nulang.error.fightinprogress", "A fight is already in progress!"),
         ERROR_GOAL_LEGACY_UNKNOWN("nulang.error.goal.legacyunknown", "Legacy goal &a%1%&r unknown! You will want to add goals: &a/pa [arena] goal [goalname]"),
-        ERROR_GOAL_NOTFOUND("nulang.error.goal.goalnotfound", "Goal &a%1%&r unknown. Valid goals: &a%2%&r"),
+        ERROR_GOAL_NOTFOUND("nulang.error.goal.goalnotfound", "Goal &a%1%&& unknown found in &a%2%&&. Valid goals: &a%3%&r"),
         ERROR_INSTALL("nulang.error.install", "Error while installing &a%1%&r!"),
         ERROR_INVALID_ARGUMENT_COUNT("nulang.error.invalid_argument_count", "&cInvalid number of arguments&r (%1% instead of %2%)!"),
         ERROR_INVALID_STATTYPE("nulang.error.invalidstattype", "Invalid statistics type: %1%"),
@@ -287,7 +287,7 @@ public final class Language {
         GENERAL_USE("nulang.general.use", "use"),
 
         GOAL_ADDED("nulang.goal.added", "Goal added: &a%1%&r"),
-        GOAL_INSTALLING("nulang.goal.installing", "Install goals by command: &a/pa install [goalname]&r"),
+        GOAL_INSTALLING("nulang.goal.installing", "Install goals by command: &a/pa install %1%&r"),
         GOAL_REMOVED("nulang.goal.removed", "Goal removed: &a%1%&r"),
 
         HELP_HEADLINE("nulang.help.head", "&e--- &aPVP Arena Help&e %1% &e---"),

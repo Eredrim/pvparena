@@ -74,7 +74,7 @@ public final class PlayerState {
         }
 
         fullReset(arena, player);
-        final int time = arena.getArenaConfig().getInt(CFG.GENERAL_TIME);
+        final int time = arena.getArenaConfig().getInt(CFG.PLAYER_TIME);
         if (time != -1) {
             player.setPlayerTime(time, false);
         }
