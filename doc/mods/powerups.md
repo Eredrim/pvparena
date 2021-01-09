@@ -8,8 +8,8 @@ This mod allows spawning of items that give special powers / bad things, fully c
 
 Unzip the module files (files tab, "PA Files v*.*.*") into the /pvparena/files folder and install them via
 
-- `/pa install [modname]`, activate per arena via
-- `/pa [arenaname] !tm [modname]`
+- `/pa modules install powerups`, activate per arena via
+- `/pa [arenaname] !tm powerups`
 
 ## Setup
 
