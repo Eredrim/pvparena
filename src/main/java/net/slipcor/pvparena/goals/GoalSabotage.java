@@ -7,6 +7,7 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.PlayerStatus;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PABlockLocation;
+import net.slipcor.pvparena.classes.PADeathInfo;
 import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
@@ -27,7 +28,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -398,7 +398,7 @@ public class GoalSabotage extends ArenaGoal {
     }
 
     @Override
-    public void parsePlayerDeath(final Player player, final EntityDamageEvent event) {
+    public void parsePlayerDeath(final Player player, final PADeathInfo event) {
         final String teamName = this.getHeldFlagTeam(player);
         final ArenaTeam team = this.arena.getTeam(teamName);
         if (teamName != null && team != null) {

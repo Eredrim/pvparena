@@ -3,33 +3,40 @@ package net.slipcor.pvparena.listeners;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
-import net.slipcor.pvparena.arena.PlayerStatus;
 import net.slipcor.pvparena.arena.ArenaTeam;
-import net.slipcor.pvparena.arena.PlayerState;
+import net.slipcor.pvparena.arena.PlayerStatus;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.commands.PAA_Setup;
 import net.slipcor.pvparena.commands.PAG_Arenaclass;
-import net.slipcor.pvparena.commands.PAG_Leave;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.events.PAGoalEvent;
 import net.slipcor.pvparena.exceptions.GameplayException;
-import net.slipcor.pvparena.loadables.*;
+import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.*;
 import net.slipcor.pvparena.regions.ArenaRegion;
 import net.slipcor.pvparena.regions.RegionProtection;
 import net.slipcor.pvparena.regions.RegionType;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.event.*;
+import org.bukkit.event.Cancellable;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.*;
+import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
@@ -331,84 +338,8 @@ public class PlayerListener implements Listener {
         final Player player = event.getEntity();
         final Arena arena = ArenaPlayer.fromPlayer(player).getArena();
         if (arena != null) {
-            WorkflowManager.handlePlayerDeath(arena, player, event);
+            debug(player, "playDeathEvent thrown. That should not happen.");
         }
-    }
-
-    /**
-     * pretend a player death
-     *
-     * @param arena  the arena the player is playing in
-     * @param player the player to kill
-     * @param eEvent the event triggering the death
-     */
-    public static void finallyKillPlayer(final Arena arena, final Player player,
-                                         final Event eEvent) {
-        EntityDamageEvent cause = null;
-
-        if (eEvent instanceof EntityDeathEvent) {
-            cause = player.getLastDamageCause();
-        } else if (eEvent instanceof EntityDamageEvent) {
-            cause = (EntityDamageEvent) eEvent;
-        }
-
-        final ArenaPlayer aPlayer = ArenaPlayer.fromPlayer(player);
-        final ArenaTeam team = aPlayer.getArenaTeam();
-
-        final String playerName = (team == null) ? player.getName() : team.colorizePlayer(player);
-        if (arena.getConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-            arena.broadcast(Language.parse(
-                    MSG.FIGHT_KILLED_BY,
-                    playerName + ChatColor.YELLOW,
-                    arena.parseDeathCause(
-                            player,
-                            cause == null ? EntityDamageEvent.DamageCause.VOID : cause.getCause(),
-                            ArenaPlayer.getLastDamagingPlayer(cause, player)
-                    )
-            ));
-        }
-
-        if (arena.getConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
-            InventoryManager.drop(player);
-            if (eEvent instanceof EntityDeathEvent) {
-                ((EntityDeathEvent) eEvent).getDrops().clear();
-            }
-        }
-
-        // Trick to avoid death screen
-        Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.getInstance(), player::closeInventory, 1);
-
-        if (!aPlayer.hasCustomClass()) {
-            InventoryManager.clearInventory(player);
-        }
-
-        arena.removePlayer(player, arena.getConfig().getString(CFG.TP_DEATH), true, false);
-
-        aPlayer.setStatus(PlayerStatus.LOST);
-        aPlayer.addDeath();
-
-        PlayerState.fullReset(arena, player);
-
-        class RunLater implements Runnable {
-
-            @Override
-            public void run() {
-
-                boolean found = false;
-                for (final ArenaModule mod : arena.getMods()) {
-                    if (mod.getName().contains("Spectate")) {
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) {
-                    new PAG_Leave().commit(arena, player, new String[0]);
-                }
-            }
-        }
-        Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), new RunLater(), 5L);
-
-        ArenaManager.checkAndCommit(arena, false);
     }
 
     @EventHandler(priority = EventPriority.LOW)
@@ -895,7 +826,7 @@ public class PlayerListener implements Listener {
             debug(arena, player, "onPlayerTeleport: using telepass");
         }
 
-        if(arenaPlayer.getStatus() == PlayerStatus.FIGHT) {
+        if(arena.isFightInProgress() && !arenaPlayer.isTeleporting() && arenaPlayer.getStatus() == PlayerStatus.FIGHT) {
             RegionManager.getInstance().handleFightingPlayerMove(arenaPlayer, toLoc);
         }
 

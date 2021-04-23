@@ -12,7 +12,9 @@ import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.config.SpawnOffset;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
+import net.slipcor.pvparena.core.RandomUtils;
 import net.slipcor.pvparena.core.StringParser;
+import net.slipcor.pvparena.core.StringUtils;
 import net.slipcor.pvparena.regions.ArenaRegion;
 import net.slipcor.pvparena.regions.RegionType;
 import net.slipcor.pvparena.runnables.RespawnRunnable;
@@ -25,7 +27,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
+import static java.util.Optional.ofNullable;
 import static net.slipcor.pvparena.config.Debugger.debug;
 
 /**
@@ -235,8 +239,7 @@ public final class SpawnManager {
         new TeleportLater(set).runTaskTimer(PVPArena.getInstance(), 1L, 1L);
     }
 
-    public static void distributeSmart(final Arena arena,
-                                       final Set<ArenaPlayer> set, final String teamNName) {
+    public static void distributeSmart(final Arena arena, final Set<ArenaPlayer> set, final String teamNName) {
         debug(arena, "distributing smart-ish");
         if (set == null || set.size() < 1) {
             return;
@@ -294,9 +297,7 @@ public final class SpawnManager {
 
             TeleportLater(final Set<ArenaPlayer> set, final String[] iteratings) {
                 this.pos = 0;
-                for (final ArenaPlayer ap : set) {
-                    this.set.add(ap);
-                }
+                this.set.addAll(set);
                 this.iteratings = iteratings.clone();
             }
 
@@ -425,8 +426,19 @@ public final class SpawnManager {
         return arena.getSpawns().stream()
                 .filter(spawn -> spawn.getName().equals(name))
                 .findAny()
-                .map(spawn -> spawn.getLocation().add(spawnOffset.getX(), spawnOffset.getY(), spawnOffset.getZ()))
+                .map(spawn -> spawn.getLocation().add(spawnOffset.toVector()))
                 .orElse(null);
+    }
+
+    /**
+     * Return location of Arena exit or World spawn as fallback
+     * @param arena Arena containing exit spawn
+     * @return Bukkit location object of the exit
+     */
+    public static Location getExitSpawnLocation(final Arena arena) {
+        return ofNullable(getSpawnByExactName(arena, "exit"))
+                .map(PALocation::toLocation)
+                .orElse(arena.getWorld().getSpawnLocation());
     }
 
     public static PABlockLocation getRegionCenter(final Arena arena) {
@@ -536,14 +548,8 @@ public final class SpawnManager {
                                                 final Set<ArenaRegion> ars) {
         if (arena.isFreeForAll()) {
             for (final ArenaPlayer ap : set) {
-                int pos = new Random().nextInt(ars.size());
-
-                for (final ArenaRegion x : ars) {
-                    if (pos-- == 0) {
-                        placeInsideSpawnRegion(arena, ap, x);
-                        break;
-                    }
-                }
+                ArenaRegion randomRegion = RandomUtils.getRandom(ars, new Random());
+                placeInsideSpawnRegion(arena, ap, randomRegion);
             }
         } else {
             String teamName = null;
@@ -560,14 +566,8 @@ public final class SpawnManager {
                     }
                 }
                 if (!teleported) {
-                    int pos = new Random().nextInt(ars.size());
-
-                    for (final ArenaRegion x : ars) {
-                        if (pos-- == 0) {
-                            placeInsideSpawnRegion(arena, ap, x);
-                            break;
-                        }
-                    }
+                    ArenaRegion randomRegion = RandomUtils.getRandom(ars, new Random());
+                    placeInsideSpawnRegion(arena, ap, randomRegion);
                 }
             }
         }
@@ -612,144 +612,102 @@ public final class SpawnManager {
         return false;
     }
 
-    public static void respawn(final Arena arena, final ArenaPlayer aPlayer, final String overrideSpawn) {
+    public static void respawn(final ArenaPlayer aPlayer, final String overrideSpawn) {
+        final Arena arena = aPlayer.getArena();
 
         if (arena == null) {
             PVPArena.getInstance().getLogger().warning("Arena is null for player " + aPlayer + " while respawning!");
             return;
         }
 
-        // Trick to avoid death screen
-        Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.getInstance(), () -> aPlayer.getPlayer().closeInventory(), 1);
-
-        if (overrideSpawn == null) {
-
-
-            if (arena.getConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)
-                    && arena.isFreeForAll() == "free".equals(aPlayer.getArenaTeam().getName())) {
+        if (StringUtils.notEmpty(overrideSpawn)) {
+            new RespawnRunnable(arena, aPlayer, overrideSpawn).runTaskLater(PVPArena.getInstance(), 2);
+            if (!overrideSpawn.toLowerCase().endsWith("relay")) {
+                aPlayer.setStatus(PlayerStatus.FIGHT);
+            }
+        } else {
+            Config arenaConfig = arena.getConfig();
+            String teamName = aPlayer.getArenaTeam().getName();
+            String arenaClass = aPlayer.getArenaClass().getName();
+            if (arenaConfig.getBoolean(CFG.GENERAL_CLASSSPAWN) && arena.isFreeForAll() == "free".equals(teamName)) {
 
                 // we want a class spawn and the arena is either not FFA or the player is in the FREE team
 
-                final Set<PASpawn> spawns = SpawnManager.getPASpawnsStartingWith(arena, aPlayer.getArenaTeam().getName() + aPlayer.getArenaClass().getName() + "spawn");
-                int pos = new Random().nextInt(spawns.size());
-                for (final PASpawn spawn : spawns) {
-                    if (--pos <= 0) {
-                        Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), new RespawnRunnable(arena, aPlayer, spawn.getName()), 2);
-                        aPlayer.setStatus(PlayerStatus.FIGHT);
-                        return;
-                    }
-                }
+                Set<PASpawn> spawns = getPASpawnsStartingWith(arena, String.format("%s%sspawn", teamName, arenaClass));
+                PASpawn randomSpawn = RandomUtils.getRandom(spawns, new Random());
+                new RespawnRunnable(arena, aPlayer, randomSpawn.getName()).runTaskLater(PVPArena.getInstance(), 2);
+                aPlayer.setStatus(PlayerStatus.FIGHT);
 
                 return;
             }
 
-            final Set<ArenaRegion> ars = arena.getRegionsByType(RegionType.SPAWN);
+            Set<ArenaRegion> ars = arena.getRegionsByType(RegionType.SPAWN);
             if (!ars.isEmpty()) {
-                final Set<ArenaPlayer> team = new HashSet<>();
-                team.add(aPlayer);
-                placeInsideSpawnRegions(arena, team, ars);
-
+                placeInsideSpawnRegions(arena, Collections.singleton(aPlayer), ars);
                 return;
             }
+
+            PASpawn selectedSpawn;
+
             if (arena.isFreeForAll()) {
-
-
-                if (!arena.getConfig().getBoolean(CFG.GENERAL_SMARTSPAWN)
-                        || !"free".equals(aPlayer.getArenaTeam().getName())) {
-
-                    // either we generally don't need smart spawning or the player is not in the "free" team ;)
-
+                if (arenaConfig.getBoolean(CFG.GENERAL_SMARTSPAWN) && "free".equals(teamName)) {
+                    debug(arena, "we need smart spawn!");
+                    selectedSpawn = getFarthestSpawnFromPlayerTeam(arena, aPlayer);
+                } else {
+                    // We generally don't need smart spawning or the player is not in the "free" team ;)
                     // i.e. just put him randomly
 
-                    final Set<PASpawn> spawns = new HashSet<>();
-
-                    if (arena.getConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
-                        final String arenaClass = aPlayer.getArenaClass().getName();
-                        spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, aPlayer.getArenaTeam().getName() + arenaClass + "spawn"));
-                    } else if ("free".equals(aPlayer.getArenaTeam().getName())) {
-                        spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, "spawn"));
-                    } else {
-                        spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, aPlayer.getArenaTeam().getName()));
+                    String spawnPrefix = teamName;
+                    if (arenaConfig.getBoolean(CFG.GENERAL_CLASSSPAWN)) {
+                        spawnPrefix = String.format("%s%sspawn", teamName, arenaClass);
+                    } else if ("free".equals(teamName)) {
+                        spawnPrefix = "spawn";
                     }
 
-
-                    int pos = new Random().nextInt(spawns.size());
-                    for (final PASpawn spawn : spawns) {
-                        if (--pos <= 0) {
-                            Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), new RespawnRunnable(arena, aPlayer, spawn.getName()), 2);
-                            aPlayer.setStatus(PlayerStatus.FIGHT);
-                            return;
-                        }
-                    }
+                    Set<PASpawn> spawns = getPASpawnsStartingWith(arena, spawnPrefix);
+                    selectedSpawn = RandomUtils.getRandom(spawns, new Random());
                 }
+            } else {
+                Set<PASpawn> spawns = getPASpawnsStartingWith(arena, teamName + "spawn");
+                selectedSpawn = RandomUtils.getRandom(spawns, new Random());
 
-                // we need a smart spawn
-
-                debug(arena, "we need smart!");
-
-                final Set<PASpawn> spawns = SpawnManager.getPASpawnsStartingWith(arena, "spawn");
-
-                final Set<PALocation> pLocs = new HashSet<>();
-
-                for (final ArenaPlayer arenaPlayer : aPlayer.getArenaTeam().getTeamMembers()) {
-                    if (arenaPlayer.getName().equals(aPlayer.getName())) {
-                        continue;
-                    }
-                    pLocs.add(new PALocation(arenaPlayer.getPlayer().getLocation()));
-                    debug(arena, "pos of " + arenaPlayer.getName() + new PALocation(arenaPlayer.getPlayer().getLocation()));
-                }
-                debug(arena, "pLocs.size: " + pLocs.size());
-
-                // pLocs now contains the other player's positions
-
-                final Map<PALocation, Double> diffs = new HashMap<>();
-
-                double max = 0;
-
-                for (final PASpawn spawnLoc : spawns) {
-                    double sum = 90000;
-                    for (final PALocation playerLoc : pLocs) {
-                        if (spawnLoc.getLocation().getWorldName().equals(playerLoc.getWorldName())) {
-                            sum = Math.min(sum, spawnLoc.getLocation().getDistanceSquared(playerLoc));
-                        }
-                    }
-                    max = Math.max(sum, max);
-                    diffs.put(spawnLoc.getLocation(), sum);
-                    debug(arena, "spawnLoc: " + spawnLoc.getName() + ':' + sum);
-                }
-                debug(arena, "max = " + max);
-
-                for (final Map.Entry<PALocation, Double> paLocationDoubleEntry : diffs.entrySet()) {
-                    if (paLocationDoubleEntry.getValue() == max) {
-                        for (final PASpawn spawn : spawns) {
-                            if (spawn.getLocation().equals(paLocationDoubleEntry.getKey())) {
-                                Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), new RespawnRunnable(arena, aPlayer, spawn.getName()), 2);
-                                return;
-                            }
-                        }
-
-                    }
-                }
-
-                return;
             }
 
-            final Set<PASpawn> spawns = SpawnManager.getPASpawnsStartingWith(arena, aPlayer.getArenaTeam().getName() + "spawn");
-            int pos = new Random().nextInt(spawns.size());
-            for (final PASpawn spawn : spawns) {
-                if (--pos <= 0) {
-                    Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), new RespawnRunnable(arena, aPlayer, spawn.getName()), 2);
-                    aPlayer.setStatus(PlayerStatus.FIGHT);
-                    return;
-                }
-            }
-
-        }
-
-        Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), new RespawnRunnable(arena, aPlayer, overrideSpawn), 2);
-        if (overrideSpawn == null || !overrideSpawn.toLowerCase().endsWith("relay")) {
+            new RespawnRunnable(arena, aPlayer, selectedSpawn.getName()).runTaskLater(PVPArena.getInstance(), 2);
             aPlayer.setStatus(PlayerStatus.FIGHT);
         }
+    }
+
+    private static PASpawn getFarthestSpawnFromPlayerTeam(Arena arena, ArenaPlayer aPlayer) {
+        Set<PASpawn> spawns = SpawnManager.getPASpawnsStartingWith(arena, "spawn");
+
+        // pLocs now contains the other player's positions
+        Set<PALocation> pLocs = aPlayer.getArenaTeam().getTeamMembers().stream()
+                .filter(p -> p.getName().equals(aPlayer.getName()))
+                .map(ArenaPlayer::getLocation)
+                .collect(Collectors.toSet());
+
+        Iterator<PASpawn> spawnIterator = spawns.iterator();
+        PASpawn bestSpawn = spawns.iterator().next();
+        double max = 0;
+
+        while (spawnIterator.hasNext()) {
+            PASpawn spawn = spawnIterator.next();
+            double sum = 90000;
+            for (PALocation playerLoc : pLocs) {
+                if (spawn.getLocation().getWorldName().equals(playerLoc.getWorldName())) {
+                    sum = Math.min(sum, spawn.getLocation().getDistanceSquared(playerLoc));
+                }
+            }
+
+            if(sum > max) {
+                bestSpawn = spawn;
+                max = Math.max(sum, max);
+            }
+        }
+        debug(arena, "farthest spawn : {} ({} blocks from same team players)", bestSpawn, max);
+
+        return bestSpawn;
     }
 
     /**

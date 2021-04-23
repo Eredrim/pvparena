@@ -3,15 +3,15 @@ package net.slipcor.pvparena.regions;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
-import net.slipcor.pvparena.arena.PlayerStatus;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.arena.PlayerStatus;
 import net.slipcor.pvparena.classes.PABlockLocation;
+import net.slipcor.pvparena.classes.PADeathInfo;
 import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
 import net.slipcor.pvparena.managers.ArenaManager;
@@ -481,8 +481,8 @@ public class ArenaRegion {
     private void killPlayerIfFighting(ArenaPlayer aPlayer) {
         if (aPlayer.getStatus() == PlayerStatus.FIGHT) {
             Bukkit.getWorld(this.world).strikeLightningEffect(aPlayer.getPlayer().getLocation());
-            final EntityDamageEvent event = new EntityDamageEvent(aPlayer.getPlayer(), DamageCause.LIGHTNING, 10.0);
-            PlayerListener.finallyKillPlayer(this.arena, aPlayer.getPlayer(), event);
+            PADeathInfo pluginDeathCause = new PADeathInfo(EntityDamageEvent.DamageCause.LIGHTNING);
+            aPlayer.handleDeathAndLose(pluginDeathCause);
         }
     }
 

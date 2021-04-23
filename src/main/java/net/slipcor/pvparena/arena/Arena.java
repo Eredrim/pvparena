@@ -17,12 +17,13 @@ import net.slipcor.pvparena.regions.ArenaRegion;
 import net.slipcor.pvparena.regions.RegionType;
 import net.slipcor.pvparena.runnables.StartRunnable;
 import org.bukkit.*;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -30,6 +31,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -420,10 +422,10 @@ public class Arena {
             if (aPlayer.getArenaClass() != null) {
                 if ("custom".equalsIgnoreCase(className)) {
                     // if custom, give stuff back
-                    ArenaPlayer.reloadInventory(this, player, false);
+                    aPlayer.reloadInventory(false);
                 } else {
                     InventoryManager.clearInventory(player);
-                    ArenaPlayer.givePlayerFightItems(this, player);
+                    aPlayer.equipPlayerFightItems();
                 }
             }
             return;
@@ -685,7 +687,7 @@ public class Arena {
             this.msg(player, MSG.NOTICE_YOU_LEFT);
         }
 
-        this.removePlayer(player, this.config.getString(location), soft, force);
+        this.removePlayer(aPlayer, this.config.getString(location), soft, force);
 
         if (!this.config.getBoolean(CFG.READY_ENFORCECOUNTDOWN) && this.startRunner != null && this.config.getInt(CFG.READY_MINPLAYERS) > 0 &&
                 this.getFighters().size() <= this.config.getInt(CFG.READY_MINPLAYERS)) {
@@ -816,26 +818,24 @@ public class Arena {
 
     /**
      * remove a player from the arena
-     *
-     * @param player the player to reset
+     *  @param aPlayer the player to reset
      * @param tploc  the coord string to teleport the player to
      */
-    public void removePlayer(final Player player, final String tploc, final boolean soft,
+    public void removePlayer(final ArenaPlayer aPlayer, final String tploc, final boolean soft,
                              final boolean force) {
-        debug(player, "removing player {}, soft: {}, tp to {}", player.getName(), soft, tploc);
-        this.resetPlayer(player, tploc, soft, force);
+        debug(aPlayer, "removing player {}, soft: {}, tp to {}", aPlayer.getName(), soft, tploc);
+        this.resetPlayer(aPlayer, tploc, soft, force);
 
-        final ArenaPlayer aPlayer = ArenaPlayer.fromPlayer(player);
         if (!soft && aPlayer.getArenaTeam() != null) {
             aPlayer.getArenaTeam().remove(aPlayer);
         }
 
-        this.callExitEvent(player);
+        this.callExitEvent(aPlayer.getPlayer());
         if (this.config.getBoolean(CFG.USES_CLASSSIGNSDISPLAY)) {
-            PAClassSign.remove(this.signs, player);
+            PAClassSign.remove(this.signs, aPlayer.getPlayer());
         }
 
-        player.setNoDamageTicks(60);
+        aPlayer.getPlayer().setNoDamageTicks(60);
     }
 
     /**
@@ -881,7 +881,7 @@ public class Arena {
                     arenaPlayer.addWins();
                 }
                 this.callExitEvent(player);
-                this.resetPlayer(player, this.config.getString(CFG.TP_WIN, OLD_TP),
+                this.resetPlayer(arenaPlayer, this.config.getString(CFG.TP_WIN, OLD_TP),
                         false, force);
                 if (!force && arenaPlayer.getStatus() == PlayerStatus.FIGHT && this.fightInProgress && !this.gaveRewards) {
                     // if we are remaining, give reward!
@@ -897,10 +897,10 @@ public class Arena {
                     arenaPlayer.addLosses();
                 }
                 this.callExitEvent(player);
-                this.resetPlayer(player, this.config.getString(CFG.TP_LOSE, OLD_TP), false, force);
+                this.resetPlayer(arenaPlayer, this.config.getString(CFG.TP_LOSE, OLD_TP), false, force);
             } else {
                 this.callExitEvent(arenaPlayer.getPlayer());
-                this.resetPlayer(arenaPlayer.getPlayer(), this.config.getString(CFG.TP_LOSE, OLD_TP), false, force);
+                this.resetPlayer(arenaPlayer, this.config.getString(CFG.TP_LOSE, OLD_TP), false, force);
             }
 
             arenaPlayer.reset();
@@ -909,7 +909,7 @@ public class Arena {
             if (this.equals(player.getArena()) && player.getStatus() == PlayerStatus.WATCH) {
 
                 this.callExitEvent(player.getPlayer());
-                this.resetPlayer(player.getPlayer(), this.config.getString(CFG.TP_EXIT, OLD_TP), false, force);
+                this.resetPlayer(player, this.config.getString(CFG.TP_EXIT, OLD_TP), false, force);
                 player.setArena(null);
                 player.reset();
             }
@@ -928,7 +928,7 @@ public class Arena {
         players.forEach(ap -> {
             ap.addWins();
             this.callExitEvent(ap.getPlayer());
-            this.resetPlayer(ap.getPlayer(), this.config.getString(CFG.TP_WIN, OLD_TP), false, false);
+            this.resetPlayer(ap, this.config.getString(CFG.TP_WIN, OLD_TP), false, false);
             ap.reset();
         });
 
@@ -994,24 +994,19 @@ public class Arena {
 
     /**
      * reset a player to his pre-join values
-     *
-     * @param player      the player to reset
+     * @param aPlayer      the player to reset
      * @param destination the teleport location
      * @param soft        if location should be preserved (another tp incoming)
      */
-    private void resetPlayer(final Player player, final String destination, final boolean soft,
-                             final boolean force) {
-        if (player == null) {
-            return;
-        }
-        debug(player, "resetting player, soft: {}", soft);
+    private void resetPlayer(@NotNull ArenaPlayer aPlayer, String destination, boolean soft, boolean force) {
+        debug(aPlayer, "resetting player, soft: {}", soft);
 
+        Player player = aPlayer.getPlayer();
         try {
-            new ArrowHack(player);
+            ArrowHack.processArrowHack(player);
         } catch (Exception ignored) {
         }
 
-        final ArenaPlayer aPlayer = ArenaPlayer.fromPlayer(player);
         ofNullable(aPlayer.getState()).ifPresent(playerState -> playerState.unload(soft));
 
         this.getScoreboard().reset(player, force, soft);
@@ -1019,43 +1014,49 @@ public class Arena {
         ArenaModuleManager.resetPlayer(this, player, soft, force);
 
         if (!soft && (!aPlayer.hasCustomClass() || this.config.getBoolean(CFG.GENERAL_CUSTOMRETURNSGEAR))) {
-            ArenaPlayer.reloadInventory(this, player, true);
+            aPlayer.reloadInventory(true);
         }
 
-        this.teleportPlayerAfterReset(destination, soft, force, aPlayer);
+        this.teleportPlayerAfterReset(aPlayer, destination, soft, force);
     }
 
-    private void teleportPlayerAfterReset(final String destination, final boolean soft, final boolean force, final ArenaPlayer aPlayer) {
+    private void teleportPlayerAfterReset(final ArenaPlayer aPlayer, final String spawnName, final boolean soft, final boolean force) {
         final Player player = aPlayer.getPlayer();
-        class RunLater implements Runnable {
+        class ResetTeleportRunnable extends BukkitRunnable {
 
             @Override
             public void run() {
-                debug(Arena.this, player, "string = " + destination);
+                debug(Arena.this, player, "teleportPlayerAfterReset => " + spawnName);
                 aPlayer.setTelePass(true);
 
                 int noDamageTicks = Arena.this.config.getInt(CFG.TIME_TELEPORTPROTECT) * 20;
-                if (OLD_TP.equalsIgnoreCase(destination)) {
+                Location destination;
+
+                if (OLD_TP.equalsIgnoreCase(spawnName)) {
                     debug(Arena.this, player, "tping to old");
                     if (aPlayer.getSavedLocation() != null) {
                         debug(Arena.this, player, "location is fine");
-                        final PALocation loc = aPlayer.getSavedLocation();
-                        player.teleport(loc.toLocation());
-                        player.setNoDamageTicks(noDamageTicks);
-                        aPlayer.setTeleporting(false);
+                        destination = aPlayer.getSavedLocation().toLocation();
+                    } else {
+                        destination = SpawnManager.getExitSpawnLocation(Arena.this);
                     }
                 } else {
-                    Vector offset = Arena.this.config.getOffset(destination);
-                    PALocation loc = SpawnManager.getSpawnByExactName(Arena.this, destination);
+                    PALocation loc = SpawnManager.getSpawnByExactName(Arena.this, spawnName);
                     if (loc == null) {
-                        new Exception("RESET Spawn null: " + Arena.this.getName() + "->" + destination).printStackTrace();
+                        PVPArena.getInstance().getLogger().warning("RESET Spawn null: " + Arena.this.getName() + "->" + spawnName);
+                        destination = SpawnManager.getExitSpawnLocation(Arena.this);
                     } else {
-                        player.teleport(loc.toLocation().add(offset));
-                        aPlayer.setTelePass(false);
-                        aPlayer.setTeleporting(false);
+                        Vector offset = Arena.this.config.getOffset(spawnName);
+                        destination = loc.toLocation().add(offset);
                     }
-                    player.setNoDamageTicks(noDamageTicks);
+
                 }
+
+                player.teleport(destination);
+                aPlayer.setTelePass(false);
+                aPlayer.setTeleporting(false);
+                player.setNoDamageTicks(noDamageTicks);
+
                 if (soft || !force) {
                     StatisticsManager.update(Arena.this, aPlayer);
                 }
@@ -1066,76 +1067,16 @@ public class Arena {
             }
         }
 
-        final RunLater runLater = new RunLater();
+        final ResetTeleportRunnable resetTeleportRunnable = new ResetTeleportRunnable();
 
         aPlayer.setTeleporting(true);
-        if (this.config.getInt(CFG.TIME_RESETDELAY) > 0 && !force) {
-            Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), runLater, this.config.getInt(CFG.TIME_RESETDELAY) * 20L);
-        } else if (PVPArena.getInstance().isShuttingDown()) {
-            runLater.run();
+        int resetDelay = this.config.getInt(CFG.TIME_RESETDELAY);
+
+        if (resetDelay > 0 && !force) {
+            resetTeleportRunnable.runTaskLater(PVPArena.getInstance(), resetDelay * 20L);
         } else {
-            // Waiting two ticks in order to avoid player death bug
-            Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), runLater, 2);
+            resetTeleportRunnable.run();
         }
-    }
-
-    /**
-     * reset player variables
-     *
-     * @param player the player to access
-     */
-    public void unKillPlayer(final Player player, final DamageCause cause, final Entity damager) {
-
-        debug(this, player, "respawning player " + player.getName());
-        double iHealth = this.config.getInt(CFG.PLAYER_HEALTH, -1);
-
-        if (iHealth < 1) {
-            iHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
-        }
-
-        PlayerState.playersetHealth(player, iHealth);
-        player.setFoodLevel(this.config.getInt(CFG.PLAYER_FOODLEVEL, 20));
-        player.setSaturation(this.config.getInt(CFG.PLAYER_SATURATION, 20));
-        player.setExhaustion((float) this.config.getDouble(CFG.PLAYER_EXHAUSTION, 0.0));
-        player.setVelocity(new Vector());
-        player.setFallDistance(0);
-
-        if (this.config.getBoolean(CFG.PLAYER_DROPSEXP)) {
-            player.setTotalExperience(0);
-            player.setLevel(0);
-            player.setExp(0);
-        }
-
-        final ArenaPlayer aPlayer = ArenaPlayer.fromPlayer(player);
-        final ArenaTeam team = aPlayer.getArenaTeam();
-
-        if (team == null) {
-            return;
-        }
-
-        PlayerState.removeEffects(player);
-
-        if (aPlayer.getNextArenaClass() != null) {
-            InventoryManager.clearInventory(aPlayer.getPlayer());
-            aPlayer.setArenaClass(aPlayer.getNextArenaClass());
-            if (aPlayer.getArenaClass() != null) {
-                ArenaPlayer.givePlayerFightItems(this, aPlayer.getPlayer());
-                aPlayer.setMayDropInventory(true);
-            }
-            aPlayer.setNextArenaClass(null);
-        }
-
-        ArenaModuleManager.parseRespawn(this, player, team, cause, damager);
-        player.setFireTicks(0);
-        try {
-            Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), () -> {
-                if (player.getFireTicks() > 0) {
-                    player.setFireTicks(0);
-                }
-            }, 5L);
-        } catch (Exception ignored) {
-        }
-        player.setNoDamageTicks(this.config.getInt(CFG.TIME_TELEPORTPROTECT) * 20);
     }
 
     public void selectClass(final ArenaPlayer aPlayer, final String cName) {
@@ -1335,9 +1276,10 @@ public class Arena {
     }
 
     private void execPostTeleportationFixes(ArenaPlayer aPlayer) {
+        Player player = aPlayer.getPlayer();
         if (this.config.getBoolean(CFG.PLAYER_REMOVEARROWS)) {
             try {
-                new ArrowHack(aPlayer.getPlayer());
+                ArrowHack.processArrowHack(player);
             } catch (final Exception ignored) {
             }
         }
@@ -1345,14 +1287,14 @@ public class Arena {
         if (this.config.getBoolean(CFG.USES_INVISIBILITYFIX) && Arrays.asList(PlayerStatus.FIGHT, PlayerStatus.LOUNGE).contains(aPlayer.getStatus())) {
             Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), () ->
                 Arena.this.getFighters()
-                        .forEach(ap -> ap.getPlayer().showPlayer(PVPArena.getInstance(), aPlayer.getPlayer()))
+                        .forEach(ap -> ap.getPlayer().showPlayer(PVPArena.getInstance(), player))
             , 5L);
         }
 
         if (!this.config.getBoolean(CFG.PERMS_FLY)) {
             Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), () -> {
-                aPlayer.getPlayer().setAllowFlight(false);
-                aPlayer.getPlayer().setFlying(false);
+                player.setAllowFlight(false);
+                player.setFlying(false);
             }, 5L);
         }
     }

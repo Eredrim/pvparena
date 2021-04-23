@@ -2,11 +2,14 @@ package net.slipcor.pvparena.arena;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.classes.PABlockLocation;
+import net.slipcor.pvparena.classes.PADeathInfo;
 import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.classes.PAStatMap;
+import net.slipcor.pvparena.commands.PAG_Leave;
 import net.slipcor.pvparena.core.ColorUtils;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.events.PAPlayerClassChangeEvent;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.ArenaManager;
@@ -14,21 +17,24 @@ import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.StatisticsManager.Type;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.*;
-import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.projectiles.ProjectileSource;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.*;
+import java.util.stream.Collectors;
 
-import static java.util.Optional.ofNullable;
 import static net.slipcor.pvparena.config.Debugger.debug;
 
 /**
@@ -51,12 +57,13 @@ public class ArenaPlayer {
     private boolean ignoreAnnouncements;
     private boolean teleporting;
     private boolean mayDropInventory;
+    private boolean mayRespawn;
 
     private Boolean flying;
 
     private Arena arena;
-    private ArenaClass aClass;
-    private ArenaClass naClass;
+    private ArenaClass arenaClass;
+    private ArenaClass nextArenaClass;
     private PlayerState state;
     private PALocation location;
     private PlayerStatus status = PlayerStatus.NULL;
@@ -95,30 +102,35 @@ public class ArenaPlayer {
         return this.flying != null && this.flying;
     }
 
+    public boolean mayRespawn() {
+        return this.mayRespawn;
+    }
+
+    public void setMayRespawn(boolean mayRespawn) {
+        this.mayRespawn = mayRespawn;
+    }
+
     /**
      * try to find the last damaging player
      *
-     * @param eEvent the Event
+     * @param damageEvent the Event
      * @return the player instance if found, null otherwise
      */
-    public static Player getLastDamagingPlayer(final Event eEvent, final Player damagee) {
+    public static Player getLastDamagingPlayer(EntityDamageEvent damageEvent) {
+        Entity damagee = damageEvent.getEntity();
         debug(damagee, "trying to get the last damaging player");
-        if (eEvent instanceof EntityDamageByEntityEvent) {
+        if (damageEvent instanceof EntityDamageByEntityEvent) {
             debug(damagee, "there was an EDBEE");
-            final EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) eEvent;
+            final EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) damageEvent;
 
             Entity eDamager = event.getDamager();
 
-            if (event.getCause() == DamageCause.PROJECTILE
-                    && eDamager instanceof Projectile) {
+            if (event.getCause() == DamageCause.PROJECTILE && eDamager instanceof Projectile) {
 
                 final ProjectileSource p = ((Projectile) eDamager).getShooter();
 
                 if (p instanceof LivingEntity) {
-
                     eDamager = (LivingEntity) p;
-
-
                     debug(damagee, "killed by projectile, shooter is found");
                 }
             }
@@ -137,31 +149,27 @@ public class ArenaPlayer {
             }
         }
         debug(damagee, "last damaging player is null");
-        debug(damagee, "last damaging event: {}", ofNullable(eEvent).map(Event::getEventName).orElse("unknown cause"));
+        debug(damagee, "last damaging event: {}", damageEvent.getEventName());
         return null;
     }
 
     /**
-     * supply a player with class items and eventually wool head
-     *
-     * @param player the player to supply
+     * supply current player with class items and eventually wool head
      */
-    public static void givePlayerFightItems(final Arena arena, final Player player) {
-        final ArenaPlayer aPlayer = fromPlayer(player);
-
-        final ArenaClass playerClass = aPlayer.aClass;
+    public void equipPlayerFightItems() {
+        final ArenaClass playerClass = this.arenaClass;
         if (playerClass == null) {
             return;
         }
-        debug(player, "giving items to player '{}', class '{}'", player, playerClass);
+        debug(this, "giving items to player '{}', class '{}'", this, playerClass);
 
-        playerClass.equip(player);
+        playerClass.equip(this.player);
 
-        if (arena.getConfig().getBoolean(CFG.USES_WOOLHEAD)) {
-            final ArenaTeam aTeam = aPlayer.getArenaTeam();
+        if (this.arena.getConfig().getBoolean(CFG.USES_WOOLHEAD)) {
+            final ArenaTeam aTeam = this.getArenaTeam();
             final ChatColor color = aTeam.getColor();
-            debug(player, "forcing woolhead: {}/{}", aTeam.getName(), color);
-            player.getInventory().setHelmet(new ItemStack(ColorUtils.getWoolMaterialFromChatColor(color)));
+            debug(this, "forcing woolhead: {}/{}", aTeam.getName(), color);
+            this.player.getInventory().setHelmet(new ItemStack(ColorUtils.getWoolMaterialFromChatColor(color)));
         }
     }
 
@@ -214,68 +222,142 @@ public class ArenaPlayer {
         InventoryManager.clearInventory(player);
     }
 
-    public static void reloadInventory(final Arena arena, final Player player, final boolean instant) {
+    /**
+     * reset player variables
+     * @param deathInfo death information object
+     */
+    public void revive(PADeathInfo deathInfo) {
+        debug(this, "respawning player");
+        
+        final Config config = this.arena.getConfig();
+        double iHealth = config.getInt(CFG.PLAYER_HEALTH, -1);
 
-        if (player == null) {
+        if (iHealth < 1) {
+            iHealth = this.player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
+        }
+
+        PlayerState.playersetHealth(this.player, iHealth);
+        this.player.setFoodLevel(config.getInt(CFG.PLAYER_FOODLEVEL, 20));
+        this.player.setSaturation(config.getInt(CFG.PLAYER_SATURATION, 20));
+        this.player.setExhaustion((float) config.getDouble(CFG.PLAYER_EXHAUSTION, 0.0));
+        this.player.setVelocity(new Vector());
+        this.player.setFallDistance(0);
+
+        if (config.getBoolean(CFG.PLAYER_DROPSEXP)) {
+            this.player.setTotalExperience(0);
+            this.player.setLevel(0);
+            this.player.setExp(0);
+        }
+
+        ArenaTeam team = this.getArenaTeam();
+
+        if (team == null) {
             return;
         }
 
-        debug(player, "resetting inventory");
+        PlayerState.removeEffects(this.player);
 
-        final ArenaPlayer aPlayer = fromPlayer(player);
-
-        if (arena.getConfig().getYamlConfiguration().get(CFG.ITEMS_TAKEOUTOFGAME.getNode()) != null) {
-            final ItemStack[] items =
-                    arena.getConfig().getItems(CFG.ITEMS_TAKEOUTOFGAME);
-
-            final List<Material> allowedMats = new ArrayList<>();
-
-            for (final ItemStack item : items) {
-                allowedMats.add(item.getType());
+        if (this.nextArenaClass != null) {
+            InventoryManager.clearInventory(this.player);
+            this.setArenaClass(this.nextArenaClass);
+            if (this.arenaClass != null) {
+                this.equipPlayerFightItems();
+                this.mayDropInventory = true;
             }
+            this.nextArenaClass = null;
+        }
 
-            final List<ItemStack> keepItems = new ArrayList<>();
-            for (final ItemStack item : player.getInventory().getContents()) {
-                if (item == null) {
-                    continue;
+        ArenaModuleManager.parseRespawn(this.arena, this.player, team, deathInfo);
+        this.player.setFireTicks(0);
+        try {
+            Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), () -> {
+                if (this.player.getFireTicks() > 0) {
+                    this.player.setFireTicks(0);
                 }
-                if (allowedMats.contains(item.getType())) {
-                    keepItems.add(item.clone());
-                }
+            }, 5L);
+        } catch (Exception ignored) {
+        }
+        this.player.setNoDamageTicks(config.getInt(CFG.TIME_TELEPORTPROTECT) * 20);
+    }
+
+    /**
+     * handles the final death of the player, marks them as lost and teleports them to DEATH spawnpoint
+     * @param deathInfo information about fake death event
+     */
+    public void handleDeathAndLose(PADeathInfo deathInfo) {
+        ArenaTeam team = this.getArenaTeam();
+
+        final String playerName = (team == null) ? this.getName() : team.colorizePlayer(this.player);
+        if (this.arena.getConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
+            this.arena.broadcast(Language.parse(
+                    Language.MSG.FIGHT_KILLED_BY,
+                    playerName + ChatColor.YELLOW,
+                    this.arena.parseDeathCause(
+                            this.player,
+                            deathInfo.getCause(),
+                            deathInfo.getKiller()
+                    )
+            ));
+        }
+
+        if (!this.hasCustomClass()) {
+            InventoryManager.clearInventory(this.player);
+        }
+
+        this.setStatus(PlayerStatus.LOST);
+        this.arena.removePlayer(this, this.arena.getConfig().getString(CFG.TP_DEATH), true, false);
+
+        this.addDeath();
+
+        PlayerState.fullReset(this.arena, this.player);
+
+        Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), () -> {
+            boolean found = this.arena.getMods().stream().anyMatch(mod -> mod.getName().contains("Spectate"));
+            if (!found) {
+                new PAG_Leave().commit(this.arena, this.player, new String[0]);
             }
+        }, 5L);
 
-            class GiveLater implements Runnable {
+        ArenaManager.checkAndCommit(this.arena, false);
+    }
 
-                @Override
-                public void run() {
-                    for (final ItemStack item : keepItems) {
-                        player.getInventory().addItem(item.clone());
-                    }
-                    keepItems.clear();
-                }
+    public void reloadInventory(boolean instant) {
+        debug(this.player, "resetting inventory");
 
-            }
+        if (this.arena.getConfig().getYamlConfiguration().contains(CFG.ITEMS_TAKEOUTOFGAME.getNode())) {
+            ItemStack[] items = this.arena.getConfig().getItems(CFG.ITEMS_TAKEOUTOFGAME);
+            List<Material> allowedMats = Arrays.stream(items).map(ItemStack::getType).collect(Collectors.toList());
+
+            List<ItemStack> keepItems = Arrays.stream(this.player.getInventory().getContents())
+                    .filter(item -> item != null && allowedMats.contains(item.getType()))
+                    .map(ItemStack::clone)
+                    .collect(Collectors.toList());
 
             try {
-                Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), new GiveLater(), 60L);
-            } catch (final Exception e) {
+                Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), () -> {
+                    for (final ItemStack item : keepItems) {
+                        this.player.getInventory().addItem(item.clone());
+                    }
+                    keepItems.clear();
+                }, 60L);
+            } catch (Exception ignored) {
 
             }
         }
+
         InventoryManager.clearInventory(player);
 
-        if (aPlayer.savedInventory == null) {
-            debug(player, "saved inventory null!");
+        if (this.savedInventory == null) {
+            debug(this.player, "saved inventory null!");
             return;
         }
         // AIR AIR AIR AIR instead of contents !!!!
 
         if (instant) {
-
-            debug(player, "adding saved inventory");
-            player.getInventory().setContents(aPlayer.savedInventory);
+            debug(this.player, "adding saved inventory");
+            this.player.getInventory().setContents(this.savedInventory);
         } else {
-            class GiveLater implements Runnable {
+            class GiveLater extends BukkitRunnable {
                 final ItemStack[] inv;
 
                 GiveLater(final ItemStack[] inv) {
@@ -284,15 +366,16 @@ public class ArenaPlayer {
 
                 @Override
                 public void run() {
-                    debug(player, "adding saved inventory");
-                    player.getInventory().setContents(this.inv);
+                    debug(ArenaPlayer.this.player, "adding saved inventory");
+                    ArenaPlayer.this.player.getInventory().setContents(this.inv);
                 }
             }
-            final GiveLater gl = new GiveLater(aPlayer.savedInventory);
+
+            final GiveLater giveLater = new GiveLater(this.savedInventory);
             try {
-                Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), gl, 60L);
+                giveLater.runTaskLater(PVPArena.getInstance(), 60L);
             } catch (final Exception e) {
-                gl.run();
+                giveLater.run();
             }
         }
     }
@@ -365,7 +448,7 @@ public class ArenaPlayer {
         debug(this, "Player: {}", this.player.getName());
         debug(this, "telepass: {} | mayDropInv: {} | chatting: {}", this.telePass, this.mayDropInventory, this.publicChatting);
         debug(this, "arena: {}", (this.arena == null ? "null" : this.arena.getName()));
-        debug(this, "aClass: {}", (this.aClass == null ? "null" : this.aClass.getName()));
+        debug(this, "aClass: {}", (this.arenaClass == null ? "null" : this.arenaClass.getName()));
         debug(this, "location: {}", this.location);
         debug(this, "status: {}", this.status.name());
         debug(this, "tempPermissions:");
@@ -418,11 +501,11 @@ public class ArenaPlayer {
      * @return the arena class
      */
     public ArenaClass getArenaClass() {
-        return this.aClass;
+        return this.arenaClass;
     }
 
     public ArenaClass getNextArenaClass() {
-        return this.naClass;
+        return this.nextArenaClass;
     }
 
     public ArenaTeam getArenaTeam() {
@@ -655,7 +738,7 @@ public class ArenaPlayer {
         }
 
         this.setStatus(PlayerStatus.NULL);
-        this.naClass = null;
+        this.nextArenaClass = null;
 
         if (this.arena != null) {
             final ArenaTeam team = this.getArenaTeam();
@@ -664,7 +747,7 @@ public class ArenaPlayer {
             }
         }
         this.arena = null;
-        this.aClass = null;
+        this.arenaClass = null;
         this.getPlayer().setFireTicks(0);
         try {
             Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), () -> {
@@ -693,11 +776,11 @@ public class ArenaPlayer {
      * @param aClass the arena class to set
      */
     public void setArenaClass(final ArenaClass aClass) {
-        final PAPlayerClassChangeEvent event = new PAPlayerClassChangeEvent(this.arena, this.getPlayer(), aClass);
+        final PAPlayerClassChangeEvent event = new PAPlayerClassChangeEvent(this.arena, this.player, aClass);
         Bukkit.getServer().getPluginManager().callEvent(event);
-        this.aClass = event.getArenaClass();
-        if (this.arena != null && this.getStatus() != PlayerStatus.NULL) {
-            ArenaModuleManager.parseClassChange(this.arena, this.getPlayer(), this.aClass);
+        this.arenaClass = event.getArenaClass();
+        if (this.arena != null && this.status != PlayerStatus.NULL) {
+            ArenaModuleManager.parseClassChange(this.arena, this.player, this.arenaClass);
         }
     }
 
@@ -731,7 +814,7 @@ public class ArenaPlayer {
     }
 
     public void setNextArenaClass(ArenaClass aClass) {
-        this.naClass = aClass;
+        this.nextArenaClass = aClass;
     }
 
     public void setFlyState(boolean flyState) {

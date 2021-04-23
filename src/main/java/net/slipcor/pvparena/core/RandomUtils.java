@@ -30,7 +30,7 @@ public class RandomUtils {
      * @param <E>     random object
      * @return E the object randomly selected
      */
-    public static <E> E getRandom(Set<E> objects, Random random) {
+    public static <E> E getRandom(Collection<E> objects, Random random) {
         if (objects.isEmpty()) {
             return null;
         }

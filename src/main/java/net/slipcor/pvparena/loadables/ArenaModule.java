@@ -6,6 +6,7 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.classes.PADeathInfo;
 import net.slipcor.pvparena.commands.CommandTree;
 import net.slipcor.pvparena.exceptions.GameplayException;
 import net.slipcor.pvparena.regions.RegionType;
@@ -493,11 +494,11 @@ public abstract class ArenaModule implements IArenaCommandHandler {
      * check if a module is trying to override player deaths
      *
      * @param aPlayer the player dying
+     * @param deathInfo death information object
      * @param list    the player's death drops
      * @return true if a module cares
      */
-    public boolean tryDeathOverride(final ArenaPlayer aPlayer,
-                                    final List<ItemStack> list) {
+    public boolean tryDeathOverride(ArenaPlayer aPlayer, PADeathInfo deathInfo, List<ItemStack> list) {
         return false;
     }
 

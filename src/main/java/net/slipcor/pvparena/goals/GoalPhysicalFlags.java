@@ -5,6 +5,7 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PABlockLocation;
+import net.slipcor.pvparena.classes.PADeathInfo;
 import net.slipcor.pvparena.core.ColorUtils;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
@@ -21,7 +22,6 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -267,7 +267,7 @@ public class GoalPhysicalFlags extends AbstractFlagGoal {
 
     @Override
     public void parsePlayerDeath(final Player player,
-                                 final EntityDamageEvent lastDamageCause) {
+                                 final PADeathInfo deathInfo) {
 
         if (this.getFlagMap().isEmpty()) {
             debug(this.arena, player, "no flags set!!");

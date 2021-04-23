@@ -2,6 +2,7 @@ package net.slipcor.pvparena.goals;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.*;
+import net.slipcor.pvparena.classes.PADeathInfo;
 import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
@@ -10,13 +11,12 @@ import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.events.PAGoalEvent;
 import net.slipcor.pvparena.events.PATeamChangeEvent;
 import net.slipcor.pvparena.exceptions.GameplayException;
-import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.InventoryManager;
-import net.slipcor.pvparena.managers.WorkflowManager;
 import net.slipcor.pvparena.managers.SpawnManager;
+import net.slipcor.pvparena.managers.WorkflowManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -27,11 +27,9 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityPickupItemEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
@@ -213,7 +211,7 @@ public class GoalInfect extends ArenaGoal {
     }
 
     @Override
-    public Boolean checkPlayerDeath(final Player player) {
+    public Boolean shouldRespawnPlayer(final Player player, PADeathInfo deathInfo) {
         if (this.getPlayerLifeMap().containsKey(player)) {
             final int iLives = this.getPlayerLifeMap().get(player);
             debug(this.arena, player, "lives before death: " + iLives);
@@ -347,8 +345,7 @@ public class GoalInfect extends ArenaGoal {
     }
 
     @Override
-    public void commitPlayerDeath(final Player player, final boolean doesRespawn,
-                                  final PlayerDeathEvent event) {
+    public void commitPlayerDeath(final Player player, final boolean doesRespawn, PADeathInfo deathInfo) {
         if (!this.getPlayerLifeMap().containsKey(player)) {
             return;
         }
@@ -360,13 +357,12 @@ public class GoalInfect extends ArenaGoal {
 
                 final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, INFECTED, "playerDeath:" + player.getName());
                 Bukkit.getPluginManager().callEvent(gEvent);
-                aPlayer.setStatus(PlayerStatus.LOST);
                 // kill, remove!
                 this.getPlayerLifeMap().remove(player);
-                if (this.arena.getConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
-                    debug(this.arena, player, "faking player death");
-                    PlayerListener.finallyKillPlayer(this.arena, player, event);
-                }
+
+                debug(aPlayer, "no remaining lives -> LOST");
+                aPlayer.handleDeathAndLose(deathInfo);
+
                 return;
             }
             if (iLives <= 1) {
@@ -394,21 +390,12 @@ public class GoalInfect extends ArenaGoal {
                 }
 
                 if (this.arena.getConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-                    this.broadcastSimpleDeathMessage(player, event);
+                    this.broadcastSimpleDeathMessage(player, deathInfo);
                 }
 
-                final List<ItemStack> returned;
-
-                if (this.arena.getConfig().getBoolean(
-                        CFG.PLAYER_DROPSINVENTORY)) {
-                    returned = InventoryManager.drop(player);
-                    event.getDrops().clear();
-                } else {
-                    returned = new ArrayList<>(event.getDrops());
-                }
-
-                WorkflowManager.handleRespawn(this.arena,
-                        aPlayer, returned);
+                ArenaPlayer arenaPlayer = ArenaPlayer.fromPlayer(player);
+                arenaPlayer.setMayDropInventory(true);
+                arenaPlayer.setMayRespawn(true);
 
                 if (this.anyTeamEmpty()) {
                     WorkflowManager.handleEnd(this.arena, false);
@@ -422,21 +409,12 @@ public class GoalInfect extends ArenaGoal {
             this.getPlayerLifeMap().put(player, iLives);
 
             if (this.arena.getConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-                this.broadcastDeathMessage(MSG.FIGHT_KILLED_BY_REMAINING, player, event, iLives);
+                this.broadcastDeathMessage(MSG.FIGHT_KILLED_BY_REMAINING, player, deathInfo, iLives);
             }
 
-            final List<ItemStack> returned;
-
-            if (this.arena.getConfig().getBoolean(
-                    CFG.PLAYER_DROPSINVENTORY)) {
-                returned = InventoryManager.drop(player);
-                event.getDrops().clear();
-            } else {
-                returned = new ArrayList<>(event.getDrops());
-            }
-
-            WorkflowManager.handleRespawn(this.arena,
-                    aPlayer, returned);
+            ArenaPlayer arenaPlayer = ArenaPlayer.fromPlayer(player);
+            arenaPlayer.setMayDropInventory(true);
+            arenaPlayer.setMayRespawn(true);
 
 
             // player died => commit death!
@@ -446,21 +424,12 @@ public class GoalInfect extends ArenaGoal {
             this.getPlayerLifeMap().put(player.getPlayer(), iLives);
 
             if (this.arena.getConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-                this.broadcastDeathMessage(MSG.FIGHT_KILLED_BY_REMAINING, player, event, iLives);
+                this.broadcastDeathMessage(MSG.FIGHT_KILLED_BY_REMAINING, player, deathInfo, iLives);
             }
 
-            final List<ItemStack> returned;
-
-            if (this.arena.getConfig().getBoolean(
-                    CFG.PLAYER_DROPSINVENTORY)) {
-                returned = InventoryManager.drop(player);
-                event.getDrops().clear();
-            } else {
-                returned = new ArrayList<>(event.getDrops());
-            }
-
-            WorkflowManager.handleRespawn(this.arena,
-                    aPlayer, returned);
+            ArenaPlayer arenaPlayer = ArenaPlayer.fromPlayer(player);
+            arenaPlayer.setMayDropInventory(true);
+            arenaPlayer.setMayRespawn(true);
         }
     }
 

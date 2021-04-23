@@ -133,7 +133,6 @@ public class Config {
         PLAYER_ITEMSONKILL("player.itemsonkill", new ItemStack[0], null),
         PLAYER_MAYCHANGEARMOR("player.mayChangeArmor", true, null),
         PLAYER_MAXHEALTH("player.maxhealth", -1, null),
-        PLAYER_PREVENTDEATH("player.preventDeath", true, null),
         PLAYER_REFILLCUSTOMINVENTORY("player.refillCustomInventory", true, null),
         PLAYER_REFILLINVENTORY("player.refillInventory", true, null),
         PLAYER_REFILLFORKILL("player.refillforkill", false, null),

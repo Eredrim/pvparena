@@ -4,10 +4,9 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.arena.PlayerStatus;
+import net.slipcor.pvparena.classes.PADeathInfo;
 import net.slipcor.pvparena.core.Help.HELP;
-import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.listeners.PlayerListener;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -31,6 +30,7 @@ public class PAA_ForceWin extends AbstractArenaCommand {
             return;
         }
 
+        final PADeathInfo pluginDeathCause = new PADeathInfo(EntityDamageEvent.DamageCause.LIGHTNING);
 
         // /pa {arenaname} forcewin [playername]
         // /pa {arenaname} forcewin [teamname]
@@ -53,9 +53,7 @@ public class PAA_ForceWin extends AbstractArenaCommand {
                 for (final ArenaPlayer arenaPlayer : team.getTeamMembers()) {
                     if (arenaPlayer.getStatus() == PlayerStatus.FIGHT) {
                         arenaPlayer.getPlayer().getWorld().strikeLightningEffect(arenaPlayer.getPlayer().getLocation());
-                        final EntityDamageEvent e = new EntityDamageEvent(arenaPlayer.getPlayer(), EntityDamageEvent.DamageCause.LIGHTNING,
-                                10.0);
-                        PlayerListener.finallyKillPlayer(arena, arenaPlayer.getPlayer(), e);
+                        arenaPlayer.handleDeathAndLose(pluginDeathCause);
                     }
                 }
             }
@@ -73,9 +71,7 @@ public class PAA_ForceWin extends AbstractArenaCommand {
                     }
                     if (arenaPlayer.getStatus() == PlayerStatus.FIGHT) {
                         arenaPlayer.getPlayer().getWorld().strikeLightningEffect(arenaPlayer.getPlayer().getLocation());
-                        final EntityDamageEvent e = new EntityDamageEvent(arenaPlayer.getPlayer(), EntityDamageEvent.DamageCause.LIGHTNING,
-                                10.0);
-                        PlayerListener.finallyKillPlayer(arena, arenaPlayer.getPlayer(), e);
+                        arenaPlayer.handleDeathAndLose(pluginDeathCause);
                     }
                 }
             } else {
@@ -87,9 +83,7 @@ public class PAA_ForceWin extends AbstractArenaCommand {
                     for (final ArenaPlayer arenaPlayer : team.getTeamMembers()) {
                         if (arenaPlayer.getStatus() == PlayerStatus.FIGHT) {
                             arenaPlayer.getPlayer().getWorld().strikeLightningEffect(arenaPlayer.getPlayer().getLocation());
-                            final EntityDamageEvent e = new EntityDamageEvent(arenaPlayer.getPlayer(), EntityDamageEvent.DamageCause.LIGHTNING,
-                                    10.0);
-                            PlayerListener.finallyKillPlayer(arena, arenaPlayer.getPlayer(), e);
+                            arenaPlayer.handleDeathAndLose(pluginDeathCause);
                         }
                     }
                 }

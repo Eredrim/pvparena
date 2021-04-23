@@ -3,67 +3,34 @@ package net.slipcor.pvparena.runnables;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
-import net.slipcor.pvparena.classes.PALocation;
-import net.slipcor.pvparena.classes.PASpawn;
-import net.slipcor.pvparena.core.Config.CFG;
-import net.slipcor.pvparena.managers.SpawnManager;
 import org.apache.commons.lang.Validate;
-
-import java.util.HashSet;
-import java.util.Set;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import static net.slipcor.pvparena.config.Debugger.debug;
 
-public class RespawnRunnable implements Runnable {
+public class RespawnRunnable extends BukkitRunnable {
 
     private final Arena arena;
     private final ArenaPlayer player;
-    private final String coordName;
+    private final String spawnName;
 
-    public RespawnRunnable(final Arena arena, final ArenaPlayer player, final String coord) {
+    public RespawnRunnable(@NotNull Arena arena, @NotNull ArenaPlayer player, @NotNull String spawnName) {
         Validate.notNull(arena, "Arena cannot be null!");
-        debug(arena, player.getPlayer(), "RespawnRunnable constructor to spawn " + coord);
+        debug(player, "RespawnRunnable constructor to spawn {}", spawnName);
         this.arena = arena;
         this.player = player;
-        this.coordName = coord;
+        this.spawnName = spawnName;
     }
 
     @Override
     public void run() {
-        if (this.player.getPlayer() == null || this.player.getArenaTeam() == null) {
-            PVPArena.getInstance().getLogger().warning("player null!");
+        if (this.player.getArenaTeam() == null) {
+            PVPArena.getInstance().getLogger().warning("Player team null! Couldn't respawn player.");
             return;
         }
-        debug(this.arena, "respawning " + this.player.getName() + " to " + this.coordName);
-
-        final PALocation loc = SpawnManager.getSpawnByExactName(this.arena, this.coordName);
-
-        if (loc == null) {
-            final Set<PASpawn> spawns = new HashSet<>();
-            if (this.arena.getConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
-                final String arenaClass = this.player.getArenaClass().getName();
-                spawns.addAll(SpawnManager.getPASpawnsStartingWith(this.arena, this.player.getArenaTeam().getName() + arenaClass + "spawn"));
-            } else if (this.arena.isFreeForAll()) {
-                if ("free".equals(this.player.getArenaTeam().getName())) {
-                    spawns.addAll(SpawnManager.getPASpawnsStartingWith(this.arena, "spawn"));
-                } else {
-                    spawns.addAll(SpawnManager.getPASpawnsStartingWith(this.arena, this.player.getArenaTeam().getName()));
-                }
-            } else {
-                spawns.addAll(SpawnManager.getPASpawnsStartingWith(this.arena, this.player.getArenaTeam().getName() + "spawn"));
-            }
-
-            int pos = spawns.size();
-
-            for (final PASpawn spawn : spawns) {
-                if (--pos < 0) {
-                    this.arena.tpPlayerToCoordName(this.player, spawn.getName());
-                    break;
-                }
-            }
-        } else {
-            this.arena.tpPlayerToCoordName(this.player, this.coordName);
-        }
+        debug(this.arena, "respawning {} to {}",  this.player.getName(), this.spawnName);
+        this.arena.tpPlayerToCoordName(this.player, this.spawnName);
     }
 
 }

@@ -4,6 +4,7 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.classes.PADeathInfo;
 import net.slipcor.pvparena.loader.JarLoader;
 import net.slipcor.pvparena.loader.Loadable;
 import net.slipcor.pvparena.modules.*;
@@ -11,12 +12,10 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Hanging;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.*;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 
@@ -244,10 +243,10 @@ public class ArenaModuleManager {
         }
     }
 
-    public static void parseRespawn(final Arena arena, final Player player, final ArenaTeam team, final DamageCause cause, final Entity damager) {
+    public static void parseRespawn(Arena arena, Player player, ArenaTeam team, PADeathInfo deathInfo) {
         for (final ArenaModule mod : arena.getMods()) {
             try {
-                mod.parseRespawn(player, team, cause, damager);
+                mod.parseRespawn(player, team, deathInfo.getCause(), deathInfo.getDamager());
             } catch (final Exception e) {
                 PVPArena.getInstance().getLogger().warning("Module had NPE on Respawn: " + mod.getName());
             }

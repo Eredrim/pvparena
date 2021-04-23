@@ -11,10 +11,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static net.slipcor.pvparena.config.Debugger.debug;
 
@@ -58,64 +56,59 @@ public final class InventoryManager {
      * @return a list of the items that could be returned
      */
     public static List<ItemStack> drop(final Player player) {
-        final List<ItemStack> returned = new ArrayList<>();
+        List<ItemStack> keptItems = new ArrayList<>();
 
         debug(player, "dropping player inventory: " + player.getName());
-        final List<Material> exclude;
-        final List<ItemStack> keep;
+        List<Material> excludedItems = new ArrayList<>();
+        List<ItemStack> toKeepItems = new ArrayList<>();
 
-        final ArenaPlayer ap = ArenaPlayer.fromPlayer(player);
+        ArenaPlayer ap = ArenaPlayer.fromPlayer(player);
 
         boolean keepAll = false;
 
-        if (ap == null || ap.getArena() == null) {
-            exclude = new ArrayList<>();
-            keep = new ArrayList<>();
-        } else {
-            final ItemStack[] items = ap.getArena().getConfig().getItems(CFG.ITEMS_EXCLUDEFROMDROPS);
-            exclude = new ArrayList<>();
-            for (final ItemStack item : items) {
-                if (item != null) {
-                    exclude.add(item.getType());
-                }
-            }
+        if (ap != null && ap.getArena() != null) {
+            excludedItems = Arrays.stream(ap.getArena().getConfig().getItems(CFG.ITEMS_EXCLUDEFROMDROPS))
+                    .filter(Objects::nonNull)
+                    .map(ItemStack::getType)
+                    .collect(Collectors.toList());
+
             keepAll = ap.getArena().getConfig().getBoolean(CFG.ITEMS_KEEPALLONRESPAWN);
-            if (keepAll) {
-                keep = new ArrayList<>();
-            } else {
-                keep = Arrays.asList(ap.getArena().getConfig().getItems(CFG.ITEMS_KEEPONRESPAWN));
+            if (!keepAll) {
+                toKeepItems = Arrays.asList(ap.getArena().getConfig().getItems(CFG.ITEMS_KEEPONRESPAWN));
             }
         }
 
-        for (final ItemStack is : player.getInventory().getContents()) {
+        for (final ItemStack dropped : player.getInventory().getContents()) {
 
-            if (is == null || is.getType() == Material.AIR) {
+            if (dropped == null || dropped.getType() == Material.AIR) {
                 continue;
             }
-            for (final ItemStack item : keep) {
-                if (item.getType() != is.getType()) {
-                    continue;
-                }
-                if (item.hasItemMeta() && !item.getItemMeta().getDisplayName().equals(is.getItemMeta().getDisplayName())) {
-                    continue;
-                }
-                if (item.hasItemMeta() && item.getItemMeta().hasLore() && !item.getItemMeta().getLore().equals(is.getItemMeta().getLore())) {
-                    continue;
-                }
-                returned.add(is.clone());
-            }
-            if (exclude.contains(is.getType())) {
+
+            if (excludedItems.contains(dropped.getType())) {
                 continue;
             }
+
             if (keepAll) {
-                returned.add(is.clone());
+                keptItems.add(dropped.clone());
                 continue;
             }
-            player.getWorld().dropItemNaturally(player.getLocation(), is);
+
+            List<ItemStack> selectedKeptItems = toKeepItems.stream()
+                    .filter(item -> dropped.getType() == item.getType())
+                    .filter(item -> !item.hasItemMeta() || item.getItemMeta().getDisplayName().equals(dropped.getItemMeta().getDisplayName()))
+                    .filter(item -> !item.hasItemMeta() || !item.getItemMeta().hasLore() || item.getItemMeta().getLore().equals(dropped.getItemMeta().getLore()))
+                    .map(ItemStack::clone)
+                    .collect(Collectors.toList());
+
+            if(!selectedKeptItems.isEmpty()) {
+                keptItems.addAll(selectedKeptItems);
+            } else {
+                player.getWorld().dropItemNaturally(player.getLocation(), dropped);
+            }
         }
         player.getInventory().clear();
         ap.setMayDropInventory(false);
-        return returned;
+        return keptItems;
     }
 
     public static boolean receivesDamage(final ItemStack item) {
@@ -139,14 +132,11 @@ public final class InventoryManager {
         final Location loc = player.getLocation();
 
         try {
-            Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), new Runnable() {
-                @Override
-                public void run() {
-                    final ExperienceOrb orb = loc.getWorld().spawn(loc, ExperienceOrb.class);
-                    orb.setExperience(exp);
-                }
+            Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), () -> {
+                final ExperienceOrb orb = loc.getWorld().spawn(loc, ExperienceOrb.class);
+                orb.setExperience(exp);
             }, 20L);
-        } catch (final Exception e) {
+        } catch (final Exception ignored) {
 
         }
     }

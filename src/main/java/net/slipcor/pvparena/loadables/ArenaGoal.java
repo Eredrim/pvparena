@@ -5,6 +5,7 @@ import net.slipcor.pvparena.api.IArenaCommandHandler;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.classes.PADeathInfo;
 import net.slipcor.pvparena.commands.CommandTree;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
@@ -16,10 +17,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
@@ -29,8 +28,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static java.util.Optional.ofNullable;
 
 /**
  * <pre>
@@ -282,9 +279,10 @@ public class ArenaGoal implements IArenaCommandHandler {
      * check if the goal should commit a player death
      *
      * @param player the dying player
+     * @param deathInfo death info
      * @return true if player should respawn, false otherwise, null if goal doesn't handle respawn
      */
-    public Boolean checkPlayerDeath(final Player player) {
+    public Boolean shouldRespawnPlayer(Player player, PADeathInfo deathInfo) {
         return null;
     }
 
@@ -329,13 +327,11 @@ public class ArenaGoal implements IArenaCommandHandler {
 
     /**
      * commit a player death
-     *  @param player      the dying player
+     * @param player      the dying player
      * @param doesRespawn true if the player will respawn
-     * @param event       the causing death event
+     * @param deathInfo death information object containing cause and damager
      */
-    public void commitPlayerDeath(final Player player,
-                                  final boolean doesRespawn,
-                                  final PlayerDeathEvent event) {
+    public void commitPlayerDeath(Player player, boolean doesRespawn, PADeathInfo deathInfo) {
         throw new IllegalStateException(this.getName());
     }
 
@@ -462,11 +458,10 @@ public class ArenaGoal implements IArenaCommandHandler {
 
     /**
      * hook into a player dying
-     *
-     * @param player          the dying player
-     * @param lastDamageCause the last damage cause
+     *  @param player          the dying player
+     * @param deathInfo the last damage cause
      */
-    public void parsePlayerDeath(final Player player, final EntityDamageEvent lastDamageCause) {
+    public void parsePlayerDeath(Player player, PADeathInfo deathInfo) {
     }
 
     /**
@@ -564,17 +559,14 @@ public class ArenaGoal implements IArenaCommandHandler {
         }
     }
 
-    protected void broadcastSimpleDeathMessage(Player player, PlayerDeathEvent event) {
-        this.broadcastDeathMessage(Language.MSG.FIGHT_KILLED_BY, player, event, null);
+    protected void broadcastSimpleDeathMessage(Player player, PADeathInfo deathInfo) {
+        this.broadcastDeathMessage(Language.MSG.FIGHT_KILLED_BY, player, deathInfo, null);
     }
 
-    protected void broadcastDeathMessage(Language.MSG deathMessage, Player player, PlayerDeathEvent event, Integer remainingLives) {
+    protected void broadcastDeathMessage(Language.MSG deathMessage, Player player, PADeathInfo deathInfo, Integer remainingLives) {
         final ArenaTeam respawnTeam = ArenaPlayer.fromPlayer(player).getArenaTeam();
 
-        EntityDamageEvent.DamageCause damageCause = ofNullable(event.getEntity().getLastDamageCause())
-                .map(EntityDamageEvent::getCause)
-                .orElse(null);
-        String deathCause = this.arena.parseDeathCause(player, damageCause, event.getEntity().getKiller());
+        String deathCause = this.arena.parseDeathCause(player, deathInfo.getCause(), deathInfo.getDamager());
         String coloredPlayerName = respawnTeam.colorizePlayer(player) + ChatColor.YELLOW;
 
         if(deathMessage == Language.MSG.FIGHT_KILLED_BY_REMAINING || deathMessage == Language.MSG.FIGHT_KILLED_BY_REMAINING_FRAGS) {

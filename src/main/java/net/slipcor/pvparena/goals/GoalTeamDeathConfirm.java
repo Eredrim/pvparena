@@ -3,24 +3,20 @@ package net.slipcor.pvparena.goals;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
-import net.slipcor.pvparena.arena.PlayerStatus;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.arena.PlayerStatus;
+import net.slipcor.pvparena.classes.PADeathInfo;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.events.PAGoalEvent;
-import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.WorkflowManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityPickupItemEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * <pre>
@@ -59,45 +55,39 @@ public class GoalTeamDeathConfirm extends AbstractTeamKillGoal {
     }
 
     @Override
-    public Boolean checkPlayerDeath(Player player) {
-        if (player.getKiller() != null && this.arena.hasPlayer(player.getKiller())) {
+    public Boolean shouldRespawnPlayer(Player player, PADeathInfo deathInfo) {
+        Player killer = deathInfo.getKiller();
+        if (killer != null && this.arena.hasPlayer(killer)) {
             return true;
         }
         return null;
     }
 
     @Override
-    public void commitPlayerDeath(final Player respawnPlayer, final boolean doesRespawn,
-                                  final PlayerDeathEvent event) {
+    public void commitPlayerDeath(final Player respawnPlayer, final boolean doesRespawn, PADeathInfo deathInfo) {
 
-        if (respawnPlayer.getKiller() == null) {
-            final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "playerDeath:" + respawnPlayer.getName());
-            Bukkit.getPluginManager().callEvent(gEvent);
+        final PAGoalEvent gEvent;
+        Player killer = deathInfo.getKiller();
+        if (killer == null) {
+            gEvent = new PAGoalEvent(this.arena, this, "playerDeath:" + respawnPlayer.getName());
         } else {
-            final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "playerDeath:" + respawnPlayer.getName(),
-                    "playerKill:" + respawnPlayer.getName() + ':' + respawnPlayer.getKiller().getName());
-            Bukkit.getPluginManager().callEvent(gEvent);
+            gEvent = new PAGoalEvent(this.arena, this, "playerDeath:" + respawnPlayer.getName(),
+                    "playerKill:" + respawnPlayer.getName() + ':' + killer.getName());
         }
+        Bukkit.getPluginManager().callEvent(gEvent);
 
 
-        final ArenaTeam respawnTeam = ArenaPlayer.fromPlayer(respawnPlayer.getName()).getArenaTeam();
+        ArenaPlayer arenaPlayer = ArenaPlayer.fromPlayer(respawnPlayer);
+        final ArenaTeam respawnTeam = arenaPlayer.getArenaTeam();
 
         this.drop(respawnPlayer, respawnTeam);
 
         if (this.arena.getConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-            this.broadcastSimpleDeathMessage(respawnPlayer, event);
+            this.broadcastSimpleDeathMessage(respawnPlayer, deathInfo);
         }
 
-        final List<ItemStack> returned;
-        if (this.arena.getConfig().getBoolean(
-                CFG.PLAYER_DROPSINVENTORY)) {
-            returned = InventoryManager.drop(respawnPlayer);
-            event.getDrops().clear();
-        } else {
-            returned = new ArrayList<>(event.getDrops());
-        }
-
-        WorkflowManager.handleRespawn(this.arena, ArenaPlayer.fromPlayer(respawnPlayer.getName()), returned);
+        arenaPlayer.setMayDropInventory(true);
+        arenaPlayer.setMayRespawn(true);
     }
 
     private void drop(final Player player, final ArenaTeam team) {

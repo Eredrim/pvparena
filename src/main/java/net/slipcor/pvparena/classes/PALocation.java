@@ -116,18 +116,8 @@ public class PALocation {
     }
 
     public double getDistance(final PALocation otherLocation) {
-        if (otherLocation == null) {
-            throw new IllegalArgumentException(
-                    "Cannot measure distance to a null location");
-        }
-        if (!otherLocation.world.equals(this.world)) {
-            throw new IllegalArgumentException(
-                    "Cannot measure distance between " + this.world + " and "
-                            + otherLocation.world);
-        }
-
-        return Math.sqrt(Math.pow(this.x - otherLocation.x, 2.0D)
-                + Math.pow(this.y - otherLocation.y, 2.0D) + Math.pow(this.z - otherLocation.z, 2.0D));
+        double squaredDistance = this.getDistanceSquared(otherLocation);
+        return Math.sqrt(squaredDistance);
     }
 
     public double getDistanceSquared(final PALocation otherLocation) {

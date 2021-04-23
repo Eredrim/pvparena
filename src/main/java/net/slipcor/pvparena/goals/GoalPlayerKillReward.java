@@ -2,6 +2,7 @@ package net.slipcor.pvparena.goals;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.*;
+import net.slipcor.pvparena.classes.PADeathInfo;
 import net.slipcor.pvparena.commands.AbstractArenaCommand;
 import net.slipcor.pvparena.commands.CommandTree;
 import net.slipcor.pvparena.core.Config.CFG;
@@ -20,7 +21,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
@@ -179,7 +179,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
     }
 
     @Override
-    public void parsePlayerDeath(final Player player, final EntityDamageEvent event) {
+    public void parsePlayerDeath(Player player, PADeathInfo deathInfo) {
             if (!this.getPlayerLifeMap().containsKey(player)) {
                 return;
             }
@@ -219,9 +219,8 @@ public class GoalPlayerKillReward extends ArenaGoal {
             }
 
         }
-        Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(),
-                new ResetRunnable(player), 4L);
-        final Player killer = player.getKiller();
+        Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), new ResetRunnable(player), 4L);
+        final Player killer = deathInfo.getKiller();
 
         if (killer == null) {
             return;

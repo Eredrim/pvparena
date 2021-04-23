@@ -9,6 +9,7 @@ import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.exceptions.GameplayException;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
+import net.slipcor.pvparena.managers.WorkflowManager;
 import net.slipcor.pvparena.regions.ArenaRegion;
 import net.slipcor.pvparena.regions.RegionFlag;
 import net.slipcor.pvparena.regions.RegionProtection;
@@ -17,6 +18,9 @@ import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.StatisticsManager;
 import net.slipcor.pvparena.runnables.DamageResetRunnable;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -363,8 +367,7 @@ public class EntityListener implements Listener {
             return;
         }
 
-        final Arena arena = ArenaPlayer.fromPlayer(entity.getName())
-                .getArena();
+        final Arena arena = ArenaPlayer.fromPlayer(entity.getName()).getArena();
         if (arena == null) {
             // defender no arena player => out
             return;
@@ -388,6 +391,33 @@ public class EntityListener implements Listener {
                 return;
             }
         }
+
+        // Faking death if damage is higher than player health
+        if ((defender.getHealth() - event.getFinalDamage()) <= 0) {
+            // Event is not cancelled to keep attack effects, we set damage to 0 instead
+            event.setDamage(0);
+
+            playFakeDeathEffects(defender);
+            WorkflowManager.handlePlayerDeath(arena, defender, event);
+        }
+    }
+
+    /**
+     * Play a fake death effect (particles and sound) to simulate player death
+     * @param player The player who should be dead
+     */
+    private static void playFakeDeathEffects(Player player) {
+
+        final float volume = 1f; // default value
+        final float pitch = 1f; // default value
+        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_DEATH, volume, pitch);
+
+        final Location particlesSpawnLoc = player.getLocation().add(0, 0.5, 0);
+        final int count = 40;
+        final double xzOffset = 0.3;
+        final double yOffset = 0.6;
+        final double speed = 0.02;
+        player.getWorld().spawnParticle(Particle.CLOUD, particlesSpawnLoc, count, xzOffset, yOffset, xzOffset, speed);
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)

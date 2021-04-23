@@ -197,8 +197,7 @@ public class TimedEndRunnable extends ArenaRunnable {
 
                 for (final ArenaPlayer arenaPlayer : arenaPlayers) {
                     if (winners.isEmpty()) {
-                        this.arena.removePlayer(arenaPlayer.getPlayer(), this.arena.getConfig()
-                                .getString(Config.CFG.TP_LOSE), true, false);
+                        this.arena.removePlayer(arenaPlayer, this.arena.getConfig().getString(Config.CFG.TP_LOSE), true, false);
                     } else {
                         if (winners.contains(arenaPlayer.getName())) {
 

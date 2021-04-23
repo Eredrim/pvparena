@@ -4,9 +4,7 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
-import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Help.HELP;
-import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.managers.InventoryManager;
 import org.bukkit.command.CommandSender;
@@ -61,7 +59,7 @@ public class PAA_Class extends AbstractArenaCommand {
 
             final ArenaPlayer aPlayer = ArenaPlayer.fromPlayer(player);
 
-            ArenaPlayer.reloadInventory(arena, player, false);
+            aPlayer.reloadInventory(false);
 
             aPlayer.setArena(null);
             return;

@@ -7,9 +7,12 @@ import net.slipcor.pvparena.commands.AbstractArenaCommand;
 import net.slipcor.pvparena.commands.PAA_Edit;
 import net.slipcor.pvparena.commands.PAA_Setup;
 import net.slipcor.pvparena.commands.PAG_Join;
-import net.slipcor.pvparena.core.*;
+import net.slipcor.pvparena.core.CollectionUtils;
+import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.core.StringParser;
+import net.slipcor.pvparena.core.StringUtils;
 import net.slipcor.pvparena.regions.ArenaRegion;
 import net.slipcor.pvparena.regions.RegionProtection;
 import net.slipcor.pvparena.regions.RegionType;
@@ -19,14 +22,11 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 import static net.slipcor.pvparena.config.Debugger.debug;
@@ -340,12 +340,6 @@ public final class ArenaManager {
         }
         final Config cfg = new Config(file);
         arena.setConfig(cfg);
-        // Goal can only be changed in-game (To add goal config nodes etc.)
-        if (arena.getGoal() != null) {
-            debug(arena, "set config goal {}", arena.getGoal().getName());
-            cfg.set(CFG.GENERAL_GOAL, arena.getGoal().getName());
-            cfg.save();
-        }
         arena.setValid(ConfigurationManager.configParse(arena, cfg));
         debug(arena, "valid: {}", arena.isValid());
         if (arena.isValid()) {

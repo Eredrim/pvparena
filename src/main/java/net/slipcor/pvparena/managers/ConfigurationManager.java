@@ -64,8 +64,7 @@ public final class ConfigurationManager {
         final List<String> modules = cfg.getStringList("mods", new ArrayList<>());
 
         ArenaGoalManager goalManager = PVPArena.getInstance().getAgm();
-        if (cfg.getString(CFG.GENERAL_TYPE, "null") == null
-                || "null".equals(cfg.getString(CFG.GENERAL_TYPE, "null"))) {
+        if (config.getKeys(false).isEmpty()) {
             createNewConfig(arena, cfg);
         } else {
             // opening existing arena

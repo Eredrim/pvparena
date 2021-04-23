@@ -53,12 +53,12 @@ public class ArenaScoreboard {
 
         if (this.special) {
             Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), () -> {
-                this.registerPlayerInTeam(arenaPlayer, player);
+                this.registerPlayerInTeam(arenaPlayer);
                 this.refreshForPlayer(player);
             }, 1L);
         } else {
             player.setScoreboard(this.scoreboard);
-            this.registerPlayerInTeam(arenaPlayer, player);
+            this.registerPlayerInTeam(arenaPlayer);
         }
     }
 
@@ -340,11 +340,11 @@ public class ArenaScoreboard {
         }
     }
 
-    private void registerPlayerInTeam(ArenaPlayer arenaPlayer, Player player) {
+    private void registerPlayerInTeam(ArenaPlayer arenaPlayer) {
         Optional<Team> optBoardTeam = ofNullable(arenaPlayer.getArenaTeam())
                 .map(team -> this.scoreboard.getTeam(team.getName()));
 
-        optBoardTeam.ifPresent(boardTeam -> boardTeam.addEntry(player.getName()));
+        optBoardTeam.ifPresent(boardTeam -> boardTeam.addEntry(arenaPlayer.getName()));
     }
 
     private void applyTeamSwitching(final Player player, final ArenaTeam oldTeam, final ArenaTeam newTeam) {

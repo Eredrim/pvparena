@@ -3,21 +3,15 @@ package net.slipcor.pvparena.goals;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
-import net.slipcor.pvparena.arena.PlayerStatus;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.arena.PlayerStatus;
+import net.slipcor.pvparena.classes.PADeathInfo;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.events.PAGoalEvent;
-import net.slipcor.pvparena.listeners.PlayerListener;
-import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.WorkflowManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.inventory.ItemStack;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static net.slipcor.pvparena.config.Debugger.debug;
 
@@ -53,7 +47,7 @@ public class GoalTeamLives extends AbstractTeamKillGoal {
     }
 
     @Override
-    public Boolean checkPlayerDeath(Player player) {
+    public Boolean shouldRespawnPlayer(Player player, PADeathInfo deathInfo) {
         final ArenaTeam respawnTeam = ArenaPlayer.fromPlayer(player).getArenaTeam();
 
         if (this.getTeamLives(respawnTeam) != null) {
@@ -63,8 +57,7 @@ public class GoalTeamLives extends AbstractTeamKillGoal {
     }
 
     @Override
-    public void commitPlayerDeath(final Player respawnPlayer, final boolean doesRespawn,
-                                  final PlayerDeathEvent event) {
+    public void commitPlayerDeath(final Player respawnPlayer, final boolean doesRespawn, PADeathInfo deathInfo) {
         final PAGoalEvent gEvent;
         if (doesRespawn) {
             gEvent = new PAGoalEvent(this.arena, this, "doesRespawn", "playerDeath:" + respawnPlayer.getName());
@@ -73,36 +66,26 @@ public class GoalTeamLives extends AbstractTeamKillGoal {
         }
         Bukkit.getPluginManager().callEvent(gEvent);
 
-        final ArenaTeam respawnTeam = ArenaPlayer.fromPlayer(respawnPlayer.getName()).getArenaTeam();
+        ArenaPlayer arenaPlayer = ArenaPlayer.fromPlayer(respawnPlayer);
+        ArenaTeam respawnTeam = arenaPlayer.getArenaTeam();
         this.reduceLives(this.arena, respawnTeam);
 
         if (this.getTeamLives(respawnTeam) != null) {
             if (this.arena.getConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
                 if (this.arena.getConfig().getBoolean(CFG.GENERAL_SHOWREMAININGLIVES)) {
-                    this.broadcastDeathMessage(MSG.FIGHT_KILLED_BY_REMAINING_TEAM, respawnPlayer, event,
+                    this.broadcastDeathMessage(MSG.FIGHT_KILLED_BY_REMAINING_TEAM, respawnPlayer, deathInfo,
                             this.getTeamLives(respawnTeam));
                 } else {
-                    this.broadcastSimpleDeathMessage(respawnPlayer, event);
+                    this.broadcastSimpleDeathMessage(respawnPlayer, deathInfo);
                 }
             }
 
-            final List<ItemStack> returned;
+            arenaPlayer.setMayDropInventory(true);
+            arenaPlayer.setMayRespawn(true);
 
-            if (this.arena.getConfig().getBoolean(
-                    CFG.PLAYER_DROPSINVENTORY)) {
-                returned = InventoryManager.drop(respawnPlayer);
-                event.getDrops().clear();
-            } else {
-                returned = new ArrayList<>(event.getDrops());
-            }
-
-            WorkflowManager.handleRespawn(this.arena,
-                    ArenaPlayer.fromPlayer(respawnPlayer.getName()), returned);
-
-        } else if (this.arena.getConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
-            debug(this.arena, respawnPlayer, "faking player death");
-            ArenaPlayer.fromPlayer(respawnPlayer.getName()).setStatus(PlayerStatus.LOST);
-            PlayerListener.finallyKillPlayer(this.arena, respawnPlayer, event);
+        } else {
+            debug(arenaPlayer, "no remaining lives -> LOST");
+            arenaPlayer.handleDeathAndLose(deathInfo);
         }
     }
 

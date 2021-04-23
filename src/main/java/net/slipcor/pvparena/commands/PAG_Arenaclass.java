@@ -119,8 +119,7 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
             InventoryManager.clearInventory(arenaPlayer.getPlayer());
             arenaPlayer.setArenaClass(arenaClass);
             if (arenaPlayer.getArenaClass() != null) {
-                ArenaPlayer.givePlayerFightItems(arena, arenaPlayer.getPlayer());
-
+                arenaPlayer.equipPlayerFightItems();
                 arena.msg(sender, MSG.CLASS_SELECTED, arenaClass.getName());
             }
         } else if (arenaPlayer.getArenaClass() != null) {

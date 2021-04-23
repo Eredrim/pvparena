@@ -135,7 +135,7 @@ public class PAI_Info extends AbstractArenaCommand {
             arena.msg(sender,
                     StringParser.colorVar("autoIgniteTNT", cfg.getBoolean(CFG.PLAYER_AUTOIGNITE)) + " | " +
                     StringParser.colorVar("dropsInventory", cfg.getBoolean(CFG.PLAYER_DROPSINVENTORY)) + " | " +
-                    StringParser.colorVar("preventDeath", cfg.getBoolean(CFG.PLAYER_PREVENTDEATH)) + " | " +
+                    StringParser.colorVar("dropsExp", cfg.getBoolean(CFG.PLAYER_DROPSEXP)) + " | " +
                     StringParser.colorVar("refillInventory", cfg.getBoolean(CFG.PLAYER_REFILLINVENTORY)));
 
             String healthDisplay = String.valueOf(cfg.getInt(CFG.PLAYER_HEALTH) < 1 ? "FULL" : cfg.getInt(CFG.PLAYER_HEALTH));

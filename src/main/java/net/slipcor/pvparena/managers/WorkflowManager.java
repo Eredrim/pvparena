@@ -1,11 +1,8 @@
 package net.slipcor.pvparena.managers;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.arena.ArenaPlayer;
-import net.slipcor.pvparena.arena.PlayerStatus;
-import net.slipcor.pvparena.arena.ArenaTeam;
-import net.slipcor.pvparena.arena.PlayerState;
+import net.slipcor.pvparena.arena.*;
+import net.slipcor.pvparena.classes.PADeathInfo;
 import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
@@ -14,7 +11,9 @@ import net.slipcor.pvparena.events.PAJoinEvent;
 import net.slipcor.pvparena.events.PAStartEvent;
 import net.slipcor.pvparena.exceptions.GameplayException;
 import net.slipcor.pvparena.exceptions.GameplayExceptionNotice;
-import net.slipcor.pvparena.loadables.*;
+import net.slipcor.pvparena.loadables.ArenaGoal;
+import net.slipcor.pvparena.loadables.ArenaModule;
+import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
 import net.slipcor.pvparena.runnables.PVPActivateRunnable;
 import net.slipcor.pvparena.runnables.SpawnCampRunnable;
@@ -25,14 +24,14 @@ import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.Optional.ofNullable;
 import static net.slipcor.pvparena.config.Debugger.debug;
 
 /**
@@ -119,6 +118,7 @@ public class WorkflowManager {
             arena.msg(player, MSG.NOTICE_NOTICE, e.getMessage());
         } catch (GameplayException e) {
             arena.msg(player, MSG.ERROR_ERROR, e.getMessage());
+            return false;
         }
 
         ArenaGoal joinGoal = arena.getGoal();
@@ -217,133 +217,121 @@ public class WorkflowManager {
         return true;
     }
 
-    public static void handlePlayerDeath(final Arena arena, final Player player, final PlayerDeathEvent event) {
+    public static void handlePlayerDeath(Arena arena, Player player, EntityDamageEvent event) {
 
         ArenaGoal goal = arena.getGoal();
-        boolean doesRespawn = true;
-        boolean goalHandlesDeath = true;
-        if(goal == null || goal.checkPlayerDeath(player) == null) {
-            goalHandlesDeath = false;
-        } else {
-            doesRespawn = goal.checkPlayerDeath(player);
-        }
-
-        StatisticsManager.kill(arena, player.getKiller(), player, doesRespawn);
-        if (arena.getConfig().getBoolean(CFG.USES_DEATHMESSAGES) ||
-                arena.getConfig().getBoolean(CFG.USES_DEATHMESSAGESCUSTOM)) {
-            event.setDeathMessage("");
-        }
-
-        if (player.getKiller() != null) {
-            player.getKiller().setFoodLevel(
-                    player.getKiller().getFoodLevel()
-                            + arena.getConfig().getInt(
-                            CFG.PLAYER_FEEDFORKILL));
-            if (arena.getConfig().getBoolean(CFG.PLAYER_HEALFORKILL)) {
-                PlayerState.playersetHealth(player.getKiller(), (int) player.getKiller().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
-            }
-            if (arena.getConfig().getBoolean(CFG.PLAYER_REFILLFORKILL)) {
-                InventoryManager.clearInventory(player.getKiller());
-                ArenaPlayer.fromPlayer(player.getKiller().getName()).getArenaClass().equip(player.getKiller());
-            }
-            if (arena.getConfig().getItems(CFG.PLAYER_ITEMSONKILL) != null) {
-                ItemStack[] items = arena.getConfig().getItems(CFG.PLAYER_ITEMSONKILL);
-                for (ItemStack item : items) {
-                    if (item != null) {
-                        player.getKiller().getInventory().addItem(item.clone());
-                    }
-                }
-            }
-            if (arena.getConfig().getBoolean(CFG.USES_TELEPORTONKILL)) {
-                SpawnManager.respawn(arena, ArenaPlayer.fromPlayer(player.getKiller().getName()), null);
-            }
-        }
-
-        if (!goalHandlesDeath) {
-            debug(arena, player, "no mod handles player deaths");
-
-
-            List<ItemStack> returned = null;
-            if (arena.getConfig().getBoolean(
-                    CFG.PLAYER_DROPSINVENTORY)) {
-                returned = InventoryManager.drop(player);
-                final int exp = event.getDroppedExp();
-                event.getDrops().clear();
-                if (arena.getConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
-                    InventoryManager.dropExp(player, exp);
-                } else if (arena.getConfig().getBoolean(CFG.PLAYER_DROPSEXP)) {
-                    debug(arena, player, "exp: " + exp);
-                    event.setDroppedExp(exp);
-                }
-            }
-            final ArenaTeam respawnTeam = ArenaPlayer.fromPlayer(
-                    player.getName()).getArenaTeam();
-
-            if (arena.getConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-                arena.broadcast(Language.parse(MSG.FIGHT_KILLED_BY,
-                        respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
-                        arena.parseDeathCause(player, event.getEntity()
-                                .getLastDamageCause().getCause(), event
-                                .getEntity().getKiller())));
-            }
-
-            ArenaModuleManager.parsePlayerDeath(arena, player, event
-                    .getEntity().getLastDamageCause());
-
-            if (returned == null) {
-                if (arena.getConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
-                    returned = InventoryManager.drop(player);
-                } else {
-                    returned = new ArrayList<>(event.getDrops());
-                }
-                event.getDrops().clear();
-            }
-
-            handleRespawn(arena, ArenaPlayer.fromPlayer(player), returned);
-
-
-            arena.getGoal().parsePlayerDeath(player, player.getLastDamageCause());
-
+        if(goal == null) {
             return;
         }
 
-        debug(arena, player, "handled by: " + goal.getName());
-        final int exp = event.getDroppedExp();
+        PADeathInfo deathInfo = new PADeathInfo(event);
+        Player killer = deathInfo.getKiller();
 
-        goal.commitPlayerDeath(player, doesRespawn, event);
-        debug(arena, player, "parsing death: " + goal.getName());
-        goal.parsePlayerDeath(player, player.getLastDamageCause());
-
-        ArenaModuleManager.parsePlayerDeath(arena, player,
-                player.getLastDamageCause());
-
-        if (!arena.getConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY) || !ArenaPlayer.fromPlayer(player).mayDropInventory()) {
-            event.getDrops().clear();
+        if(killer != null) {
+            applyKillerModifiers(arena, killer);
         }
-        if (doesRespawn
-                || arena.getConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
-            InventoryManager.dropExp(player, exp);
-        } else if (arena.getConfig().getBoolean(CFG.PLAYER_DROPSEXP)) {
-            event.setDroppedExp(exp);
-            debug(arena, player, "exp: " + exp);
+
+        Boolean shouldGoalRespawnPlayer = goal.shouldRespawnPlayer(player, deathInfo);
+        boolean goalHandlesDeath = (shouldGoalRespawnPlayer != null);
+        boolean doesRespawn = goalHandlesDeath && shouldGoalRespawnPlayer;
+
+        StatisticsManager.kill(arena, killer, player, doesRespawn);
+
+        // Calculating dropped exp. Source: https://minecraft.fandom.com/wiki/Experience
+        int droppedExp = Math.max(player.getLevel() * 7, 100);
+
+        // Player inventory before death. Will be refilled or not.
+        List<ItemStack> droppedInv = new ArrayList<>();
+        ArenaPlayer arenaPlayer = ArenaPlayer.fromPlayer(player);
+
+        if (goalHandlesDeath) {
+            debug(arena, player, "handled by: " + goal.getName());
+            goal.commitPlayerDeath(player, doesRespawn, deathInfo);
+
+            if (arena.getConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY) && arenaPlayer.mayDropInventory()) {
+                droppedInv = InventoryManager.drop(player);
+            }
+
+            if (doesRespawn && arena.getConfig().getBoolean(CFG.PLAYER_DROPSEXP)) {
+                debug(arena, player, "exp: " + droppedExp);
+                InventoryManager.dropExp(player, droppedExp);
+            }
+
+            if (arenaPlayer.mayRespawn()) {
+                handleRespawn(arenaPlayer, deathInfo, droppedInv);
+            }
+
+        } else {
+            debug(arena, player, "goal doesn't handles player deaths");
+
+            if (arena.getConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
+                droppedInv = InventoryManager.drop(player);
+            }
+
+            if (arena.getConfig().getBoolean(CFG.PLAYER_DROPSEXP)) {
+                debug(arena, player, "exp: " + droppedExp);
+                InventoryManager.dropExp(player, droppedExp);
+            }
+
+            final ArenaTeam respawnTeam = ArenaPlayer.fromPlayer(player.getName()).getArenaTeam();
+
+            if (arena.getConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
+                String deathCause = arena.parseDeathCause(player, event.getCause(), killer);
+                arena.broadcast(Language.parse(MSG.FIGHT_KILLED_BY,
+                        respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
+                        deathCause));
+            }
+
+            handleRespawn(arenaPlayer, deathInfo, droppedInv);
+        }
+
+        debug(arena, player, "parsing death: " + goal.getName());
+        goal.parsePlayerDeath(player, deathInfo);
+        ArenaModuleManager.parsePlayerDeath(arena, player, event);
+    }
+
+    private static void applyKillerModifiers(Arena arena, Player killer) {
+        killer.setFoodLevel(killer.getFoodLevel() + arena.getConfig().getInt(CFG.PLAYER_FEEDFORKILL));
+        if (arena.getConfig().getBoolean(CFG.PLAYER_HEALFORKILL)) {
+            PlayerState.playersetHealth(killer, (int) killer.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+        }
+        if (arena.getConfig().getBoolean(CFG.PLAYER_REFILLFORKILL)) {
+            InventoryManager.clearInventory(killer);
+            ArenaPlayer.fromPlayer(killer).getArenaClass().equip(killer);
+        }
+        if (arena.getConfig().getItems(CFG.PLAYER_ITEMSONKILL) != null) {
+            ItemStack[] items = arena.getConfig().getItems(CFG.PLAYER_ITEMSONKILL);
+            for (ItemStack item : items) {
+                if (item != null) {
+                    killer.getInventory().addItem(item.clone());
+                }
+            }
+        }
+        if (arena.getConfig().getBoolean(CFG.USES_TELEPORTONKILL)) {
+            SpawnManager.respawn(ArenaPlayer.fromPlayer(killer.getName()), null);
         }
     }
 
-    public static void handleRespawn(final Arena arena, final ArenaPlayer aPlayer, final List<ItemStack> drops) {
+    /**
+     * If player should respawn after death, teleport them to a new spawn, refill their inventory and revive them
+     * @param aPlayer the player to respawn
+     * @param deathInfo death info object (cause & killer)
+     * @param keptItems items kept from inventory dropped by player
+     */
+    public static void handleRespawn(ArenaPlayer aPlayer, PADeathInfo deathInfo, List<ItemStack> keptItems) {
 
-        for (final ArenaModule mod : arena.getMods()) {
-            if (mod.tryDeathOverride(aPlayer, drops)) {
+        for (final ArenaModule mod : aPlayer.getArena().getMods()) {
+            if (mod.tryDeathOverride(aPlayer, deathInfo, keptItems)) {
                 return;
             }
         }
-        debug(arena, aPlayer.getPlayer(), "handleRespawn!");
-        new InventoryRefillRunnable(arena, aPlayer.getPlayer(), drops);
-        SpawnManager.respawn(arena, aPlayer, null);
-        EntityDamageEvent.DamageCause damageCause = ofNullable(aPlayer.getPlayer().getLastDamageCause())
-                .map(EntityDamageEvent::getCause)
-                .orElse(null);
-        arena.unKillPlayer(aPlayer.getPlayer(), damageCause, aPlayer.getPlayer().getKiller());
+        debug(aPlayer, "handleRespawn!");
+        new InventoryRefillRunnable(aPlayer.getArena(), aPlayer.getPlayer(), keptItems);
+        aPlayer.revive(deathInfo);
+        SpawnManager.respawn(aPlayer, null);
 
+        // Resetting mayRespawn property
+        aPlayer.setMayRespawn(false);
     }
 
     /**

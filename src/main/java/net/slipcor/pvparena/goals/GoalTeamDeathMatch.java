@@ -1,26 +1,18 @@
 package net.slipcor.pvparena.goals;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
-import net.slipcor.pvparena.arena.PlayerStatus;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.arena.PlayerStatus;
+import net.slipcor.pvparena.classes.PADeathInfo;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.events.PAGoalEvent;
-import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.WorkflowManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.inventory.ItemStack;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * <pre>
@@ -59,94 +51,82 @@ public class GoalTeamDeathMatch extends AbstractTeamKillGoal {
     }
 
     @Override
-    public Boolean checkPlayerDeath(Player player) {
+    public Boolean shouldRespawnPlayer(Player player, PADeathInfo deathInfo) {
         return true;
     }
 
     @Override
-    public void commitPlayerDeath(final Player respawnPlayer, final boolean doesRespawn,
-                                  final PlayerDeathEvent event) {
+    public void commitPlayerDeath(final Player player, final boolean doesRespawn, PADeathInfo deathInfo) {
 
-        Player killer = respawnPlayer.getKiller();
-
-        if (killer == null || respawnPlayer.equals(respawnPlayer.getKiller())) {
+        ArenaPlayer respawnPlayer = ArenaPlayer.fromPlayer(player);
+        Player killer = deathInfo.getKiller();
+        if (killer == null || player.equals(killer)) {
             if (!this.arena.getConfig().getBoolean(CFG.GOAL_TDM_SUICIDESCORE)) {
-                this.broadcastSimpleDeathMessage(respawnPlayer, event);
-                this.respawnPlayer(respawnPlayer, event);
+                this.broadcastSimpleDeathMessage(player, deathInfo);
+                this.respawnPlayer(respawnPlayer);
                 final PAGoalEvent gEvent;
                 if (doesRespawn) {
-                    gEvent = new PAGoalEvent(this.arena, this, "doesRespawn", "playerDeath:" + respawnPlayer.getName());
+                    gEvent = new PAGoalEvent(this.arena, this, "doesRespawn", "playerDeath:" + player.getName());
                 } else {
-                    gEvent = new PAGoalEvent(this.arena, this, "playerDeath:" + respawnPlayer.getName());
+                    gEvent = new PAGoalEvent(this.arena, this, "playerDeath:" + player.getName());
                 }
                 Bukkit.getPluginManager().callEvent(gEvent);
                 return;
             }
-            killer = respawnPlayer;
+            killer = player;
         }
 
-        final ArenaTeam respawnTeam = ArenaPlayer.fromPlayer(respawnPlayer.getName()).getArenaTeam();
+        final ArenaTeam respawnTeam = respawnPlayer.getArenaTeam();
         final ArenaTeam killerTeam = ArenaPlayer.fromPlayer(killer.getName()).getArenaTeam();
 
         if (killerTeam.equals(respawnTeam)) { // suicide
             for (ArenaTeam newKillerTeam : this.arena.getTeams()) {
-                if (!newKillerTeam.equals(respawnTeam) && this.reduceLives(this.arena, newKillerTeam, respawnPlayer, event)) {
-                    this.makePlayerLose(respawnPlayer, event);
+                if (!newKillerTeam.equals(respawnTeam) && this.reduceLives(newKillerTeam, player, deathInfo, killer)) {
+                    this.makePlayerLose(respawnPlayer);
                     return;
                 }
             }
-        } else if (this.reduceLives(this.arena, killerTeam, respawnPlayer, event)) {
-            this.makePlayerLose(respawnPlayer, event);
+        } else if (this.reduceLives(killerTeam, player, deathInfo, killer)) {
+            this.makePlayerLose(respawnPlayer);
             return;
         }
 
-        final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, String.format("playerDeath:%s", respawnPlayer.getName()),
-                String.format("playerKill:%s:%s", respawnPlayer.getName(), killer.getName()));
+        final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, String.format("playerDeath:%s", player.getName()),
+                String.format("playerKill:%s:%s", player.getName(), killer.getName()));
         Bukkit.getPluginManager().callEvent(gEvent);
 
         if (this.getTeamLifeMap().get(killerTeam) != null) {
             if (this.arena.getConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
                 if (killerTeam.equals(respawnTeam) || !this.arena.getConfig().getBoolean(CFG.GENERAL_SHOWREMAININGLIVES)) {
-                    this.broadcastSimpleDeathMessage(respawnPlayer, event);
+                    this.broadcastSimpleDeathMessage(player, deathInfo);
                 } else {
-                    this.broadcastDeathMessage(MSG.FIGHT_KILLED_BY_REMAINING_TEAM_FRAGS, respawnPlayer, event, this.getTeamLifeMap().get(killerTeam));
+                    this.broadcastDeathMessage(MSG.FIGHT_KILLED_BY_REMAINING_TEAM_FRAGS, player, deathInfo, this.getTeamLifeMap().get(killerTeam));
                 }
             }
-            this.respawnPlayer(respawnPlayer, event);
+            this.respawnPlayer(respawnPlayer);
         }
 
     }
 
-    private void respawnPlayer(Player player, PlayerDeathEvent event) {
-        final List<ItemStack> returned;
-
-        if (this.arena.getConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
-            returned = InventoryManager.drop(player);
-            event.getDrops().clear();
-        } else {
-            returned = new ArrayList<>(event.getDrops());
-        }
-
-        WorkflowManager.handleRespawn(this.arena, ArenaPlayer.fromPlayer(player), returned);
+    private void respawnPlayer(ArenaPlayer arenaPlayer) {
+        arenaPlayer.setMayDropInventory(true);
+        arenaPlayer.setMayRespawn(true);
     }
 
-    private void makePlayerLose(Player respawnPlayer, PlayerDeathEvent event) {
-        if (this.arena.getConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
-            this.respawnPlayer(respawnPlayer, event);
-            ArenaPlayer.fromPlayer(respawnPlayer.getName()).setStatus(PlayerStatus.LOST);
-        }
+    private void makePlayerLose(ArenaPlayer respawnPlayer) {
+        this.respawnPlayer(respawnPlayer);
+        respawnPlayer.setStatus(PlayerStatus.LOST);
     }
 
     /**
-     * @param arena the arena this is happening in
      * @param arenaTeam  the killing team
      * @return true if the player should not respawn but be removed
      */
-    private boolean reduceLives(final Arena arena, final ArenaTeam arenaTeam, final Player respawnPlayer, final EntityDeathEvent event) {
+    private boolean reduceLives(ArenaTeam arenaTeam, Player respawnPlayer,PADeathInfo deathInfo , Player killer) {
         final int iLives = this.getTeamLifeMap().get(arenaTeam);
 
         if (iLives <= 1) {
-            for (final ArenaTeam otherTeam : arena.getNotEmptyTeams()) {
+            for (final ArenaTeam otherTeam : this.arena.getNotEmptyTeams()) {
                 if (otherTeam.equals(arenaTeam)) {
                     continue;
                 }
@@ -157,16 +137,9 @@ public class GoalTeamDeathMatch extends AbstractTeamKillGoal {
                     }
                 }
             }
-            arena.broadcast(Language.parse(
-                    MSG.FIGHT_KILLED_BY,
-                    arenaTeam.colorizePlayer(respawnPlayer)
-                            + ChatColor.YELLOW, arena.parseDeathCause(
-                            respawnPlayer,
-                            event.getEntity()
-                                    .getLastDamageCause() != null ? event.getEntity()
-                                    .getLastDamageCause().getCause() : EntityDamageEvent.DamageCause.VOID, event
-                                    .getEntity().getKiller())));
-            WorkflowManager.handleEnd(arena, false);
+            String deathCause = this.arena.parseDeathCause(respawnPlayer, deathInfo.getCause(), killer);
+            this.arena.broadcast(Language.parse(MSG.FIGHT_KILLED_BY, arenaTeam.colorizePlayer(respawnPlayer) + ChatColor.YELLOW, deathCause));
+            WorkflowManager.handleEnd(this.arena, false);
             return true;
         }
 
