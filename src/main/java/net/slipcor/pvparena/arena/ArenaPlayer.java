@@ -217,8 +217,8 @@ public class ArenaPlayer {
     public static void backupAndClearInventory(final Arena arena, final Player player) {
         debug(player, "saving player inventory: {}", player);
 
-        final ArenaPlayer aPlayer = fromPlayer(player);
-        aPlayer.savedInventory = player.getInventory().getContents().clone();
+        final ArenaPlayer arenaPlayer = fromPlayer(player);
+        arenaPlayer.savedInventory = player.getInventory().getContents().clone();
         InventoryManager.clearInventory(player);
     }
 
@@ -335,7 +335,7 @@ public class ArenaPlayer {
 
             try {
                 Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), () -> {
-                    for (final ItemStack item : keepItems) {
+                    for (ItemStack item : keepItems) {
                         this.player.getInventory().addItem(item.clone());
                     }
                     keepItems.clear();
@@ -452,7 +452,7 @@ public class ArenaPlayer {
         debug(this, "location: {}", this.location);
         debug(this, "status: {}", this.status.name());
         debug(this, "tempPermissions:");
-        for (final PermissionAttachment pa : this.tempPermissions) {
+        for (PermissionAttachment pa : this.tempPermissions) {
             debug(this, "> {}", pa);
         }
         debug(this, "------------------");
@@ -512,7 +512,7 @@ public class ArenaPlayer {
         if (this.arena == null) {
             return null;
         }
-        for (final ArenaTeam team : this.arena.getTeams()) {
+        for (ArenaTeam team : this.arena.getTeams()) {
             if (team.getTeamMembers().contains(this)) {
                 return team;
             }
@@ -604,7 +604,7 @@ public class ArenaPlayer {
     public int getTotalStatistics(final Type statType) {
         int sum = 0;
 
-        for (final PAStatMap stat : this.statistics.values()) {
+        for (PAStatMap stat : this.statistics.values()) {
             sum += stat.getStat(statType);
         }
 
@@ -791,7 +791,7 @@ public class ArenaPlayer {
      */
     public void setArenaClass(final String className) {
 
-        for (final ArenaClass ac : this.arena.getClasses()) {
+        for (ArenaClass ac : this.arena.getClasses()) {
             if (ac.getName().equalsIgnoreCase(className)) {
                 this.setArenaClass(ac);
                 return;

@@ -1,9 +1,9 @@
 package net.slipcor.pvparena.goals;
 
-import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
-import net.slipcor.pvparena.arena.PlayerStatus;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.arena.PlayerStatus;
+import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
@@ -11,6 +11,7 @@ import net.slipcor.pvparena.events.PAGoalEvent;
 import net.slipcor.pvparena.exceptions.GameplayException;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
+import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
 import org.bukkit.Bukkit;
@@ -32,6 +33,7 @@ public abstract class AbstractTeamKillGoal extends ArenaGoal {
     protected static final int PRIORITY = 5;
 
     protected abstract int getScore(ArenaTeam team);
+
     protected abstract int getTeamLivesCfg();
 
     @Override
@@ -41,15 +43,15 @@ public abstract class AbstractTeamKillGoal extends ArenaGoal {
         if (count == 1) {
             return true; // yep. only one team left. go!
         } else if (count == 0) {
-            throw new GameplayException(MSG.ERROR_TEAMNOTFOUND);
+            throw new GameplayException(MSG.ERROR_TEAM_NOT_FOUND);
         }
 
         return false;
     }
 
     @Override
-    public Set<String> checkForMissingSpawns(final Set<String> spawnsNames) {
-        return this.checkForMissingTeamSpawn(spawnsNames);
+    public Set<PASpawn> checkForMissingSpawns(Set<PASpawn> spawns) {
+        return SpawnManager.getMissingTeamSpawn(this.arena, spawns);
     }
 
     @Override
@@ -64,8 +66,8 @@ public abstract class AbstractTeamKillGoal extends ArenaGoal {
 
         ArenaTeam aTeam = null;
 
-        for (final ArenaTeam team : this.arena.getTeams()) {
-            for (final ArenaPlayer ap : team.getTeamMembers()) {
+        for (ArenaTeam team : this.arena.getTeams()) {
+            for (ArenaPlayer ap : team.getTeamMembers()) {
                 if (ap.getStatus() == PlayerStatus.FIGHT) {
                     aTeam = team;
                     break;
@@ -99,25 +101,6 @@ public abstract class AbstractTeamKillGoal extends ArenaGoal {
     }
 
     @Override
-    public boolean hasSpawn(final String string) {
-        for (final String teamName : this.arena.getTeamNames()) {
-            if (string.toLowerCase().startsWith(
-                    teamName.toLowerCase() + "spawn")) {
-                return true;
-            }
-            if (this.arena.getConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
-                for (final ArenaClass aClass : this.arena.getClasses()) {
-                    if (string.toLowerCase().startsWith(teamName.toLowerCase() +
-                            aClass.getName().toLowerCase() + "spawn")) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    @Override
     public void initiate(final Player player) {
         final ArenaPlayer aPlayer = ArenaPlayer.fromPlayer(player);
         this.updateLives(aPlayer.getArenaTeam(), this.getTeamLivesCfg());
@@ -144,7 +127,7 @@ public abstract class AbstractTeamKillGoal extends ArenaGoal {
 
     @Override
     public void parseStart() {
-        for (final ArenaTeam team : this.arena.getTeams()) {
+        for (ArenaTeam team : this.arena.getTeams()) {
             this.updateLives(team, this.getTeamLivesCfg());
         }
     }
@@ -152,7 +135,7 @@ public abstract class AbstractTeamKillGoal extends ArenaGoal {
     @Override
     public Map<String, Double> timedEnd(final Map<String, Double> scores) {
 
-        for (final ArenaTeam team : this.arena.getTeams()) {
+        for (ArenaTeam team : this.arena.getTeams()) {
             double score = this.getScore(team);
             if (scores.containsKey(team.getName())) {
                 scores.put(team.getName(), scores.get(team.getName()) + score);

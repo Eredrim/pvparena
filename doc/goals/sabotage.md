@@ -11,5 +11,5 @@ Each team has a TNT block in its base. If this block is ignited by other players
 TNTs have to be added.
 
 In order to do that, for each team:
-- Type `/pa [arenaname] [teamname]tnt` - this enables tnt selector
+- Type `/pa [arenaname]  [teamname]_tnt` - this enables tnt selector
 - Left-click with your hand on the TNT block

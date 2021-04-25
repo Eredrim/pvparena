@@ -56,7 +56,7 @@ public class PAA_Set extends AbstractArenaCommand {
 
                 int position = 0;
 
-                for (final String node : arena.getConfig().getYamlConfiguration()
+                for (String node : arena.getConfig().getYamlConfiguration()
                         .getKeys(true)) {
                     if (CFG.getByNode(node) == null) {
                         continue;
@@ -70,7 +70,7 @@ public class PAA_Set extends AbstractArenaCommand {
                     }
                 }
                 arena.msg(sender, ChatColor.COLOR_CHAR + "6------ config list [" + page + "] ------");
-                for (final Map.Entry<String, String> stringStringEntry : keys.entrySet()) {
+                for (Map.Entry<String, String> stringStringEntry : keys.entrySet()) {
                     arena.msg(sender,
                             stringStringEntry.getValue() + " => " + CFG.getByNode(stringStringEntry.getKey()).getType());
                 }
@@ -88,7 +88,7 @@ public class PAA_Set extends AbstractArenaCommand {
 
     private void set(final CommandSender player, final Arena arena, final String node, final String value) {
 
-        for (final String s : arena.getConfig().getYamlConfiguration().getKeys(true)) {
+        for (String s : arena.getConfig().getYamlConfiguration().getKeys(true)) {
             if (s.toLowerCase().endsWith('.' + node.toLowerCase())) {
                 this.set(player, arena, s, value);
                 return;

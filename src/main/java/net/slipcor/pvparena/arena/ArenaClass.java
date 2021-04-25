@@ -66,7 +66,7 @@ public final class ArenaClass {
             e1.printStackTrace();
         }
 
-        for (final String className : cfg.getConfigurationSection("classes").getKeys(false)) {
+        for (String className : cfg.getConfigurationSection("classes").getKeys(false)) {
             ItemStack[] items;
             ItemStack offHand;
             ItemStack[] armors;
@@ -100,14 +100,14 @@ public final class ArenaClass {
     }
 
     public static void addGlobalClasses(final Arena arena) {
-        for (final Map.Entry<String, ArenaClass> stringArenaClassEntry : globals.entrySet()) {
+        for (Map.Entry<String, ArenaClass> stringArenaClassEntry : globals.entrySet()) {
             arena.addClass(stringArenaClassEntry.getKey(), stringArenaClassEntry.getValue().items, stringArenaClassEntry.getValue().offHand, stringArenaClassEntry.getValue().armors);
         }
     }
 
     public static void equip(final Player player, final ItemStack[] items) {
         int i = 0;
-        for (final ItemStack item : items) {
+        for (ItemStack item : items) {
             if (isArmorItem(item.getType())) {
                 equipArmor(item, player.getInventory());
             } else {
@@ -148,7 +148,7 @@ public final class ArenaClass {
             equipArmor(itemStack, player.getInventory());
         }
 
-        for (final ItemStack item : itemArray[0]) {
+        for (ItemStack item : itemArray[0]) {
             if (item.getType().name().endsWith("_SPAWN_EGG")) {
                 final String eggType = item.getType().name().replace("_SPAWN_EGG", "");
 
@@ -172,7 +172,7 @@ public final class ArenaClass {
                 equipArmor(item, player.getInventory());
             }
         }
-        for (final ItemStack item : this.items) {
+        for (ItemStack item : this.items) {
             if (item == null) {
                 continue;
             }

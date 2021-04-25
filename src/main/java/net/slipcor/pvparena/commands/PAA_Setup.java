@@ -119,8 +119,8 @@ public class PAA_Setup extends AbstractArenaCommand {
                 } else if (word[1].startsWith("s")) {
                     // show spawn [name]
                     final Set<PASpawn> spawns = SpawnManager.getPASpawnsStartingWith(arena, word[2]);
-                    for (final PASpawn spawn : spawns) {
-                        final Location loc = spawn.getLocation().toLocation();
+                    for (PASpawn spawn : spawns) {
+                        final Location loc = spawn.getPALocation().toLocation();
 
                         player.sendBlockChange(loc, Material.WHITE_WOOL.createBlockData());
                         new Remover(loc);
@@ -129,7 +129,7 @@ public class PAA_Setup extends AbstractArenaCommand {
                 } else if (word[2].startsWith("b")) {
                     // show block [name]
                     final Set<PABlock> blocks = SpawnManager.getPABlocksContaining(arena, word[2]);
-                    for (final PABlock block : blocks) {
+                    for (PABlock block : blocks) {
                         final Location loc = block.getLocation().toLocation();
 
                         player.sendBlockChange(loc, Material.WHITE_WOOL.createBlockData());
@@ -213,15 +213,15 @@ public class PAA_Setup extends AbstractArenaCommand {
             return result;
         }
 
-        for (final PASpawn spawn : arena.getSpawns()) {
+        for (PASpawn spawn : arena.getSpawns()) {
             result.define(new String[]{"show", spawn.getName()});
         }
 
-        for (final PABlock block : arena.getBlocks()) {
+        for (PABlock block : arena.getBlocks()) {
             result.define(new String[]{"show", block.getName()});
         }
 
-        for (final ArenaRegion ar : arena.getRegions()) {
+        for (ArenaRegion ar : arena.getRegions()) {
             result.define(new String[]{"show", ar.getRegionName()});
             result.define(new String[]{"region", ar.getRegionName()});
         }

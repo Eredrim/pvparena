@@ -2,9 +2,12 @@ package net.slipcor.pvparena.core;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.classes.PABlock;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PALocation;
+import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.commands.CommandTree;
+import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
 import net.slipcor.pvparena.regions.ArenaRegion;
 import net.slipcor.pvparena.regions.RegionFlag;
@@ -13,6 +16,7 @@ import net.slipcor.pvparena.regions.RegionType;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -25,6 +29,8 @@ import java.util.*;
 import static java.util.Optional.ofNullable;
 import static net.slipcor.pvparena.core.ItemStackUtils.getItemStacksFromConfig;
 import static net.slipcor.pvparena.core.Utils.getSerializableItemStacks;
+import static net.slipcor.pvparena.managers.SpawnManager.ROOT_BLOCKS_NODE;
+import static net.slipcor.pvparena.managers.SpawnManager.ROOT_SPAWNS_NODE;
 
 /**
  * <pre>
@@ -65,7 +71,7 @@ public class Config {
         DAMAGE_SPAWNCAMP("damage.spawncamp", 1, null),
         DAMAGE_WEAPONS("damage.weapons", true, null),
 
-        GENERAL_CLASSSPAWN("general.classspawn", false, null),
+        GENERAL_SPAWN_PER_CLASS("general.classspawn", false, null),
         GENERAL_CLASSSWITCH_AFTER_RESPAWN("general.classSwitchAfterRespawn", false, null),
         GENERAL_CUSTOMRETURNSGEAR("general.customReturnsGear", false, null),
         GENERAL_ENABLED("general.enabled", true, null),
@@ -74,10 +80,10 @@ public class Config {
         GENERAL_LANG("general.lang", "none", null),
         GENERAL_OWNER("general.owner", "server", null),
         GENERAL_REGIONCLEAREXCEPTIONS("general.regionclearexceptions", new ArrayList<String>(), null),
-        GENERAL_QUICKSPAWN("general.quickspawn", true, null),
+        GENERAL_QUICK_SPAWN("general.quickspawn", true, null),
         GENERAL_PREFIX("general.prefix", "PVP Arena", null),
         GENERAL_SHOWREMAININGLIVES("general.showRemainingLives", true, null),
-        GENERAL_SMARTSPAWN("general.smartspawn", false, null),
+        GENERAL_SMART_SPAWN("general.smartspawn", false, null),
         GENERAL_TIMER("general.timer.end", 0, null),
         GENERAL_TIMER_WINNER("general.timer.winner", "none", null),
         GENERAL_TYPE("general.type", "none", null),
@@ -120,7 +126,7 @@ public class Config {
         PERMS_SPECINTERACT("perms.spectatorinteract", false, null),
 
         PLAYER_AUTOIGNITE("player.autoIgniteTNT", false, null),
-        PLAYER_CLEARINVENTORY("player.clearInventory", "NONE", null),
+        PLAYER_CLEAR_INVENTORY("player.clearInventory", "NONE", null),
         PLAYER_COLLISION("player.collision", true, null),
         PLAYER_DROPSEXP("player.dropsEXP", false, null),
         PLAYER_DROPSINVENTORY("player.dropsInventory", false, null),
@@ -136,7 +142,7 @@ public class Config {
         PLAYER_REFILLCUSTOMINVENTORY("player.refillCustomInventory", true, null),
         PLAYER_REFILLINVENTORY("player.refillInventory", true, null),
         PLAYER_REFILLFORKILL("player.refillforkill", false, null),
-        PLAYER_REMOVEARROWS("player.removearrows", false, null),
+        PLAYER_REMOVE_ARROWS("player.removearrows", false, null),
         PLAYER_SATURATION("player.saturation", 20, null),
         PLAYER_QUICKLOOT("player.quickloot", false, null),
         PLAYER_TIME("player.dayTime", -1, null),
@@ -177,7 +183,7 @@ public class Config {
         USES_INVISIBILITYFIX("uses.invisibilityfix", false, null),
         USES_EVILINVISIBILITYFIX("uses.evilinvisibilityfix", false, null),
         USES_OVERLAPCHECK("uses.overlapCheck", true, null),
-        USES_PLAYERCLASSES("uses.playerclasses", false, null),
+        USES_PLAYER_OWN_INVENTORY("uses.playerclasses", false, null),
         USES_SCOREBOARD("uses.scoreboard", false, null),
         USES_SUICIDEPUNISH("uses.suicidepunish", false, null),
         USES_TEAMREWARDS("uses.teamrewards", false, null),
@@ -216,7 +222,7 @@ public class Config {
         GOAL_INFECTED_NLIVES("goal.infected.inlives", 1, "Infect"),
         GOAL_INFECTED_PPROTECTS("goal.infected.iplayerprotect", 0, "Infect"),
 
-        GOAL_LIBERATION_JAILEDSCOREBOARD("goal.liberation.jailedscoreboard", false, "Liberation"),
+        GOAL_LIBERATION_JAILED_SCOREBOARD("goal.liberation.jailedscoreboard", false, "Liberation"),
 
         GOAL_LLIVES_LIVES("goal.liberation.llives", 3, "Liberation"),
         GOAL_PDM_LIVES("goal.playerdm.pdlives", 3, "PlayerDeathMatch"),
@@ -424,7 +430,7 @@ public class Config {
         private final String goalOrModule;
 
         public static CFG getByNode(final String node) {
-            for (final CFG m : CFG.getValues()) {
+            for (CFG m : CFG.getValues()) {
                 if (m.node.equals(node)) {
                     return m;
                 }
@@ -502,7 +508,7 @@ public class Config {
         public static CommandTree<String> getTabTree() {
 
             final CommandTree<String> result = new CommandTree<>(null);
-            for (final CFG cfg : values()) {
+            for (CFG cfg : values()) {
                 final String[] split = cfg.node.split("\\.");
                 final String ending = split[split.length - 1];
 
@@ -574,7 +580,7 @@ public class Config {
     public void createDefaults(final String goal, final List<String> modules) {
         this.cfg.options().indent(2);
 
-        for (final CFG config : CFG.getValues()) {
+        for (CFG config : CFG.getValues()) {
             if (config.hasModule()) {
                 String mod = config.getGoalOrModule();
                 if (goal.contains(mod) || modules.contains(mod)) {
@@ -582,6 +588,27 @@ public class Config {
                 }
             } else {
                 this.cfg.addDefault(config.getNode(), config.getValue());
+            }
+        }
+        this.save();
+    }
+
+    /**
+     * Set config for a new goal
+     *
+     * @param goal new goal to config
+     */
+    public void updateGoal(ArenaGoal goal) {
+        // remove previous goal nodes (no need anymore)
+        this.setManually("goal", null);
+        this.cfg.addDefault("goal", null);
+        // add new goal name
+        this.set(CFG.GENERAL_GOAL, goal.getName());
+        // add default new goal nodes
+        for (CFG configNode : CFG.getValues()) {
+            String configNodeGoal = configNode.getGoalOrModule();
+            if (goal.getName().equalsIgnoreCase(configNodeGoal)) {
+                this.cfg.addDefault(configNode.getNode(), configNode.getValue());
             }
         }
         this.save();
@@ -610,7 +637,7 @@ public class Config {
      * strings-map, etc.
      */
     public void reloadMaps() {
-        for (final String s : this.cfg.getKeys(true)) {
+        for (String s : this.cfg.getKeys(true)) {
             final Object object = this.cfg.get(s);
 
             if (object instanceof Boolean) {
@@ -664,6 +691,16 @@ public class Config {
      */
     public YamlConfiguration getYamlConfiguration() {
         return this.cfg;
+    }
+
+    /**
+     * Get configuration Section
+     *
+     * @param name section name
+     * @return configuration section
+     */
+    public ConfigurationSection getConfigurationSection(String name) {
+        return this.cfg.getConfigurationSection(name);
     }
 
     /**
@@ -901,8 +938,12 @@ public class Config {
      * @return a PABlockLocation in the given world with the given coordinates
      */
     public static PABlockLocation parseBlockLocation(final String coords) {
+        if(coords == null) {
+            throw new IllegalArgumentException("Block node format is incorrect.");
+        }
+
         final String[] parts = coords.split(",");
-        if (parts.length != 4) {
+        if (parts.length < 4) {
             throw new IllegalArgumentException(
                     "Input string must only contain world, x, y, and z: " + coords);
         }
@@ -917,7 +958,7 @@ public class Config {
                     "Some of the parsed values are null: " + coords);
         }
 
-        return new PABlockLocation(parts[0], x, y, z);
+        return new PABlockLocation(parts[0], x, y, z, null);
     }
 
     /**
@@ -1062,7 +1103,7 @@ public class Config {
 
         int sum = 0;
 
-        for (final RegionFlag f : flags) {
+        for (RegionFlag f : flags) {
             sum += Math.pow(2, f.ordinal());
         }
 
@@ -1070,7 +1111,7 @@ public class Config {
 
         sum = 0;
 
-        for (final RegionProtection p : protections) {
+        for (RegionProtection p : protections) {
             sum += Math.pow(2, p.ordinal());
         }
         result[9] = String.valueOf(sum);
@@ -1106,4 +1147,29 @@ public class Config {
         }
         return new Vector(0, 0, 0);
     }
+
+    /**
+     * save new spawn to config
+     *
+     * @param paSpawn new spawn to add to config
+     */
+    public void addSpawn(PASpawn paSpawn) {
+        this.setManually(ROOT_SPAWNS_NODE + PASpawn.serialize(paSpawn), parseToString(paSpawn.getPALocation()));
+        this.save();
+    }
+
+    public void clearSpawn(String name, String teamName, String className){
+        this.setManually(ROOT_SPAWNS_NODE + PASpawn.serialize(new PASpawn(null, name, teamName, className)), null);
+        this.save();
+    }
+
+    public void addBlock(PABlock paBlock){
+        this.setManually(String.format("%s.%s%s", ROOT_BLOCKS_NODE,
+                paBlock.getTeamName() != null ? paBlock.getTeamName() + "_" : "",
+                paBlock.getName()),
+                parseToString(paBlock.getLocation()));
+        this.save();
+    }
+
+
 }

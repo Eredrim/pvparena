@@ -78,7 +78,7 @@ public final class InventoryManager {
             }
         }
 
-        for (final ItemStack dropped : player.getInventory().getContents()) {
+        for (ItemStack dropped : player.getInventory().getContents()) {
 
             if (dropped == null || dropped.getType() == Material.AIR) {
                 continue;
@@ -116,7 +116,7 @@ public final class InventoryManager {
             return false;
         }
 
-        for (final String s : TOOLSUFFIXES) {
+        for (String s : TOOLSUFFIXES) {
             if (item.getType().name().endsWith(s)) {
                 return true;
             }
@@ -143,11 +143,11 @@ public final class InventoryManager {
 
     public static void transferItems(final Player player, final Inventory blockInventory) {
         final ItemStack[] oldItems = blockInventory.getContents().clone();
-        for (final ItemStack items : oldItems) {
+        for (ItemStack items : oldItems) {
             final Map<Integer, ItemStack> remaining = player.getInventory().addItem(items);
             blockInventory.remove(items);
             if (!remaining.isEmpty()) {
-                for (final ItemStack item : remaining.values()) {
+                for (ItemStack item : remaining.values()) {
                     blockInventory.addItem(item);
                 }
             }

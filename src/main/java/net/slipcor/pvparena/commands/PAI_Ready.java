@@ -102,7 +102,7 @@ public class PAI_Ready extends AbstractArenaCommand {
 
         final Set<String> names = new HashSet<>();
 
-        for (final ArenaPlayer player : arena.getEveryone()) {
+        for (ArenaPlayer player : arena.getEveryone()) {
             if (player.getStatus() == PlayerStatus.LOUNGE) {
                 names.add("&7" + player.getName() + "&r");
             } else if (player.getStatus() == PlayerStatus.READY) {

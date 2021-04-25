@@ -68,14 +68,14 @@ public class InventoryRefillRunnable implements Runnable {
             } else if (aPlayer.hasCustomClass()) {
                 aPlayer.reloadInventory(false);
 
-                for (final ItemStack item : this.additions) {
+                for (ItemStack item : this.additions) {
                     this.player.getInventory().addItem(item);
                 }
             } else {
                 InventoryManager.clearInventory(this.player);
                 aPlayer.equipPlayerFightItems();
 
-                for (final ItemStack item : this.additions) {
+                for (ItemStack item : this.additions) {
                     this.player.getInventory().addItem(item);
                 }
             }

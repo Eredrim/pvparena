@@ -27,7 +27,7 @@ of the following material (color prefix doesn't matter):
 
 <br>
 
-Flags have to be added afterwards. In order to do that, use `/pa [arenaname] [teamname]flag` \- this enables setting.
+Flags have to be added afterwards. In order to do that, use `/pa [arenaname] flag [teamname]` \- this enables setting.
 Just left click on your flag block. Clicked block must have same type as defined in your config. However nothing will 
 happen.
 

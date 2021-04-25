@@ -38,6 +38,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static net.slipcor.pvparena.config.Debugger.debug;
 
@@ -255,7 +256,7 @@ public class PVPArena extends JavaPlugin {
         if (args.length > 1 && sender.hasPermission("pvparena.admin")
                 && "ALL".equalsIgnoreCase(args[0])) {
             final String[] newArgs = StringParser.shiftArrayBy(args, 1);
-            for (final Arena arena : ArenaManager.getArenas()) {
+            for (Arena arena : ArenaManager.getArenas()) {
                 try {
                     Bukkit.getServer().dispatchCommand(
                             sender,
@@ -270,7 +271,7 @@ public class PVPArena extends JavaPlugin {
         }
 
         AbstractGlobalCommand pacmd = null;
-        for (final AbstractGlobalCommand agc : this.globalCommands) {
+        for (AbstractGlobalCommand agc : this.globalCommands) {
             if (agc.getMain().contains(args[0].toLowerCase()) || agc.getShort().contains(args[0].toLowerCase())) {
                 pacmd = agc;
                 break;
@@ -320,9 +321,9 @@ public class PVPArena extends JavaPlugin {
 
         latelounge:
         if (tempArena == null) {
-            for (final Arena ar : ArenaManager.getArenas()) {
-                for (final ArenaModule mod : ar.getMods()) {
-                    if (mod.hasSpawn(sender.getName())) {
+            for (Arena ar : ArenaManager.getArenas()) {
+                for (ArenaModule mod : ar.getMods()) {
+                    if (mod.hasSpawn(sender.getName(), null)) {
                         tempArena = ar;
                         break latelounge;
                     }
@@ -334,7 +335,7 @@ public class PVPArena extends JavaPlugin {
         }
 
         AbstractArenaCommand paacmd = null;
-        for (final AbstractArenaCommand aac : this.arenaCommands) {
+        for (AbstractArenaCommand aac : this.arenaCommands) {
             if (aac.getMain().contains(newArgs[0].toLowerCase()) || aac.getShort().contains(newArgs[0].toLowerCase())) {
                 paacmd = aac;
                 break;
@@ -377,7 +378,7 @@ public class PVPArena extends JavaPlugin {
         this.shuttingDown = true;
         ArenaManager.reset(true);
         Debugger.destroy();
-        this.getUpdateChecker().runOnDisable();
+        Optional.ofNullable(this.getUpdateChecker()).ifPresent(UpdateChecker::runOnDisable);
         Language.logInfo(MSG.LOG_PLUGIN_DISABLED, this.getDescription().getFullName());
     }
 

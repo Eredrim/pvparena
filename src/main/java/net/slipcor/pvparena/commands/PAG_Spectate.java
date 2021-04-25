@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.commands;
 
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.core.CollectionUtils;
 import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language;
@@ -12,6 +13,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * <pre>PVP Arena SPECTATE Command class</pre>
@@ -43,9 +45,9 @@ public class PAG_Spectate extends AbstractArenaCommand {
             return;
         }
 
-        final String error = ConfigurationManager.isSetup(arena);
-        if (error != null) {
-            Arena.pmsg(sender, MSG.ERROR_ERROR, error);
+        final Set<String> errors = ConfigurationManager.isSetup(arena);
+        if (CollectionUtils.isNotEmpty(errors)) {
+            errors.forEach(error -> arena.msg(sender, MSG.ERROR_ERROR, error));
             return;
         }
 

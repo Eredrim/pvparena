@@ -1,11 +1,12 @@
 package net.slipcor.pvparena.goals;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.arena.PlayerStatus;
+import net.slipcor.pvparena.classes.PABlock;
 import net.slipcor.pvparena.classes.PABlockLocation;
+import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.classes.PADeathInfo;
 import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.core.Config.CFG;
@@ -24,7 +25,7 @@ import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
 import net.slipcor.pvparena.runnables.RespawnRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -54,13 +55,15 @@ import static net.slipcor.pvparena.config.Debugger.debug;
 public class GoalLiberation extends ArenaGoal {
 
     private static final String BUTTON = "button";
+    private static final String JAIL = "jail";
 
     public GoalLiberation() {
         super("Liberation");
     }
 
     private EndRunnable endRunner;
-    private String flagName;
+    private String blockName;
+    private String blockTeamName;
     private final Map<Player, List<ItemStack>> keptItemsMap = new HashMap<>();
 
     @Override
@@ -69,20 +72,13 @@ public class GoalLiberation extends ArenaGoal {
     }
 
     @Override
-    public boolean checkCommand(final String string) {
-        return this.arena.getTeams().stream().anyMatch(team -> string.contains(team.getName() + BUTTON));
+    public boolean checkCommand(final String command) {
+        return command.equalsIgnoreCase(BUTTON);
     }
 
     @Override
     public List<String> getGoalCommands() {
-        final List<String> result = new ArrayList<>();
-        if (this.arena != null) {
-            for (final ArenaTeam team : this.arena.getTeams()) {
-                final String sTeam = team.getName();
-                result.add(sTeam + BUTTON);
-            }
-        }
-        return result;
+        return Collections.singletonList(BUTTON);
     }
 
     @Override
@@ -95,10 +91,15 @@ public class GoalLiberation extends ArenaGoal {
     }
 
     @Override
-    public Set<String> checkForMissingSpawns(final Set<String> spawnsNames) {
-        final Set<String> errors = this.checkForMissingTeamSpawn(spawnsNames);
-        errors.addAll(this.checkForMissingTeamCustom(spawnsNames, "jail"));
-        return errors;
+    public Set<PASpawn> checkForMissingSpawns(Set<PASpawn> spawns) {
+        final Set<PASpawn> missing = SpawnManager.getMissingTeamSpawn(this.arena, spawns);
+        missing.addAll(SpawnManager.getMissingTeamCustom(this.arena, spawns, JAIL));
+        return missing;
+    }
+
+    @Override
+    public Set<PABlock> checkForMissingBlocks(Set<PABlock> blocks) {
+        return SpawnManager.getMissingBlocksTeamCustom(this.arena, blocks, BUTTON);
     }
 
     /**
@@ -116,7 +117,7 @@ public class GoalLiberation extends ArenaGoal {
         }
         debug(this.arena, player, "checking interact");
 
-        if (block.getType() != Material.STONE_BUTTON) {
+        if (Tag.BUTTONS.isTagged(block.getType())) {
             debug(this.arena, player, "block, but not button");
             return false;
         }
@@ -130,7 +131,7 @@ public class GoalLiberation extends ArenaGoal {
         }
 
         Vector vFlag = null;
-        for (final ArenaTeam arenaTeam : this.arena.getNotEmptyTeams()) {
+        for (ArenaTeam arenaTeam : this.arena.getNotEmptyTeams()) {
 
             if (arenaTeam.equals(playerArenaTeam)) {
                 debug(this.arena, player, "equals!OUT! ");
@@ -139,11 +140,10 @@ public class GoalLiberation extends ArenaGoal {
             debug(this.arena, player, "checking for flag of team " + arenaTeam);
             Vector vLoc = block.getLocation().toVector();
             debug(this.arena, player, "block: " + vLoc);
-            if (!SpawnManager.getBlocksStartingWith(this.arena, arenaTeam.getName() + BUTTON).isEmpty()) {
+            if (!SpawnManager.getBlocksStartingWith(this.arena, BUTTON, arenaTeam.getName()).isEmpty()) {
                 vFlag = SpawnManager
                         .getBlockNearest(
-                                SpawnManager.getBlocksStartingWith(this.arena, arenaTeam.getName()
-                                        + BUTTON),
+                                SpawnManager.getBlocksStartingWith(this.arena, BUTTON, arenaTeam.getName()),
                                 new PABlockLocation(player.getLocation()))
                         .toLocation().toVector();
             }
@@ -153,14 +153,14 @@ public class GoalLiberation extends ArenaGoal {
 
                 boolean success = false;
 
-                for (final ArenaPlayer jailedPlayer : playerArenaTeam.getTeamMembers()) {
+                for (ArenaPlayer jailedPlayer : playerArenaTeam.getTeamMembers()) {
                     if (jailedPlayer.getStatus() == PlayerStatus.DEAD) {
                         SpawnManager.respawn(jailedPlayer, null);
                         List<ItemStack> keptItems = ofNullable(this.keptItemsMap.remove(jailedPlayer.getPlayer()))
                                 .orElse(emptyList());
 
                         new InventoryRefillRunnable(this.arena, jailedPlayer.getPlayer(), keptItems);
-                        if (this.arena.getConfig().getBoolean(CFG.GOAL_LIBERATION_JAILEDSCOREBOARD)) {
+                        if (this.arena.getConfig().getBoolean(CFG.GOAL_LIBERATION_JAILED_SCOREBOARD)) {
                             player.getScoreboard().getObjective("lives").getScore(player.getName()).setScore(0);
                         }
                         success = true;
@@ -188,11 +188,12 @@ public class GoalLiberation extends ArenaGoal {
     @Override
     public boolean checkSetBlock(final Player player, final Block block) {
 
-        if (StringUtils.isBlank(this.flagName) || !PAA_Region.activeSelections.containsKey(player.getName())) {
+        if (StringUtils.isBlank(this.blockName) || !PAA_Region.activeSelections.containsKey(player.getName())) {
             return false;
         }
 
-        if (block == null || block.getType() != Material.STONE_BUTTON) {
+        if (block == null || !Tag.BUTTONS.isTagged(block.getType())) {
+            debug(player, "Block {} is not a button", block);
             return false;
         }
 
@@ -212,7 +213,7 @@ public class GoalLiberation extends ArenaGoal {
             final ArenaTeam team = aPlayer.getArenaTeam();
             boolean someoneAlive = false;
 
-            for (final ArenaPlayer temp : team.getTeamMembers()) {
+            for (ArenaPlayer temp : team.getTeamMembers()) {
                 if (temp.getStatus() == PlayerStatus.FIGHT) {
                     someoneAlive = true;
                     break;
@@ -226,16 +227,21 @@ public class GoalLiberation extends ArenaGoal {
 
     @Override
     public void commitCommand(final CommandSender sender, final String[] args) {
-        if (args[0].contains(BUTTON)) {
-            for (final ArenaTeam team : this.arena.getTeams()) {
-                final String sTeam = team.getName();
-                if (args[0].contains(sTeam + BUTTON)) {
-                    this.flagName = args[0];
-                    PAA_Region.activeSelections.put(sender.getName(), this.arena);
-
-                    this.arena.msg(sender, MSG.GOAL_LIBERATION_TOSET, this.flagName);
+        if (args[0].equals(BUTTON)) {
+            if (args.length >= 2) {
+                String teamName = args[1];
+                if (this.arena.getTeam(teamName) == null) {
+                    this.arena.msg(sender, MSG.ERROR_TEAM_NOT_FOUND, this.blockName);
+                    return;
                 }
+                this.blockTeamName = teamName;
+            } else {
+                this.blockTeamName = null;
             }
+            this.blockName = args[0];
+            PAA_Region.activeSelections.put(sender.getName(), this.arena);
+
+            this.arena.msg(sender, MSG.GOAL_LIBERATION_TOSET, this.blockName);
         }
     }
 
@@ -251,8 +257,8 @@ public class GoalLiberation extends ArenaGoal {
 
         final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "");
         Bukkit.getPluginManager().callEvent(gEvent);
-        for (final ArenaTeam arenaTeam : this.arena.getTeams()) {
-            for (final ArenaPlayer arenaPlayer : arenaTeam.getTeamMembers()) {
+        for (ArenaTeam arenaTeam : this.arena.getTeams()) {
+            for (ArenaPlayer arenaPlayer : arenaTeam.getTeamMembers()) {
                 if (arenaPlayer.getStatus() != PlayerStatus.FIGHT) {
                     continue;
                 }
@@ -299,7 +305,7 @@ public class GoalLiberation extends ArenaGoal {
 
             boolean someoneAlive = false;
 
-            for (final ArenaPlayer temp : team.getTeamMembers()) {
+            for (ArenaPlayer temp : team.getTeamMembers()) {
                 if (temp.getStatus() == PlayerStatus.FIGHT) {
                     someoneAlive = true;
                     break;
@@ -321,11 +327,11 @@ public class GoalLiberation extends ArenaGoal {
 
                 String teamName = arenaPlayer.getArenaTeam().getName();
 
-                new RespawnRunnable(this.arena, arenaPlayer, teamName + "jail").runTaskLater(PVPArena.getInstance(), 1L);
+                new RespawnRunnable(this.arena, arenaPlayer, teamName + JAIL).runTaskLater(PVPArena.getInstance(), 1L);
 
                 arenaPlayer.revive(deathInfo);
 
-                if (this.arena.getConfig().getBoolean(CFG.GOAL_LIBERATION_JAILEDSCOREBOARD)) {
+                if (this.arena.getConfig().getBoolean(CFG.GOAL_LIBERATION_JAILED_SCOREBOARD)) {
                     arenaPlayer.getPlayer().getScoreboard().getObjective("lives").getScore(arenaPlayer.getName()).setScore(101);
                 }
             } else {
@@ -356,18 +362,18 @@ public class GoalLiberation extends ArenaGoal {
     }
 
     @Override
-    public boolean commitSetFlag(final Player player, final Block block) {
+    public boolean commitSetBlock(final Player player, final Block block) {
 
         debug(this.arena, player, "trying to set a button");
 
-        // command : /pa redbutton1
-        // location: redbutton1:
+        // command : /pa button1 red
+        // location: red.button1:
 
-        SpawnManager.setBlock(this.arena, new PABlockLocation(block.getLocation()), this.flagName);
-        this.arena.msg(player, MSG.GOAL_LIBERATION_SET, this.flagName);
+        SpawnManager.setBlock(this.arena, new PABlockLocation(block.getLocation()), this.blockName, this.blockTeamName);
+        this.arena.msg(player, MSG.GOAL_LIBERATION_SET, this.blockName);
 
         PAA_Region.activeSelections.remove(player.getName());
-        this.flagName = null;
+        this.blockName = null;
 
         return true;
     }
@@ -384,22 +390,14 @@ public class GoalLiberation extends ArenaGoal {
     }
 
     @Override
-    public boolean hasSpawn(final String string) {
-        for (final String teamName : this.arena.getTeamNames()) {
-            if (string.toLowerCase().startsWith(
-                    teamName.toLowerCase() + "spawn")) {
-                return true;
-            }
-            if (this.arena.getConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
-                for (final ArenaClass aClass : this.arena.getClasses()) {
-                    if (string.toLowerCase().startsWith(teamName.toLowerCase() +
-                            aClass.getName().toLowerCase() + "spawn")) {
-                        return true;
-                    }
-                }
-            }
-            if (string.toLowerCase().startsWith(
-                    teamName.toLowerCase() + "jail")) {
+    public boolean hasSpawn(final String spawnName, final String spawnTeamName) {
+        boolean hasSpawn = super.hasSpawn(spawnName, spawnTeamName);
+        if (hasSpawn) {
+            return true;
+        }
+
+        for (String teamName : this.arena.getTeamNames()) {
+            if (spawnName.equalsIgnoreCase(JAIL) && spawnTeamName.equalsIgnoreCase(teamName)) {
                 return true;
             }
         }
@@ -426,13 +424,13 @@ public class GoalLiberation extends ArenaGoal {
 
     @Override
     public void parseStart() {
-        for (final ArenaTeam team : this.arena.getTeams()) {
-            for (final ArenaPlayer arenaPlayer : team.getTeamMembers()) {
+        for (ArenaTeam team : this.arena.getTeams()) {
+            for (ArenaPlayer arenaPlayer : team.getTeamMembers()) {
                 this.getTeamLifeMap().put(arenaPlayer.getArenaTeam(),
                         this.arena.getConfig().getInt(CFG.GOAL_LLIVES_LIVES));
             }
         }
-        if (this.arena.getConfig().getBoolean(CFG.GOAL_LIBERATION_JAILEDSCOREBOARD)) {
+        if (this.arena.getConfig().getBoolean(CFG.GOAL_LIBERATION_JAILED_SCOREBOARD)) {
             this.arena.getScoreboard().addCustomEntry(null, Language.parse(MSG.GOAL_LIBERATION_SCOREBOARD_HEADING), 102);
             this.arena.getScoreboard().addCustomEntry(null, Language.parse(MSG.GOAL_LIBERATION_SCOREBOARD_SEPARATOR), 100);
         }
@@ -443,7 +441,7 @@ public class GoalLiberation extends ArenaGoal {
         this.endRunner = null;
         this.getTeamLifeMap().clear();
         this.keptItemsMap.clear();
-        if (this.arena.getConfig().getBoolean(CFG.GOAL_LIBERATION_JAILEDSCOREBOARD)) {
+        if (this.arena.getConfig().getBoolean(CFG.GOAL_LIBERATION_JAILED_SCOREBOARD)) {
             this.arena.getScoreboard().removeCustomEntry(null, 102);
             this.arena.getScoreboard().removeCustomEntry(null, 100);
         }
@@ -461,7 +459,7 @@ public class GoalLiberation extends ArenaGoal {
     @Override
     public Map<String, Double> timedEnd(final Map<String, Double> scores) {
 
-        for (final ArenaPlayer arenaPlayer : this.arena.getFighters()) {
+        for (ArenaPlayer arenaPlayer : this.arena.getFighters()) {
             double score = this.getTeamLifeMap().getOrDefault(arenaPlayer.getArenaTeam(), 0);
             if (arenaPlayer.getArenaTeam() == null) {
                 continue;

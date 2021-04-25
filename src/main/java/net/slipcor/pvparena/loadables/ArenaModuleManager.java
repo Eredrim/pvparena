@@ -4,6 +4,8 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.classes.PABlock;
+import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.classes.PADeathInfo;
 import net.slipcor.pvparena.loader.JarLoader;
 import net.slipcor.pvparena.loader.Loadable;
@@ -59,14 +61,14 @@ public class ArenaModuleManager {
     }
 
     public static void announce(final Arena arena, final String message, final String type) {
-        for (final ArenaModule mod : arena.getMods()) {
+        for (ArenaModule mod : arena.getMods()) {
             mod.announce(message, type);
         }
     }
 
     public static boolean cannotSelectClass(final Arena arena, final Player player,
                                             final String className) {
-        for (final ArenaModule mod : arena.getMods()) {
+        for (ArenaModule mod : arena.getMods()) {
             if (mod.cannotSelectClass(player, className)) {
                 return true;
             }
@@ -75,7 +77,7 @@ public class ArenaModuleManager {
     }
 
     public static boolean checkCountOverride(Arena arena, Player player, String message) {
-        for (final ArenaModule mod : arena.getMods()) {
+        for (ArenaModule mod : arena.getMods()) {
             if (mod.checkCountOverride(player, message)) {
                 return true;
             }
@@ -83,21 +85,28 @@ public class ArenaModuleManager {
         return false;
     }
 
-    public static Set<String> checkForMissingSpawns(final Arena arena, final Set<String> spawnsNames) {
+    public static Set<PASpawn> checkForMissingSpawns(Arena arena, final Set<PASpawn> spawns) {
         return arena.getMods().stream()
-                .map(arenaModule -> arenaModule.checkForMissingSpawns(spawnsNames))
+                .map(arenaModule -> arenaModule.checkForMissingSpawns(spawns))
+                .flatMap(Collection::stream)
+                .collect(Collectors.toSet());
+    }
+
+    public static Set<PABlock> checkForMissingBlocks(Arena arena, final Set<PABlock> blocks) {
+        return arena.getMods().stream()
+                .map(arenaModule -> arenaModule.checkForMissingBlocks(blocks))
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
     }
 
     public static void choosePlayerTeam(final Arena arena, final Player player, final String coloredTeam) {
-        for (final ArenaModule mod : arena.getMods()) {
+        for (ArenaModule mod : arena.getMods()) {
             mod.choosePlayerTeam(player, coloredTeam);
         }
     }
 
     public static boolean commitEnd(final Arena arena, final ArenaTeam aTeam) {
-        for (final ArenaModule mod : arena.getMods()) {
+        for (ArenaModule mod : arena.getMods()) {
             if (mod.commitEnd(aTeam)) {
                 return true;
             }
@@ -106,86 +115,86 @@ public class ArenaModuleManager {
     }
 
     public static void configParse(final Arena arena, final YamlConfiguration config) {
-        for (final ArenaModule mod : arena.getMods()) {
+        for (ArenaModule mod : arena.getMods()) {
             mod.configParse(config);
         }
     }
 
     public static void giveRewards(final Arena arena, final Player player) {
-        for (final ArenaModule mod : arena.getMods()) {
+        for (ArenaModule mod : arena.getMods()) {
             mod.giveRewards(player);
         }
     }
 
     public static void initiate(final Arena arena, final Player player) {
-        for (final ArenaModule mod : arena.getMods()) {
+        for (ArenaModule mod : arena.getMods()) {
             mod.initiate(player);
         }
     }
 
     public static void lateJoin(final Arena arena, final Player player) {
-        for (final ArenaModule mod : arena.getMods()) {
+        for (ArenaModule mod : arena.getMods()) {
             mod.lateJoin(player);
         }
     }
 
     public static void onBlockBreak(final Arena arena, final Block block) {
-        for (final ArenaModule mod : arena.getMods()) {
+        for (ArenaModule mod : arena.getMods()) {
             mod.onBlockBreak(block);
         }
     }
 
     public static void onBlockChange(final Arena arena, final Block block, final BlockState state) {
-        for (final ArenaModule mod : arena.getMods()) {
+        for (ArenaModule mod : arena.getMods()) {
             mod.onBlockChange(block, state);
         }
     }
 
     public static void onBlockPiston(final Arena arena, final BlockPistonExtendEvent event) {
-        for (final ArenaModule mod : arena.getMods()) {
+        for (ArenaModule mod : arena.getMods()) {
             mod.onBlockPiston(event);
         }
     }
 
     public static void onBlockPlace(final Arena arena, final Block block, final Material mat) {
-        for (final ArenaModule mod : arena.getMods()) {
+        for (ArenaModule mod : arena.getMods()) {
             mod.onBlockPlace(block, mat);
         }
     }
 
     public static void onEntityDamageByEntity(final Arena arena, final Player attacker,
                                               final Player defender, final EntityDamageByEntityEvent event) {
-        for (final ArenaModule mod : arena.getMods()) {
+        for (ArenaModule mod : arena.getMods()) {
             mod.onEntityDamageByEntity(attacker, defender, event);
         }
     }
 
     public static void onProjectileHit(final Arena arena, final Player attacker, final Player defender, final ProjectileHitEvent event) {
-        for (final ArenaModule mod : arena.getMods()) {
+        for (ArenaModule mod : arena.getMods()) {
             mod.onProjectileHit(attacker, defender, event);
         }
     }
 
     public static void onEntityExplode(final Arena arena, final EntityExplodeEvent event) {
-        for (final ArenaModule mod : arena.getMods()) {
+        for (ArenaModule mod : arena.getMods()) {
             mod.onEntityExplode(event);
         }
     }
 
     public static void onEntityRegainHealth(final Arena arena, final EntityRegainHealthEvent event) {
-        for (final ArenaModule mod : arena.getMods()) {
+        for (ArenaModule mod : arena.getMods()) {
             mod.onEntityRegainHealth(event);
         }
     }
 
     public static void onPaintingBreak(final Arena arena, final Hanging painting, final EntityType type) {
-        for (final ArenaModule mod : arena.getMods()) {
+        for (ArenaModule mod : arena.getMods()) {
             mod.onPaintingBreak(painting, type);
         }
     }
 
     public static boolean onPlayerInteract(final Arena arena, final PlayerInteractEvent event) {
-        for (final ArenaModule mod : arena.getMods()) {
+        for (ArenaModule mod : arena.getMods()) {
             if (mod.onPlayerInteract(event)) {
                 return true;
             }
@@ -195,20 +204,20 @@ public class ArenaModuleManager {
 
     public static void onPlayerPickupItem(final Arena arena, final EntityPickupItemEvent event) {
         if (event.getEntity() instanceof Player) {
-            for (final ArenaModule mod : arena.getMods()) {
+            for (ArenaModule mod : arena.getMods()) {
                 mod.onPlayerPickupItem(event);
             }
         }
     }
 
     public static void onPlayerVelocity(final Arena arena, final PlayerVelocityEvent event) {
-        for (final ArenaModule mod : arena.getMods()) {
+        for (ArenaModule mod : arena.getMods()) {
             mod.onPlayerVelocity(event);
         }
     }
 
     public static void parseClassChange(Arena arena, Player player, ArenaClass aClass) {
-        for (final ArenaModule mod : arena.getMods()) {
+        for (ArenaModule mod : arena.getMods()) {
             mod.parseClassChange(player, aClass);
         }
     }
@@ -218,7 +227,7 @@ public class ArenaModuleManager {
             return seconds;
         }
         Integer result = seconds;
-        for (final ArenaModule mod : arena.getMods()) {
+        for (ArenaModule mod : arena.getMods()) {
             result = mod.parseStartCountDown(result, message, global);
         }
         return result;
@@ -226,26 +235,26 @@ public class ArenaModuleManager {
 
     public static void parseJoin(final Arena arena, final Player player,
                                  final ArenaTeam team) {
-        for (final ArenaModule mod : arena.getMods()) {
+        for (ArenaModule mod : arena.getMods()) {
             mod.parseJoin(player, team);
         }
     }
 
     public static void parsePlayerDeath(final Arena arena, final Player player,
                                         final EntityDamageEvent cause) {
-        for (final ArenaModule mod : arena.getMods()) {
+        for (ArenaModule mod : arena.getMods()) {
             mod.parsePlayerDeath(player, cause);
         }
     }
 
     public static void parsePlayerLeave(final Arena arena, final Player player, final ArenaTeam team) {
-        for (final ArenaModule mod : arena.getMods()) {
+        for (ArenaModule mod : arena.getMods()) {
             mod.parsePlayerLeave(player, team);
         }
     }
 
     public static void parseRespawn(Arena arena, Player player, ArenaTeam team, PADeathInfo deathInfo) {
-        for (final ArenaModule mod : arena.getMods()) {
+        for (ArenaModule mod : arena.getMods()) {
             try {
                 mod.parseRespawn(player, team, deathInfo.getCause(), deathInfo.getDamager());
             } catch (final Exception e) {
@@ -255,31 +264,31 @@ public class ArenaModuleManager {
     }
 
     public static void reset(final Arena arena, final boolean force) {
-        for (final ArenaModule mod : arena.getMods()) {
+        for (ArenaModule mod : arena.getMods()) {
             mod.reset(force);
         }
     }
 
     public static void resetPlayer(final Arena arena, final Player player, final boolean soft, final boolean force) {
-        for (final ArenaModule mod : arena.getMods()) {
+        for (ArenaModule mod : arena.getMods()) {
             mod.resetPlayer(player, soft, force);
         }
     }
 
     public static void timedEnd(final Arena arena, final Set<String> result) {
-        for (final ArenaModule mod : arena.getMods()) {
+        for (ArenaModule mod : arena.getMods()) {
             mod.timedEnd(result);
         }
     }
 
-    public static void tpPlayerToCoordName(final Arena arena, final Player player, final String place) {
-        for (final ArenaModule mod : arena.getMods()) {
-            mod.tpPlayerToCoordName(player, place);
+    public static void teleportPlayer(final Arena arena, final Player player, final PASpawn place) {
+        for (ArenaModule mod : arena.getMods()) {
+            mod.teleportPlayer(player, place);
         }
     }
 
     public static void unload(final Arena arena, final Player player) {
-        for (final ArenaModule mod : arena.getMods()) {
+        for (ArenaModule mod : arena.getMods()) {
             mod.unload(player);
         }
     }

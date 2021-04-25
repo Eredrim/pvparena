@@ -15,6 +15,8 @@ import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.InventoryManager;
+import net.slipcor.pvparena.managers.TeleportManager;
+import net.slipcor.pvparena.managers.WorkflowManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.WorkflowManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
@@ -78,9 +80,9 @@ public class GoalInfect extends ArenaGoal {
     }
 
     private boolean anyTeamEmpty() {
-        for (final ArenaTeam team : this.arena.getTeams()) {
+        for (ArenaTeam team : this.arena.getTeams()) {
             boolean bbreak = false;
-            for (final ArenaPlayer player : team.getTeamMembers()) {
+            for (ArenaPlayer player : team.getTeamMembers()) {
                 if (player.getStatus() == PlayerStatus.FIGHT) {
                     bbreak = true;
                     break;
@@ -96,12 +98,12 @@ public class GoalInfect extends ArenaGoal {
     }
 
     @Override
-    public Set<String> checkForMissingSpawns(final Set<String> spawnNames) {
+    public Set<PASpawn> checkForMissingSpawns(Set<PASpawn> spawns) {
 
-        Set<String> errors = this.checkForMissingFFACustom(spawnNames, INFECTED);
-        errors.addAll(this.checkForMissingFFASpawn(spawnNames));
+        Set<PASpawn> missing = SpawnManager.getMissingFFACustom(spawns, INFECTED);
+        missing.addAll(SpawnManager.getMissingFFASpawn(this.arena, spawns));
 
-        return errors;
+        return missing;
     }
 
     @Override
@@ -309,8 +311,8 @@ public class GoalInfect extends ArenaGoal {
         final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "");
         Bukkit.getPluginManager().callEvent(gEvent);
 
-        for (final ArenaTeam team : this.arena.getTeams()) {
-            for (final ArenaPlayer arenaPlayer : team.getTeamMembers()) {
+        for (ArenaTeam team : this.arena.getTeams()) {
+            for (ArenaPlayer arenaPlayer : team.getTeamMembers()) {
                 if (arenaPlayer.getStatus() != PlayerStatus.FIGHT) {
                     continue;
                 }
@@ -436,8 +438,8 @@ public class GoalInfect extends ArenaGoal {
     @Override
     public void commitStart() {
         this.parseStart(); // hack the team in before spawning, derp!
-        for (final ArenaTeam team : this.arena.getTeams()) {
-            SpawnManager.distribute(this.arena, team);
+        for (ArenaTeam team : this.arena.getTeams()) {
+            SpawnManager.distributeTeams(this.arena, team);
         }
     }
 
@@ -455,18 +457,10 @@ public class GoalInfect extends ArenaGoal {
     }
 
     @Override
-    public boolean hasSpawn(final String string) {
+    public boolean hasSpawn(final String spawnName, final String spawnTeamName) {
+        boolean hasSpawn = super.hasSpawn(spawnName, spawnTeamName);
 
-        if (this.arena.getConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
-            for (final ArenaClass aClass : this.arena.getClasses()) {
-                if (string.toLowerCase().startsWith(
-                        aClass.getName().toLowerCase() + SPAWN)) {
-                    return true;
-                }
-            }
-        }
-
-        return string.toLowerCase().startsWith(SPAWN) || string.toLowerCase().startsWith(INFECTED);
+        return hasSpawn || spawnName.startsWith(INFECTED);
     }
 
     @Override
@@ -497,10 +491,10 @@ public class GoalInfect extends ArenaGoal {
         // select starting infected players
         ArenaPlayer infected = null;
         final Random random = new Random();
-        for (final ArenaTeam team : this.arena.getNotEmptyTeams()) {
+        for (ArenaTeam team : this.arena.getNotEmptyTeams()) {
             int pos = random.nextInt(team.getTeamMembers().size());
             debug(this.arena, "team " + team.getName() + " random " + pos);
-            for (final ArenaPlayer arenaPlayer : team.getTeamMembers()) {
+            for (ArenaPlayer arenaPlayer : team.getTeamMembers()) {
                 debug(this.arena, arenaPlayer.getPlayer(), "#" + pos + ": " + arenaPlayer);
                 this.getPlayerLifeMap().put(arenaPlayer.getPlayer(),
                         this.arena.getConfig().getInt(CFG.GOAL_INFECTED_NLIVES));
@@ -513,7 +507,7 @@ public class GoalInfect extends ArenaGoal {
         }
 
         assert infected != null;
-        for (final ArenaTeam arenaTeam : this.arena.getNotEmptyTeams()) {
+        for (ArenaTeam arenaTeam : this.arena.getNotEmptyTeams()) {
             if (arenaTeam.getTeamMembers().contains(infected)) {
                 final PATeamChangeEvent tcEvent = new PATeamChangeEvent(this.arena, infected.getPlayer(), arenaTeam, this.infectedTeam);
                 Bukkit.getPluginManager().callEvent(tcEvent);
@@ -528,7 +522,7 @@ public class GoalInfect extends ArenaGoal {
             infected.setArenaClass(infectedClass);
             InventoryManager.clearInventory(infected.getPlayer());
             infectedClass.equip(infected.getPlayer());
-            for (final ArenaModule mod : this.arena.getMods()) {
+            for (ArenaModule mod : this.arena.getMods()) {
                 mod.parseRespawn(infected.getPlayer(), this.infectedTeam, DamageCause.CUSTOM,
                         infected.getPlayer());
             }
@@ -539,14 +533,7 @@ public class GoalInfect extends ArenaGoal {
 
         final Set<PASpawn> spawns = new HashSet<>(SpawnManager.getPASpawnsStartingWith(this.arena, INFECTED));
 
-        int pos = spawns.size();
-
-        for (final PASpawn spawn : spawns) {
-            if (pos-- < 0) {
-                this.arena.tpPlayerToCoordName(infected, spawn.getName());
-                break;
-            }
-        }
+        TeleportManager.teleportPlayerToRandomSpawn(this.arena, infected, spawns);
         this.arena.getTeams().add(this.infectedTeam);
     }
 
@@ -560,7 +547,7 @@ public class GoalInfect extends ArenaGoal {
     @Override
     public Map<String, Double> timedEnd(final Map<String, Double> scores) {
 
-        for (final ArenaPlayer arenaPlayer : this.arena.getFighters()) {
+        for (ArenaPlayer arenaPlayer : this.arena.getFighters()) {
             double score = this.getPlayerLifeMap().getOrDefault(arenaPlayer.getPlayer(), 0);
             if (arenaPlayer.getArenaTeam() != null && INFECTED.equals(arenaPlayer.getArenaTeam().getName())) {
                 score *= this.arena.getFighters().size();

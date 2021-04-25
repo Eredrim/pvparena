@@ -11,11 +11,15 @@ import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.managers.SpawnManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.Optional.ofNullable;
+import static net.slipcor.pvparena.config.Debugger.debug;
 
 /**
  * <pre>PVP Arena SPAWN Command class</pre>
@@ -27,12 +31,10 @@ import java.util.Set;
  */
 
 public class PAA_Spawn extends AbstractArenaCommand {
-    private static final Set<String> spawns = new HashSet<>();
 
-    static {
-        spawns.add("exit");
-        spawns.add("spectator");
-    }
+    private static final List<String> DEFAULTS_SPAWNS = Stream.of("exit", "spectator").collect(Collectors.toList());
+
+    public static final String DECIMAL = "decimal";
 
     public PAA_Spawn() {
         super(new String[]{"pvparena.cmds.spawn"});
@@ -44,7 +46,7 @@ public class PAA_Spawn extends AbstractArenaCommand {
             return;
         }
 
-        if (!argCountValid(sender, arena, args, new Integer[]{1, 2, 5})) {
+        if (!argCountValid(sender, arena, args, new Integer[]{1, 2, 3, 4, 5})) {
             return;
         }
 
@@ -53,86 +55,137 @@ public class PAA_Spawn extends AbstractArenaCommand {
             return;
         }
 
-        if (args.length < 2) {
+        Player player = (Player) sender;
+        String spawnName = args[0];
+
+        if (args.length == 1) {
             // usage: /pa {arenaname} spawn [spawnname] | set a spawn
-
-            final ArenaPlayer aPlayer = ArenaPlayer.fromPlayer((Player) sender);
-
-            if (spawns.contains(args[0])) {
-                this.commitSet(arena, sender, new PALocation(aPlayer.getPlayer().getLocation()), args[0]);
-                return;
-            }
-
-            for (final ArenaModule mod : arena.getMods()) {
-                if (mod.hasSpawn(args[0])) {
-                    this.commitSet(arena, sender, new PALocation(aPlayer.getPlayer().getLocation()), args[0]);
-                    return;
-                }
-            }
-
-            if (arena.getGoal() == null) {
-                arena.msg(sender, MSG.ERROR_NO_GOAL);
-                return;
-            }
-
-            if (arena.getGoal().hasSpawn(args[0])) {
-                this.commitSet(arena, sender, new PALocation(aPlayer.getPlayer().getLocation()), args[0]);
-                return;
-            }
-
-            arena.msg(sender, MSG.ERROR_SPAWN_UNKNOWN, args[0]);
-
-        } else if ("remove".equalsIgnoreCase(args[1])) {
-            // usage: /pa {arenaname} spawn [spawnname] remove | remove a spawn
-            final PALocation loc = SpawnManager.getSpawnByExactName(arena, args[0]);
-            if (loc == null) {
-                arena.msg(sender, MSG.SPAWN_NOTSET, args[0]);
-            } else {
-                arena.msg(sender, MSG.SPAWN_REMOVED, args[0]);
-                arena.spawnUnset(args[0]);
-            }
-        } else if ("offset".equalsIgnoreCase(args[1]) && args.length>4) {
-            // usage: /pa {arenaname} spawn [spawnname] offset X Y Z | offset a spawn
-            final PALocation loc = SpawnManager.getSpawnByExactName(arena, args[0]);
-            if (loc == null) {
-                arena.msg(sender, MSG.SPAWN_UNKNOWN, args[0]);
-            } else {
-                double x,y,z;
-
-                try {
-                    x = Double.parseDouble(args[2]);
-                } catch (Exception e) {
-                    arena.msg(sender, MSG.ERROR_ARGUMENT_TYPE, args[2], "decimal");
-                    return;
-                }
-
-                try {
-                    y = Double.parseDouble(args[3]);
-                } catch (Exception e) {
-                    arena.msg(sender, MSG.ERROR_ARGUMENT_TYPE, args[3], "decimal");
-                    return;
-                }
-
-                try {
-                    z = Double.parseDouble(args[4]);
-                } catch (Exception e) {
-                    arena.msg(sender, MSG.ERROR_ARGUMENT_TYPE, args[4], "decimal");
-                    return;
-                }
-
-                arena.getConfig().setOffset(args[0], x, y, z);
-
-                arena.msg(sender, Language.parse(MSG.SPAWN_OFFSET, args[0],
-                        String.format("%.1f", x)+", "+String.format("%.1f", y)+", "+String.format("%.1f", z)+" (x, y, z)"));
-            }
+            addSpawn(player, arena, spawnName, null, null);
         } else {
-            this.displayHelp(sender);
+            if ("remove".equals(args[1])) {
+                removeSpawn(arena, args, player, spawnName);
+            } else if ("offset".equals(args[1])) {
+                setOffset(arena, args, player, spawnName);
+            } else {
+                addSpawn(arena, args, player, spawnName);
+            }
         }
     }
 
-    private void commitSet(final Arena arena, final CommandSender sender, final PALocation loc, final String name) {
-        arena.spawnSet(name, loc);
-        arena.msg(sender, MSG.SPAWN_SET, name);
+    private void setOffset(Arena arena, String[] args, Player player, String spawnName) {
+        // usage: /pa {arenaname} spawn [spawnname] offset X Y Z | offset a spawn
+        final PALocation loc = SpawnManager.getSpawnByExactName(arena, spawnName);
+        if (loc == null) {
+            arena.msg(player, MSG.SPAWN_UNKNOWN, spawnName);
+        } else {
+            double x, y, z;
+
+            try {
+                x = Double.parseDouble(args[2]);
+            } catch (Exception e) {
+                arena.msg(player, MSG.ERROR_ARGUMENT_TYPE, args[2], DECIMAL);
+                return;
+            }
+
+            try {
+                y = Double.parseDouble(args[3]);
+            } catch (Exception e) {
+                arena.msg(player, MSG.ERROR_ARGUMENT_TYPE, args[3], DECIMAL);
+                return;
+            }
+
+            try {
+                z = Double.parseDouble(args[4]);
+            } catch (Exception e) {
+                arena.msg(player, MSG.ERROR_ARGUMENT_TYPE, args[4], DECIMAL);
+                return;
+            }
+
+            arena.getConfig().setOffset(spawnName, x, y, z);
+
+            arena.msg(player, Language.parse(MSG.SPAWN_OFFSET, spawnName,
+                    String.format("%.1f", x) + ", " + String.format("%.1f", y) + ", " + String.format("%.1f", z) + " (x, y, z)"));
+        }
+    }
+
+    private void removeSpawn(Arena arena, String[] args, Player player, String spawnName) {
+        String teamName = null;
+        if (args.length > 2) {
+            teamName = args[2];
+            if (arena.getTeam(teamName) == null) {
+                arena.msg(player, MSG.ERROR_TEAM_NOT_FOUND, teamName);
+                return;
+            }
+        }
+        String className = null;
+        if (args.length > 3) {
+            className = args[3];
+            if (arena.getClass(className) == null) {
+                arena.msg(player, MSG.ERROR_CLASS_NOT_FOUND, className);
+                return;
+            }
+        }
+        // usage: /pa {arenaname} spawn [spawnname] remove (team) (class) | remove a spawn
+        final PALocation location = SpawnManager.getSpawnByExactName(arena, spawnName, teamName, className);
+        if (location == null) {
+            arena.msg(player, MSG.SPAWN_NOTSET, spawnName);
+        } else {
+            arena.msg(player, MSG.SPAWN_REMOVED, spawnName);
+            arena.clearSpawn(spawnName, teamName, className);
+        }
+    }
+
+    private void addSpawn(Arena arena, String[] args, Player player, String spawnName) {
+        String teamName;
+        String className;
+        // usage: /pa {arenaname} spawn [spawnname] (teamName) (className) | set a spawn (for team) (for a specific class)
+        teamName = args[1];
+        if (arena.getTeam(teamName) == null) {
+            arena.msg(player, MSG.ERROR_TEAM_NOT_FOUND, teamName);
+            return;
+        }
+        className = null;
+        if (args.length > 2) {
+            className = args[2];
+            if (arena.getClass(className) == null) {
+                arena.msg(player, MSG.ERROR_CLASS_NOT_FOUND, className);
+                return;
+            }
+        }
+        addSpawn(player, arena, spawnName, teamName, className);
+    }
+
+    private void addSpawn(Player player, Arena arena, String spawnName, String teamName, String className) {
+        debug("Adding spawn \"{}\" for team \"{}\" and class \"{}\"", spawnName, teamName, className);
+        ArenaPlayer arenaPlayer = ArenaPlayer.fromPlayer(player);
+        if (DEFAULTS_SPAWNS.stream().anyMatch(spawnName::startsWith)) {
+            this.commitSet(arena, player, new PALocation(arenaPlayer.getPlayer().getLocation()), spawnName, teamName, className);
+            return;
+        }
+
+        if (arena.getGoal() != null && arena.getGoal().hasSpawn(spawnName, teamName)) {
+            this.commitSet(arena, player, new PALocation(arenaPlayer.getPlayer().getLocation()), spawnName, teamName, className);
+            return;
+        }
+
+        for (ArenaModule mod : arena.getMods()) {
+            if (mod.hasSpawn(spawnName, teamName)) {
+                this.commitSet(arena, player, new PALocation(arenaPlayer.getPlayer().getLocation()), spawnName, teamName, className);
+                return;
+            }
+        }
+
+        arena.msg(player, MSG.ERROR_SPAWN_UNKNOWN, spawnName);
+    }
+
+    private void commitSet(@NotNull  Arena arena, @NotNull  CommandSender sender, @NotNull  PALocation loc, @NotNull String name, String teamName, String className) {
+        boolean replaced = arena.setSpawn(name, loc, teamName, className);
+        if (replaced) {
+            arena.msg(sender, MSG.SPAWN_REMOVED, name, ofNullable(teamName)
+                    .map(optTeamName -> arena.getTeam(optTeamName).getColoredName()).orElse(""), ofNullable(className).orElse(""));
+        }
+        arena.msg(sender, MSG.SPAWN_SET, name, ofNullable(teamName)
+                .map(optTeamName -> arena.getTeam(optTeamName).getColoredName()).orElse(""), ofNullable(className).orElse(""));
     }
 
     @Override
@@ -158,16 +211,35 @@ public class PAA_Spawn extends AbstractArenaCommand {
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
         final CommandTree<String> result = new CommandTree<>(null);
-        for (final String spawn : spawns) {
-            result.define(new String[]{spawn});
-        }
 
         if (arena == null) {
             return result;
         }
-        for (final PASpawn spawn : arena.getSpawns()) {
+
+        // spawns already set to arena
+        for (PASpawn spawn : arena.getSpawns()) {
             result.define(new String[]{spawn.getName()});
         }
+
+        // default spawns
+        for (String spawn : DEFAULTS_SPAWNS) {
+            result.define(new String[]{spawn});
+        }
+
+        // missing goal spawns
+        if (arena.getGoal() != null) {
+            for (PASpawn spawn : arena.getGoal().checkForMissingSpawns(arena.getSpawns())) {
+                result.define(new String[]{spawn.getName()});
+            }
+        }
+
+        // missing module spawns
+        for (ArenaModule mod : arena.getMods()) {
+            for (PASpawn spawn : mod.checkForMissingSpawns(arena.getSpawns())) {
+                result.define(new String[]{spawn.getName()});
+            }
+        }
+
         return result;
     }
 }

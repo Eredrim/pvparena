@@ -4,6 +4,7 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.arena.PlayerStatus;
 import net.slipcor.pvparena.classes.PADeathInfo;
 import net.slipcor.pvparena.core.Config.CFG;
@@ -13,6 +14,8 @@ import net.slipcor.pvparena.events.PAGoalEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.ArenaManager;
+import net.slipcor.pvparena.managers.InventoryManager;
+import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.WorkflowManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
 import org.bukkit.Bukkit;
@@ -66,8 +69,8 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
     }
 
     @Override
-    public Set<String> checkForMissingSpawns(final Set<String> spawnsNames) {
-        return this.checkForMissingTeamSpawn(spawnsNames);
+    public Set<PASpawn> checkForMissingSpawns(Set<PASpawn> spawns) {
+        return SpawnManager.getMissingTeamSpawn(this.arena, spawns);
     }
 
     @Override
@@ -86,8 +89,8 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
         }
         final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "");
         Bukkit.getPluginManager().callEvent(gEvent);
-        for (final ArenaTeam team : this.arena.getTeams()) {
-            for (final ArenaPlayer ap : team.getTeamMembers()) {
+        for (ArenaTeam team : this.arena.getTeams()) {
+            for (ArenaPlayer ap : team.getTeamMembers()) {
                 if (ap.getStatus() != PlayerStatus.FIGHT) {
                     continue;
                 }
@@ -168,13 +171,13 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 
             // player has won!
             final Set<ArenaPlayer> arenaPlayers = new HashSet<>();
-            for (final ArenaPlayer arenaPlayer : this.arena.getFighters()) {
+            for (ArenaPlayer arenaPlayer : this.arena.getFighters()) {
                 if (arenaPlayer.getName().equals(killer.getName())) {
                     continue;
                 }
                 arenaPlayers.add(arenaPlayer);
             }
-            for (final ArenaPlayer arenaPlayer : arenaPlayers) {
+            for (ArenaPlayer arenaPlayer : arenaPlayers) {
                 this.getPlayerLifeMap().remove(arenaPlayer.getPlayer());
 
                 arenaPlayer.addLosses();
@@ -211,20 +214,6 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
     }
 
     @Override
-    public boolean hasSpawn(final String string) {
-
-        if (this.arena.getConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
-            for (final ArenaClass aClass : this.arena.getClasses()) {
-                if (string.toLowerCase().startsWith(
-                        aClass.getName().toLowerCase() + "spawn")) {
-                    return true;
-                }
-            }
-        }
-        return string.toLowerCase().startsWith("spawn");
-    }
-
-    @Override
     public void initiate(final Player player) {
         this.updateLives(player, this.arena.getConfig().getInt(CFG.GOAL_PDM_LIVES));
     }
@@ -248,8 +237,8 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 
     @Override
     public void parseStart() {
-        for (final ArenaTeam team : this.arena.getTeams()) {
-            for (final ArenaPlayer ap : team.getTeamMembers()) {
+        for (ArenaTeam team : this.arena.getTeams()) {
+            for (ArenaPlayer ap : team.getTeamMembers()) {
                 this.updateLives(ap.getPlayer(), this.arena.getConfig().getInt(CFG.GOAL_PDM_LIVES));
             }
         }
@@ -264,7 +253,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
     @Override
     public Map<String, Double> timedEnd(final Map<String, Double> scores) {
 
-        for (final ArenaPlayer arenaPlayer : this.arena.getFighters()) {
+        for (ArenaPlayer arenaPlayer : this.arena.getFighters()) {
             double score = this.arena.getConfig().getInt(CFG.GOAL_PDM_LIVES)
                     - (this.getPlayerLifeMap()
                     .getOrDefault(arenaPlayer.getPlayer(), 0));

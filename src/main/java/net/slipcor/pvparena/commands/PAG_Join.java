@@ -3,6 +3,7 @@ package net.slipcor.pvparena.commands;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.core.CollectionUtils;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
@@ -15,6 +16,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import static net.slipcor.pvparena.config.Debugger.debug;
 
@@ -66,9 +68,9 @@ public class PAG_Join extends AbstractArenaCommand {
             return;
         }
 
-        final String error = ConfigurationManager.isSetup(arena);
-        if (error != null) {
-            arena.msg(sender, MSG.ERROR_ERROR, error);
+        final Set<String> errors = ConfigurationManager.isSetup(arena);
+        if (CollectionUtils.isNotEmpty(errors)) {
+            errors.forEach(error -> arena.msg(sender, MSG.ERROR_ERROR, error));
             return;
         }
 
@@ -123,7 +125,7 @@ public class PAG_Join extends AbstractArenaCommand {
             return result;
         }
         if (!arena.isFreeForAll()) {
-            for (final String team : arena.getTeamNames()) {
+            for (String team : arena.getTeamNames()) {
                 result.define(new String[]{team});
             }
         }

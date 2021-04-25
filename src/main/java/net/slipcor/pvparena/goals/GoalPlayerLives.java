@@ -5,11 +5,13 @@ import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.arena.PlayerStatus;
+import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
+import net.slipcor.pvparena.managers.SpawnManager;
 
 import java.util.Map;
 import java.util.Set;
@@ -52,13 +54,13 @@ public class GoalPlayerLives extends AbstractPlayerLivesGoal {
     }
 
     @Override
-    public Set<String> checkForMissingSpawns(final Set<String> list) {
-        return this.checkForMissingFFASpawn(list);
+    public Set<PASpawn> checkForMissingSpawns(Set<PASpawn> spawns) {
+        return SpawnManager.getMissingFFASpawn(this.arena, spawns);
     }
 
     @Override
     protected void broadcastEndMessagesIfNeeded(ArenaTeam teamToCheck) {
-        for (final ArenaPlayer arenaPlayer : teamToCheck.getTeamMembers()) {
+        for (ArenaPlayer arenaPlayer : teamToCheck.getTeamMembers()) {
             if (arenaPlayer.getStatus() == PlayerStatus.FIGHT) {
                 ArenaModuleManager.announce(this.arena,
                         Language.parse(MSG.PLAYER_HAS_WON, arenaPlayer.getName()),
@@ -78,21 +80,9 @@ public class GoalPlayerLives extends AbstractPlayerLivesGoal {
     }
 
     @Override
-    public boolean hasSpawn(final String string) {
-        if (this.arena.getConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
-            for (final ArenaClass aClass : this.arena.getClasses()) {
-                if (string.toLowerCase().startsWith(aClass.getName().toLowerCase() + SPAWN)) {
-                    return true;
-                }
-            }
-        }
-        return string.toLowerCase().startsWith(SPAWN);
-    }
-
-    @Override
     public Map<String, Double> timedEnd(final Map<String, Double> scores) {
 
-        for (final ArenaPlayer ap : this.arena.getFighters()) {
+        for (ArenaPlayer ap : this.arena.getFighters()) {
             double score = this.getPlayerLifeMap().getOrDefault(ap.getPlayer(), 0);
             if (scores.containsKey(ap.getName())) {
                 scores.put(ap.getName(), scores.get(ap.getName()) + score);

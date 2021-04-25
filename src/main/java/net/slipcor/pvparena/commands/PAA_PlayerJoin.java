@@ -75,7 +75,7 @@ public class PAA_PlayerJoin extends AbstractArenaCommand {
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
         final CommandTree<String> result = new CommandTree<>(null);
-        for (final String team : arena.getTeamNames()) {
+        for (String team : arena.getTeamNames()) {
             result.define(new String[]{"{Player}", team});
         }
         return result;

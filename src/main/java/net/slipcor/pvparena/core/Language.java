@@ -152,6 +152,7 @@ public final class Language {
         ERROR_LOUNGEFREE("nulang.error.errorloungefree", "Error! Arena is not of type &efree&r. Use '[teamname]lounge'."),
         ERROR_MAT_NOT_FOUND("nulang.error.log.matnotfound", "Unrecognized material: %1%"),
         ERROR_MISSING_SPAWN("nulang.error.missingspawn", "Spawn(s) missing: &r%1%"),
+        ERROR_MISSING_BLOCK("nulang.error.missingblock", "Block(s) missing: &r%1%"),
         ERROR_MODULE_UPDATE("nulang.error.moduleupdate", "You need to set 'update.modules: true' to use this command!"),
         ERROR_NO_ARENAS("nulang.error.noarenas", "No arenas found!"),
         ERROR_NEGATIVES("nulang.error.valueneg", "Negative values: &c%1%&r"),
@@ -261,7 +262,7 @@ public final class Language {
         ERROR_SPAWN_UNKNOWN("nulang.error.spawn.unknown", "Unknown spawn: &a%1%&r"),
         ERROR_SPAWNFREE("nulang.error.spawnfree", "Error! Arena is of type &efree&r. Use 'spawnX' where X is a digit or letter!"),
         ERROR_STATS_FILE("nulang.error.statsfile", "Error while reading the stats file!"),
-        ERROR_TEAMNOTFOUND("nulang.error.teamnotfound", "Team not found: &a%1%&r"),
+        ERROR_TEAM_NOT_FOUND("nulang.error.teamnotfound", "Team not found: &a%1%&r"),
         ERROR_NO_TEAM_AVAILABLE("nulang.error.noteamavailable", "No Team available."),
         ERROR_UNINSTALL("nulang.error.uninstall", "Error while uninstalling: &a%1%&r"),
         ERROR_UNINSTALL2("nulang.error.uninstall2", "PVP Arena will try to uninstall on server restart!"),
@@ -306,6 +307,8 @@ public final class Language {
         INFO_HEAD_HEADLINE("nulang.info.head_headlin", "Arena Information about: &a%1%&r | [&a%2%&r]"),
         INFO_HEAD_TEAMS("nulang.info.head_teams", "Teams: &a%1%&r"),
         INFO_MOD_ACTIVE("nulang.info.mod_active", "Module: &a%1%&r"),
+        INFO_MOD_ENABLED("nulang.info.mod_enabled", "Module enabled: &a%1%&r"),
+        INFO_MOD_DISABLED("nulang.info.mod_disabled", "Module disabled: &a%1%&r"),
         INFO_MOD_INACTIVE("nulang.info.mod_inactive", "Module: &b%1%&r &7== INACTIVE =="),
         INFO_OWNER("nulang.info.owner", "Owner: &a%1%&r"),
         INFO_REGIONS("nulang.info.regions", "Regions: &a%1%&r"),
@@ -420,8 +423,8 @@ public final class Language {
         SPAWN_TEAMLOUNGE("nulang.spawn.teamlounge", "Lounge set: %1%"),
         SPAWN_NOTSET("nulang.spawn.notset", "Spawn not set: &a%1%&r"),
         SPAWN_OFFSET("nulang.spawn.offset", "Spawn &a%1%&r offset by &a%2%&r blocks."),
-        SPAWN_REMOVED("nulang.spawn.removed", "Spawn removed: &a%1%&r"),
-        SPAWN_SET("nulang.spawn.set", "Spawn set: &a%1%&r"),
+        SPAWN_REMOVED("nulang.spawn.removed", "Spawn removed: &a%1%&r %2% %3%"),
+        SPAWN_SET("nulang.spawn.set", "Spawn set: &a%1%&r %2% %3%"),
         SPAWN_SET_DONE("nulang.spawn.setdone", "Spawn setting done: &a%1%&r"),
         SPAWN_SET_START("nulang.spawn.setstart", "Spawn setting started: &a%1%&r"),
         SPAWN_UNKNOWN("nulang.spawn.unknown", "Spawn not found: &a%1%&r"),
@@ -482,8 +485,8 @@ public final class Language {
 
         GOAL_BLOCKDESTROY_TYPESET("nulang.goal.blockdestroy.typeset", "Blocktype set to: &e%1%"),
         GOAL_BLOCKDESTROY_SCORE("lang.goal.blockdestroy.score", "%1% destroyed the block of team %2%! Remaining destructions: %3%"),
-        GOAL_BLOCKDESTROY_SET("nulang.goal.blockdestroy.setflag", "Block set: %1%"),
-        GOAL_BLOCKDESTROY_TOSET("nulang.goal.blockdestroy.tosetflag", "Block to set: %1%"),
+        GOAL_BLOCKDESTROY_SET("nulang.goal.blockdestroy.setblock", "Block successfully set for team %2%&r"),
+        GOAL_BLOCKDESTROY_TOSET("nulang.goal.blockdestroy.tosetflag", "Left click to the block for team %2%&r"),
 
         GOAL_CHECKPOINTS_SCORE("nulang.goal.checkpoints.score", "%1% &ereached checkpoint #%2%!"),
         GOAL_CHECKPOINTS_YOUMISSED("nulang.goal.checkpoints.youmissed", "You missed checkpoint #%1%! This is #%2%"),
@@ -707,7 +710,7 @@ public final class Language {
         private String value;
 
         public static MSG getByNode(final String node) {
-            for (final MSG m : MSG.values()) {
+            for (MSG m : MSG.values()) {
                 if (m.node.equals(node)) {
                     return m;
                 }
@@ -734,7 +737,7 @@ public final class Language {
         }
 
         public static MSG getByName(final String string) {
-            for (final MSG m : MSG.values()) {
+            for (MSG m : MSG.values()) {
                 if (m.name().equals(string)) {
                     return m;
                 }
@@ -767,7 +770,7 @@ public final class Language {
             e.printStackTrace();
         }
 
-        for (final MSG m : MSG.values()) {
+        for (MSG m : MSG.values()) {
             config.addDefault(m.getNode(), m.toString());
         }
 
@@ -801,7 +804,7 @@ public final class Language {
         } catch (final Exception e) {
             e.printStackTrace();
         }
-        for (final MSG m : MSG.values()) {
+        for (MSG m : MSG.values()) {
             m.setValue(config.getString(m.getNode()));
         }
     }
@@ -861,7 +864,7 @@ public final class Language {
 
         int i = 0;
 
-        for (final String word : args) {
+        for (String word : args) {
             result = result.replace("%" + ++i + '%', word);
         }
 
@@ -890,7 +893,7 @@ public final class Language {
         trace("MSG: {}", message.name());
         String result = message.toString();
         int i = 0;
-        for (final String word : args) {
+        for (String word : args) {
             result = result.replace("%" + ++i + '%', word);
         }
         return StringParser.colorize(result);

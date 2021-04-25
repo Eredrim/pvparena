@@ -44,7 +44,7 @@ public class PAI_ArenaList extends AbstractGlobalCommand {
             names = ArenaManager.getColoredShortcuts();
         } else {
             names = new ArrayList<>();
-            for (final Arena a : ArenaManager.getArenasSorted()) {
+            for (Arena a : ArenaManager.getArenasSorted()) {
                 names.add((a.isLocked() ? "&c" : PAA_Edit.activeEdits.containsValue(a) || PAA_Setup.activeSetups.containsValue(a) ? "&e" : a.isFightInProgress() ? "&a" : "&f") + a.getName() + "&r");
             }
         }

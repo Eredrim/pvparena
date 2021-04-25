@@ -72,7 +72,7 @@ public class ArenaScoreboard {
             debug(this.arena, player, msg);
             try {
                 if (this.scoreboard != null) {
-                    for (final Team team : this.scoreboard.getTeams()) {
+                    for (Team team : this.scoreboard.getTeams()) {
                         if (team.hasEntry(player.getName())) {
                             team.removeEntry(player.getName());
                             if (soft) {
@@ -308,7 +308,7 @@ public class ArenaScoreboard {
 
     private void initCommonScoreboard(boolean addTeamEntry) {
         this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-        for (final ArenaTeam team : this.arena.getTeams()) {
+        for (ArenaTeam team : this.arena.getTeams()) {
             final Team sbTeam = this.scoreboard.registerNewTeam(team.getName());
             sbTeam.setPrefix(team.getColor().toString());
             sbTeam.setSuffix(ChatColor.RESET.toString());

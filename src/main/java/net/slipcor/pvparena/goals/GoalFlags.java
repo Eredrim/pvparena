@@ -102,10 +102,10 @@ public class GoalFlags extends AbstractFlagGoal {
             vLoc = block.getLocation().toVector();
             final ArenaTeam arenaTeam = arenaPlayer.getArenaTeam();
             debug(this.arena, player, "block: " + vLoc);
-            if (!SpawnManager.getBlocksStartingWith(this.arena, arenaTeam + "flag").isEmpty()) {
+            if (!SpawnManager.getBlocksStartingWith(this.arena,  "flag", arenaTeam.getName()).isEmpty()) {
                 vFlag = SpawnManager
                         .getBlockNearest(
-                                SpawnManager.getBlocksStartingWith(this.arena, arenaTeam + "flag"),
+                                SpawnManager.getBlocksStartingWith(this.arena, "flag", arenaTeam.getName()),
                                 new PABlockLocation(player.getLocation()))
                         .toLocation().toVector();
             } else {
@@ -191,7 +191,7 @@ public class GoalFlags extends AbstractFlagGoal {
             final Set<ArenaTeam> setTeam = new HashSet<>(this.arena.getTeams());
 
             setTeam.add(new ArenaTeam(TOUCHDOWN, "BLACK"));
-            for (final ArenaTeam arenaTeam : setTeam) {
+            for (ArenaTeam arenaTeam : setTeam) {
 
                 if (arenaTeam.equals(pTeam)) {
                     debug(this.arena, player, "equals!OUT! ");
@@ -212,11 +212,10 @@ public class GoalFlags extends AbstractFlagGoal {
                 vLoc = block.getLocation().toVector();
                 debug(this.arena, player, "block: " + vLoc);
 
-                if (!SpawnManager.getBlocksStartingWith(this.arena, arenaTeam + "flag").isEmpty()) {
+                if (!SpawnManager.getBlocksStartingWith(this.arena, "flag", arenaTeam.getName()).isEmpty()) {
                     vFlag = SpawnManager
                             .getBlockNearest(
-                                    SpawnManager.getBlocksStartingWith(this.arena, arenaTeam
-                                            + "flag"),
+                                    SpawnManager.getBlocksStartingWith(this.arena, "flag", arenaTeam.getName()),
                                     new PABlockLocation(player.getLocation()))
                             .toLocation().toVector();
                 }
@@ -364,7 +363,7 @@ public class GoalFlags extends AbstractFlagGoal {
     @Override
     public void parseStart() {
         this.getTeamLifeMap().clear();
-        for (final ArenaTeam team : this.arena.getTeams()) {
+        for (ArenaTeam team : this.arena.getTeams()) {
             if (!team.getTeamMembers().isEmpty()) {
                 debug(this.arena, "adding team " + team.getName());
                 // team is active

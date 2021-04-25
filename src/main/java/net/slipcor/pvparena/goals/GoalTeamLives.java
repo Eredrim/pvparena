@@ -94,7 +94,7 @@ public class GoalTeamLives extends AbstractTeamKillGoal {
 
         if (iLives <= 1) {
             this.getTeamLifeMap().remove(arenaTeam);
-            for (final ArenaPlayer ap : arenaTeam.getTeamMembers()) {
+            for (ArenaPlayer ap : arenaTeam.getTeamMembers()) {
                 if (ap.getStatus() == PlayerStatus.FIGHT) {
                     ap.setStatus(PlayerStatus.LOST);
                 }

@@ -112,7 +112,7 @@ public abstract class ArenaRunnable extends BukkitRunnable {
         if (this.global) {
             final Collection<? extends Player> players = Bukkit.getOnlinePlayers();
 
-            for (final Player p : players) {
+            for (Player p : players) {
                 try {
                     if (this.arena != null && this.arena.hasPlayer(p)) {
                         continue;
@@ -129,7 +129,7 @@ public abstract class ArenaRunnable extends BukkitRunnable {
         }
         if (this.arena != null) {
             final Set<ArenaPlayer> players = this.arena.getFighters();
-            for (final ArenaPlayer ap : players) {
+            for (ArenaPlayer ap : players) {
                 if (ap.getName().equals(this.sPlayer)) {
                     continue;
                 }

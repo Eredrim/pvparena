@@ -96,7 +96,7 @@ public class PAA_Modules extends AbstractGlobalCommand {
         Arena.pmsg(sender, "[" + ChatColor.GRAY + "uninstalled" + ChatColor.RESET + " | " + ChatColor.YELLOW + "installed" + ChatColor.RESET + "]");
         Arena.pmsg(sender, ChatColor.GREEN + "--- Installed Arena Mods ---->");
 
-        for (final String modName : getModInFilesFolder()) {
+        for (String modName : getModInFilesFolder()) {
             final boolean modLoaded = PVPArena.getInstance().getAmm().hasLoadable(modName);
             Arena.pmsg(sender, (modLoaded ? ChatColor.YELLOW : ChatColor.GRAY) + modName + ChatColor.RESET);
         }
@@ -172,7 +172,7 @@ public class PAA_Modules extends AbstractGlobalCommand {
      */
     private static Set<String> getModInFilesFolder() {
         Set<String> modList = new HashSet<>();
-        for (final File file : FILES_DIR.listFiles()) {
+        for (File file : FILES_DIR.listFiles()) {
             final String fileName = file.getName();
             if (fileName.startsWith("pa_m_") && fileName.endsWith(".jar")) {
                 String modName = fileName.substring(5, fileName.length() - 4);

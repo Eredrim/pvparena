@@ -252,7 +252,7 @@ public final class Help {
                 LINE,
                 "shorthand command: !sp",
                 LINE,
-                "/pa [arenaname] spawn [spawnname]",
+                "/pa [arenaname] spawn [spawnname] set (teamname) (classname)",
                 "/pa [arenaname] spawn [spawnname] remove",
                 LINE,
                 "/pa [arenaname] spawn [spawnname] offset X Y Z",
@@ -479,7 +479,7 @@ public final class Help {
             e.printStackTrace();
         }
 
-        for (final HELP m : HELP.values()) {
+        for (HELP m : HELP.values()) {
             if (override) {
                 config.set(m.getNode(), m.get());
             } else {

@@ -5,26 +5,25 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PABlockLocation;
-import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.commands.PAA_Edit;
 import net.slipcor.pvparena.commands.PAA_Setup;
-import net.slipcor.pvparena.core.CollectionUtils;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.Utils;
-import net.slipcor.pvparena.loadables.*;
+import net.slipcor.pvparena.loadables.ArenaGoal;
+import net.slipcor.pvparena.loadables.ArenaGoalManager;
+import net.slipcor.pvparena.loadables.ArenaModule;
+import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.regions.ArenaRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static net.slipcor.pvparena.config.Debugger.debug;
 import static net.slipcor.pvparena.core.ItemStackUtils.getItemStacksFromConfig;
@@ -41,9 +40,8 @@ import static net.slipcor.pvparena.core.ItemStackUtils.getItemStacksFromConfig;
  */
 
 public final class ConfigurationManager {
-    private static final String OLD = "old";
+
     public static final String CLASSITEMS = "classitems";
-    public static final String SPAWNS = "spawns";
 
     private ConfigurationManager() {
     }
@@ -65,12 +63,17 @@ public final class ConfigurationManager {
 
         ArenaGoalManager goalManager = PVPArena.getInstance().getAgm();
         if (config.getKeys(false).isEmpty()) {
+
+            if (arena.getGoal() == null) {
+                PVPArena.getInstance().getLogger().warning(String.format("Unable to find goal for arena %s", arena.getName()));
+                return false;
+            }
             createNewConfig(arena, cfg);
         } else {
             // opening existing arena
 
             values:
-            for (final CFG c : CFG.getValues()) {
+            for (CFG c : CFG.getValues()) {
                 if (c.hasModule()) {
                     if (goalConfig.equals(c.getGoalOrModule())) {
                         if (cfg.getUnsafe(c.getNode()) == null) {
@@ -79,7 +82,7 @@ public final class ConfigurationManager {
                         }
                     }
 
-                    for (final String mod : modules) {
+                    for (String mod : modules) {
                         if (mod.equals(c.getGoalOrModule())) {
                             if (cfg.getUnsafe(c.getNode()) == null) {
                                 cfg.createDefaults(goalConfig, modules);
@@ -183,7 +186,7 @@ public final class ConfigurationManager {
         arena.getClasses().clear();
         debug(arena, "reading class items");
         ArenaClass.addGlobalClasses(arena);
-        for (final Map.Entry<String, Object> stringObjectEntry1 : classes.entrySet()) {
+        for (Map.Entry<String, Object> stringObjectEntry1 : classes.entrySet()) {
 
             ItemStack[] items;
             ItemStack offHand;
@@ -231,7 +234,7 @@ public final class ConfigurationManager {
             debug(arena, "arenaregion not null");
             final Map<String, Object> regs = config.getConfigurationSection(
                     "arenaregion").getValues(false);
-            for (final String rName : regs.keySet()) {
+            for (String rName : regs.keySet()) {
                 debug(arena, "arenaregion '" + rName + '\'');
                 final ArenaRegion region = Config.parseRegion(arena, config,
                         rName);
@@ -269,7 +272,7 @@ public final class ConfigurationManager {
                 PVPArena.getInstance().getLogger().warning("Arena " + arena.getName() + " is running in NO-PVP mode! Make sure people can die!");
             }
         } else {
-            for (final Map.Entry<String, Object> stringObjectEntry : tempMap.entrySet()) {
+            for (Map.Entry<String, Object> stringObjectEntry : tempMap.entrySet()) {
                 final ArenaTeam team = new ArenaTeam(stringObjectEntry.getKey(),
                         (String) stringObjectEntry.getValue());
                 arena.getTeams().add(team);
@@ -291,7 +294,7 @@ public final class ConfigurationManager {
      * Setup new Arena config
      *
      * @param arena new Arena
-     * @param cfg config
+     * @param cfg   config
      */
     private static void createNewConfig(Arena arena, Config cfg) {
         cfg.set(Config.CFG.GENERAL_PREFIX, arena.getName());
@@ -306,72 +309,28 @@ public final class ConfigurationManager {
      * @param arena the arena to check
      * @return an error string if there is something missing, null otherwise
      */
-    public static String isSetup(final Arena arena) {
-        //arena.getArenaConfig().load();
+    public static Set<String> isSetup(final Arena arena) {
+        Set<String> errors = new HashSet<>();
 
-        if (arena.getConfig().getUnsafe("spawns") == null) {
-            return Language.parse(MSG.ERROR_NO_SPAWNS);
-        }
-
-        for (final String editor : PAA_Edit.activeEdits.keySet()) {
+        for (String editor : PAA_Edit.activeEdits.keySet()) {
             if (PAA_Edit.activeEdits.get(editor).getName().equals(
                     arena.getName())) {
-                return Language.parse(MSG.ERROR_EDIT_MODE);
+                errors.add(Language.parse(MSG.ERROR_EDIT_MODE));
             }
         }
 
-        for (final String setter : PAA_Setup.activeSetups.keySet()) {
+        for (String setter : PAA_Setup.activeSetups.keySet()) {
             if (PAA_Setup.activeSetups.get(setter).getName().equals(
                     arena.getName())) {
-                return Language.parse(MSG.ERROR_SETUP_MODE);
+                errors.add(Language.parse(MSG.ERROR_SETUP_MODE));
             }
         }
 
-        return isSpawnsSetup(arena);
+        Optional.ofNullable(SpawnManager.isSpawnsSetup(arena)).ifPresent(errors::add);
+        Optional.ofNullable(SpawnManager.isBlocksSetup(arena)).ifPresent(errors::add);
+
+        return errors;
     }
 
-    private static String isSpawnsSetup(Arena arena) {
 
-        if (arena.getConfig().getUnsafe(SPAWNS) == null) {
-            return Language.parse(MSG.ERROR_NO_SPAWNS);
-        }
-
-        ConfigurationSection spawnConfigurationSection = arena.getConfig().getYamlConfiguration()
-                .getConfigurationSection(SPAWNS);
-
-        assert spawnConfigurationSection != null;
-        final Set<String> spawnsNames = spawnConfigurationSection.getValues(false)
-                .entrySet().stream().map(spawnConfig -> new PASpawn(Config.parseLocation((String) spawnConfig.getValue()),
-                        spawnConfig.getKey())).map(PASpawn::getName).collect(Collectors.toSet());
-
-        final Set<String> errors = new HashSet<>();
-
-        // mandatory spawns
-        final String sExit = arena.getConfig().getString(CFG.TP_EXIT);
-        if (!OLD.equals(sExit) && !spawnsNames.contains(sExit)) {
-            errors.add(sExit);
-        }
-        final String sWin = arena.getConfig().getString(CFG.TP_WIN);
-        if (!OLD.equals(sWin) && !spawnsNames.contains(sWin)) {
-            errors.add(sWin);
-        }
-        final String sLose = arena.getConfig().getString(CFG.TP_LOSE);
-        if (!OLD.equals(sLose) && !spawnsNames.contains(sLose)) {
-            errors.add(sLose);
-        }
-        final String sDeath = arena.getConfig().getString(CFG.TP_DEATH);
-        if (!OLD.equals(sDeath) && !spawnsNames.contains(sDeath)) {
-            errors.add(sDeath);
-        }
-        // custom mods spawns
-        errors.addAll(ArenaModuleManager.checkForMissingSpawns(arena, spawnsNames));
-        // custom goal spawns
-        errors.addAll(arena.getGoal().checkForMissingSpawns(spawnsNames));
-
-        // display all missings spawn in one message
-        if (CollectionUtils.isNotEmpty(errors)) {
-            return Language.parse(MSG.ERROR_MISSING_SPAWN, String.join(", ", errors));
-        }
-        return null;
-    }
 }

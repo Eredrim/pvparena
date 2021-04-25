@@ -41,11 +41,11 @@ public class SpawnCampRunnable extends BukkitRunnable {
         this.spawns = this.arena.getTeams().stream()
                 .filter(ArenaTeam::isNotEmpty)
                 .flatMap(team -> {
-                    if (this.arena.getConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
+                    if (this.arena.getConfig().getBoolean(CFG.GENERAL_SPAWN_PER_CLASS)) {
                         return SpawnManager.getSpawnsContaining(this.arena, "spawn").stream();
                     }
                     String spawnStartingWith = this.arena.isFreeForAll() ? "spawn" : team.getName() + "spawn";
-                    return SpawnManager.getSpawnsStartingWith(this.arena, spawnStartingWith).stream();
+                    return SpawnManager.getSpawnsLocationStartingWith(this.arena, spawnStartingWith).stream();
                 })
                 .collect(Collectors.toSet());
     }

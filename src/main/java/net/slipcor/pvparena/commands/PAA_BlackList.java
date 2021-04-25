@@ -95,7 +95,7 @@ public class PAA_BlackList extends AbstractArenaCommand {
             arena.msg(sender, MSG.BLACKLIST_ADDED, args[2], args[0].toLowerCase());
         } else if ("show".equalsIgnoreCase(args[1])) {
             final StringBuilder output = new StringBuilder(Language.parse(MSG.BLACKLIST_SHOW, args[0].toLowerCase()));
-            for (final String s : list) {
+            for (String s : list) {
                 output.append(": ");
                 output.append(Material.getMaterial(s).name());
             }
@@ -127,9 +127,9 @@ public class PAA_BlackList extends AbstractArenaCommand {
     public CommandTree<String> getSubs(final Arena arena) {
         final CommandTree<String> result = new CommandTree<>(null);
         result.define(new String[]{"clear"});
-        for (final String main : SUBTYPES) {
+        for (String main : SUBTYPES) {
             result.define(new String[]{main, "clear"});
-            for (final String sub : SUBCOMMANDS) {
+            for (String sub : SUBCOMMANDS) {
                 result.define(new String[]{main, sub, "{Material}"});
             }
         }

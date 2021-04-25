@@ -301,7 +301,7 @@ public class BlockListener implements Listener {
     public static void onBlockGrow(final StructureGrowEvent event) {
         Arena arena = null;
 
-        for (final BlockState block : event.getBlocks()) {
+        for (BlockState block : event.getBlocks()) {
             arena = ArenaManager.getArenaByRegionLocation(
                     new PABlockLocation(block.getLocation()));
             if (arena != null) {
@@ -313,7 +313,7 @@ public class BlockListener implements Listener {
             debug("StructureGrowEvent -> no arena");
             return; // no arena => out
         }
-        for (final BlockState block : event.getBlocks()) {
+        for (BlockState block : event.getBlocks()) {
             arena = ArenaManager.getArenaByProtectedRegionLocation(
                     new PABlockLocation(block.getLocation()),
                     RegionProtection.NATURE);
@@ -364,7 +364,7 @@ public class BlockListener implements Listener {
     public void onBlockPistonExtend(final BlockPistonExtendEvent event) {
         Arena arena = null;
 
-        for (final Block block : event.getBlocks()) {
+        for (Block block : event.getBlocks()) {
             arena = ArenaManager.getArenaByRegionLocation(
                     new PABlockLocation(block.getLocation()));
             if (arena != null) {

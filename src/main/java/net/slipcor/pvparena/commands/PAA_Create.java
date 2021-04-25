@@ -94,6 +94,7 @@ public class PAA_Create extends AbstractGlobalCommand {
         }
 
         if (ArenaManager.loadArena(arena)) {
+            Arena.pmsg(sender, MSG.ARENA_CREATE_DONE, arena.getName(), arena.getGoal().getName());
             final PAA_ToggleMod cmd = new PAA_ToggleMod();
             cmd.commit(arena, sender, new String[]{"standardspectate"});
             cmd.commit(arena, sender, new String[]{"standardlounge"});

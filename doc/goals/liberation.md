@@ -13,8 +13,8 @@ You have to add spawns for the jails, set them with command [`/pa [arena] spawn 
 
 Then you have to set a button, at the outside of the jail, that will trigger the liberation of jailed players. To do 
 that:
-- place a **stone button** where you want
-- type `/pa [arenaname] [teamname]button` (to open selection mode)
+- place a **button** where you want
+- type `/pa [arenaname] button [teamname]` (to open selection mode)
 - do a left-click on your button
 
 ## Config settings

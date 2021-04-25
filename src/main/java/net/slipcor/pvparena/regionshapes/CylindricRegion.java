@@ -253,7 +253,7 @@ public class CylindricRegion extends ArenaRegionShape {
                     .getY(), uppercenter.getZ() - z).getBlock());
         }
 
-        for (final Block b : this.border) {
+        for (Block b : this.border) {
             if (!this.region.isInNoWoolSet(b)) {
                 player.sendBlockChange(b.getLocation(), Material.WHITE_WOOL.createBlockData());
             }
@@ -264,7 +264,7 @@ public class CylindricRegion extends ArenaRegionShape {
 
                     @Override
                     public void run() {
-                        for (final Block b : CylindricRegion.this.border) {
+                        for (Block b : CylindricRegion.this.border) {
                             player.sendBlockChange(b.getLocation(),
                                     b.getType().createBlockData());
                         }

@@ -6,6 +6,8 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.classes.PABlock;
+import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.classes.PADeathInfo;
 import net.slipcor.pvparena.commands.CommandTree;
 import net.slipcor.pvparena.exceptions.GameplayException;
@@ -53,7 +55,7 @@ public abstract class ArenaModule implements IArenaCommandHandler {
         return this.name;
     }
 
-    public int getPriority(){
+    public int getPriority() {
         return 0;
     }
 
@@ -117,7 +119,7 @@ public abstract class ArenaModule implements IArenaCommandHandler {
     /**
      * check if the module should commit a player join
      *
-     * @param player       the player trying to join
+     * @param player the player trying to join
      */
     public void checkJoin(Player player) throws GameplayException {
     }
@@ -125,13 +127,14 @@ public abstract class ArenaModule implements IArenaCommandHandler {
     /**
      * check if the module should commit a player spectate
      *
-     * @param player       the player trying to spectate
+     * @param player the player trying to spectate
      */
     public void checkSpectate(Player player) throws GameplayException {
     }
 
     /**
      * Handle player join
+     *
      * @param player the player trying to join
      * @return true if modules add player to arena (no need to handle join in other modules)
      * @throws GameplayException Exception if arena can't start for gameplay reasons
@@ -142,6 +145,7 @@ public abstract class ArenaModule implements IArenaCommandHandler {
 
     /**
      * Handle player spectate
+     *
      * @param player the player trying to spectate
      * @return true if modules add player to arena (no need to handle spectate in other modules)
      * @throws GameplayException Exception if arena can't start for gameplay reasons
@@ -153,10 +157,20 @@ public abstract class ArenaModule implements IArenaCommandHandler {
     /**
      * check for unset spawns
      *
-     * @param spawnsNames the set spawns
-     * @return null if okay, error message if something is missing
+     * @param spawns the set spawns
+     * @return missing spawns
      */
-    public Set<String> checkForMissingSpawns(final Set<String> spawnsNames) {
+    public Set<PASpawn> checkForMissingSpawns(Set<PASpawn> spawns) {
+        return new HashSet<>();
+    }
+
+    /**
+     * check for unset blocks
+     *
+     * @param blocks the set blocks
+     * @return missing block
+     */
+    public Set<PABlock> checkForMissingBlocks(Set<PABlock> blocks) {
         return new HashSet<>();
     }
 
@@ -240,10 +254,11 @@ public abstract class ArenaModule implements IArenaCommandHandler {
     /**
      * check if a module knows a spawn name
      *
-     * @param string the spawn to check
+     * @param spawnName the spawn to check
+     * @param teamName  the team to check
      * @return true if the module knows the spawn name
      */
-    public boolean hasSpawn(final String string) {
+    public boolean hasSpawn(final String spawnName, final String teamName) {
         return false;
     }
 
@@ -392,7 +407,8 @@ public abstract class ArenaModule implements IArenaCommandHandler {
 
     /**
      * hook into a player joining the arena
-     *  @param player the joining player
+     *
+     * @param player the joining player
      * @param team   the chosen team
      */
     public void parseJoin(final Player player, final ArenaTeam team) {
@@ -440,7 +456,7 @@ public abstract class ArenaModule implements IArenaCommandHandler {
      *
      * @param seconds the initial countdown seconds to go
      * @param message the message being displayed (to check which one it is)
-     * @param global whether the whole arena will be messaged
+     * @param global  whether the whole arena will be messaged
      * @return possibly different remaining seconds to go
      */
     public Integer parseStartCountDown(Integer seconds, String message, Boolean global) {
@@ -459,7 +475,7 @@ public abstract class ArenaModule implements IArenaCommandHandler {
      * hook into an arena player being reset
      *
      * @param player the player being reset
-     * @param soft if the reset should be soft (another teleport incoming)
+     * @param soft   if the reset should be soft (another teleport incoming)
      * @param force  if the arena is forcefully reset
      */
     public void resetPlayer(final Player player, final boolean soft, final boolean force) {
@@ -483,12 +499,12 @@ public abstract class ArenaModule implements IArenaCommandHandler {
     }
 
     /**
-     * hook into an arena being teleported
+     * hook into an player being teleported
      *
      * @param player the teleported player
      * @param place  the destination spawn name
      */
-    public void tpPlayerToCoordName(final Player player, final String place) {
+    public void teleportPlayer(final Player player, final PASpawn place) {
     }
 
     /**

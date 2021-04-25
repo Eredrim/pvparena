@@ -59,7 +59,7 @@ public class PAA_Template extends AbstractArenaCommand {
         } else if ("load".equalsIgnoreCase(args[0])) {
             final YamlConfiguration cfg = YamlConfiguration.loadConfiguration(output);
 
-            for (final String key : cfg.getKeys(false)) {
+            for (String key : cfg.getKeys(false)) {
                 arena.getConfig().getYamlConfiguration().set(key, cfg.get(key));
             }
             arena.getConfig().save();

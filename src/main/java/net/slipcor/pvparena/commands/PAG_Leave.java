@@ -46,7 +46,7 @@ public class PAG_Leave extends AbstractArenaCommand {
         final ArenaPlayer aPlayer = ArenaPlayer.fromPlayer((Player) sender);
 
         // Handle modules which need to leave even if players aren't in an arena
-        for (final ArenaModule mod : arena.getMods()) {
+        for (ArenaModule mod : arena.getMods()) {
             if(mod.handleSpecialLeave(aPlayer)) {
                 return;
             }

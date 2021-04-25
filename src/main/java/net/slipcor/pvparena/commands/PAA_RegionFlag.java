@@ -111,7 +111,7 @@ public class PAA_RegionFlag extends AbstractArenaCommand {
         if (arena == null) {
             return result;
         }
-        for (final ArenaRegion region : arena.getRegions()) {
+        for (ArenaRegion region : arena.getRegions()) {
             result.define(new String[]{region.getRegionName(), "{RegionFlag}", "{Boolean}"});
         }
         return result;

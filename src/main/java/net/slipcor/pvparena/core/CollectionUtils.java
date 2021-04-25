@@ -11,6 +11,9 @@ public class CollectionUtils {
         // Static class can not be instantiate
     }
 
+    public static boolean isEmpty(Collection<?> collection) {
+        return collection == null || collection.isEmpty();
+    }
     public static boolean isNotEmpty(Collection<?> collection){
         return collection != null && !collection.isEmpty();
     }

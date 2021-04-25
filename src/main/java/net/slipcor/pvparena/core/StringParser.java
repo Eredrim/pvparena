@@ -84,7 +84,7 @@ public final class StringParser {
 
     public static String joinArray(final Object[] array, final String glue) {
         final StringBuilder result = new StringBuilder();
-        for (final Object o : array) {
+        for (Object o : array) {
             result.append(glue);
             result.append(o);
         }
@@ -96,7 +96,7 @@ public final class StringParser {
 
     public static String joinList(final List<?> set, final String glue) {
         final StringBuilder result = new StringBuilder();
-        for (final Object o : set) {
+        for (Object o : set) {
             result.append(glue);
             result.append(o);
         }
@@ -108,7 +108,7 @@ public final class StringParser {
 
     public static String joinSet(final Set<?> set, final String glue) {
         final StringBuilder result = new StringBuilder();
-        for (final Object o : set) {
+        for (Object o : set) {
             result.append(glue);
             result.append(o);
         }
@@ -138,7 +138,7 @@ public final class StringParser {
         final BlockFace[] faces = {
                 BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST,
                 BlockFace.UP, BlockFace.DOWN};
-        for (final BlockFace face : faces) {
+        for (BlockFace face : faces) {
             if (face.name().startsWith(string.toUpperCase())) {
                 return face;
             }

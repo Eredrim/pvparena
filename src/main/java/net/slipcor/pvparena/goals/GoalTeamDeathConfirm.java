@@ -111,7 +111,7 @@ public class GoalTeamDeathConfirm extends AbstractTeamKillGoal {
         final ArenaPlayer player = ArenaPlayer.fromPlayer(event.getEntity().getName());
 
         if (item.getType().equals(check) && item.hasItemMeta()) {
-            for (final ArenaTeam team : this.arena.getTeams()) {
+            for (ArenaTeam team : this.arena.getTeams()) {
                 if (item.getItemMeta().getDisplayName().equals(team.getColoredName())) {
                     // it IS an item !!!!
 
@@ -143,12 +143,12 @@ public class GoalTeamDeathConfirm extends AbstractTeamKillGoal {
         final int iLives = this.getTeamLifeMap().get(team);
 
         if (iLives <= 1) {
-            for (final ArenaTeam otherTeam : arena.getTeams()) {
+            for (ArenaTeam otherTeam : arena.getTeams()) {
                 if (otherTeam.equals(team)) {
                     continue;
                 }
                 this.getTeamLifeMap().remove(otherTeam);
-                for (final ArenaPlayer ap : otherTeam.getTeamMembers()) {
+                for (ArenaPlayer ap : otherTeam.getTeamMembers()) {
                     if (ap.getStatus() == PlayerStatus.FIGHT) {
                         ap.setStatus(PlayerStatus.LOST);
                     }

@@ -54,10 +54,10 @@ public class PAI_List extends AbstractArenaCommand {
         if (args.length < 1) {
 
 
-            for (final ArenaTeam teams : arena.getTeams()) {
+            for (ArenaTeam teams : arena.getTeams()) {
                 final Set<String> names = new HashSet<>();
 
-                for (final ArenaPlayer player : teams.getTeamMembers()) {
+                for (ArenaPlayer player : teams.getTeamMembers()) {
                     names.add("&" + colorMap.get(player.getStatus()) + player.getName() + "&r");
                 }
 
@@ -74,14 +74,14 @@ public class PAI_List extends AbstractArenaCommand {
 
         final Map<PlayerStatus, Set<String>> stats = new HashMap<>();
 
-        for (final ArenaPlayer player : arena.getEveryone()) {
+        for (ArenaPlayer player : arena.getEveryone()) {
             final Set<String> players = stats.containsKey(player.getStatus()) ? stats.get(player.getStatus()) : new HashSet<String>();
 
             players.add(player.getName());
             stats.put(player.getStatus(), players);
         }
 
-        for (final Map.Entry<PlayerStatus, Set<String>> statusSetEntry : stats.entrySet()) {
+        for (Map.Entry<PlayerStatus, Set<String>> statusSetEntry : stats.entrySet()) {
             arena.msg(sender, Language.parse(MSG.getByNode("LIST_" + statusSetEntry.getKey().name()), "&" + colorMap.get(statusSetEntry.getKey()) + StringParser.joinSet(statusSetEntry.getValue(), ", ")));
         }
 

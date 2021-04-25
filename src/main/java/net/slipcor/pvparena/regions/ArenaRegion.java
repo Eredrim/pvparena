@@ -6,6 +6,7 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.arena.PlayerStatus;
 import net.slipcor.pvparena.classes.PABlockLocation;
+import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.classes.PADeathInfo;
 import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.core.Config;
@@ -68,12 +69,12 @@ public class ArenaRegion {
         final Set<ArenaRegion> ars1 = region1.getRegionsByType(RegionType.BATTLE);
         final Set<ArenaRegion> ars2 = region2.getRegionsByType(RegionType.BATTLE);
 
-        if (ars1.size() < 0 || ars2.size() < 1) {
+        if (ars1.isEmpty() || ars2.isEmpty()) {
             return true;
         }
 
-        for (final ArenaRegion ar1 : ars1) {
-            for (final ArenaRegion ar2 : ars2) {
+        for (ArenaRegion ar1 : ars1) {
+            for (ArenaRegion ar2 : ars2) {
                 if (ar1.shape.overlapsWith(ar2)) {
                     return false;
                 }
@@ -156,6 +157,24 @@ public class ArenaRegion {
     }
 
     /**
+     * Location is inside region
+     * This will include all edge cases to account for:
+     *
+     * CUBE - absolute maximum due to maximum X&Y&Z and minimum X&Y&Z
+     * CYLINDER - absolute maximum due to maximum X&Y,Y&Z and minimum X&Y,Y&Z
+     * SPHERE - current minimum with only minimum X, Y, Z and minimum X, Y, Z
+     *
+     * @param location location
+     *
+     * @return true if location is in region
+     */
+    public boolean containsLocation(PALocation location) {
+        PABlockLocation paBlockLocation = new PABlockLocation(location.toLocation());
+        return this.getShape().contains(paBlockLocation);
+
+    }
+
+    /**
      * Creates a new Arena Region
      *
      * @param arena the arena to bind to
@@ -193,7 +212,7 @@ public class ArenaRegion {
         final Set<ArenaRegion> ars = arena
                 .getRegionsByType(RegionType.BATTLE);
 
-        if (ars.size() < 1) {
+        if (ars.isEmpty()) {
             final PABlockLocation bLoc = SpawnManager.getRegionCenter(arena);
             if (!bLoc.getWorldName().equals(player.getWorld().getName())) {
                 return true;
@@ -202,7 +221,7 @@ public class ArenaRegion {
                     new PABlockLocation(player.getLocation())) > joinRange * joinRange;
         }
 
-        for (final ArenaRegion ar : ars) {
+        for (ArenaRegion ar : ars) {
             if (!ar.world.equals(player.getWorld().getName())) {
                 return true;
             }
@@ -215,7 +234,7 @@ public class ArenaRegion {
     }
 
     public void applyFlags(final int flags) {
-        for (final RegionFlag rf : RegionFlag.values()) {
+        for (RegionFlag rf : RegionFlag.values()) {
             if ((flags & (int) Math.pow(2, rf.ordinal())) != 0) {
                 this.flags.add(rf);
             }
@@ -223,7 +242,7 @@ public class ArenaRegion {
     }
 
     public void applyProtections(final int protections) {
-        for (final RegionProtection rp : RegionProtection.values()) {
+        for (RegionProtection rp : RegionProtection.values()) {
             if ((protections & (int) Math.pow(2, rp.ordinal())) == 0) {
                 this.protections.remove(rp);
             } else {
@@ -302,7 +321,7 @@ public class ArenaRegion {
     }
 
     public boolean protectionSetAll(final Boolean value) {
-        for (final RegionProtection rp : RegionProtection.values()) {
+        for (RegionProtection rp : RegionProtection.values()) {
             if (rp == null) {
                 this.arena.msg(Bukkit.getConsoleSender(),
                         "&cWarning! RegionProtection is null!");
@@ -350,7 +369,7 @@ public class ArenaRegion {
             return;
         }
 
-        for (final Entity entity : this.getWorld().getEntities()) {
+        for (Entity entity : this.getWorld().getEntities()) {
             if (entity instanceof Player || !this.shape.contains(new PABlockLocation(entity.getLocation()))) {
                 continue;
             }
@@ -426,12 +445,12 @@ public class ArenaRegion {
         if (this.arena.isFreeForAll()) {
             this.killPlayerIfFighting(arenaPlayer);
         } else {
-            for (final ArenaTeam team : this.arena.getTeams()) {
+            for (ArenaTeam team : this.arena.getTeams()) {
                 if (!team.getTeamMembers().contains(arenaPlayer)) {
                     // skip winner
                     continue;
                 }
-                for (final ArenaPlayer ap2 : team.getTeamMembers()) {
+                for (ArenaPlayer ap2 : team.getTeamMembers()) {
                     this.killPlayerIfFighting(ap2);
                 }
                 return;
@@ -440,12 +459,12 @@ public class ArenaRegion {
     }
 
     private void handleWinRegionFlag(ArenaPlayer arenaPlayer) {
-        for (final ArenaTeam team : this.arena.getTeams()) {
+        for (ArenaTeam team : this.arena.getTeams()) {
             if (!this.arena.isFreeForAll() && team.getTeamMembers().contains(arenaPlayer)) {
                 // skip winning team
                 continue;
             }
-            for (final ArenaPlayer ap2 : team.getTeamMembers()) {
+            for (ArenaPlayer ap2 : team.getTeamMembers()) {
                 if (this.arena.isFreeForAll() && ap2.getName().equals(arenaPlayer.getName())) {
                     continue;
                 }

@@ -34,6 +34,9 @@ public class RandomUtils {
         if (objects.isEmpty()) {
             return null;
         }
+        if (objects.size() == 1) {
+            return objects.iterator().next();
+        }
         final ArrayList<E> list = new ArrayList<>(objects);
         return list.get(random.nextInt(list.size()));
     }

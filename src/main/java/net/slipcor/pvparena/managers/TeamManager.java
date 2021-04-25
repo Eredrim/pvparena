@@ -25,6 +25,9 @@ import static net.slipcor.pvparena.config.Debugger.debug;
  */
 
 public final class TeamManager {
+
+    public static final String FREE = "free";
+
     private TeamManager() {
     }
 
@@ -99,7 +102,7 @@ public final class TeamManager {
 
         // count each team members
 
-        for (final ArenaTeam team : arena.getTeams()) {
+        for (ArenaTeam team : arena.getTeams()) {
             debug(arena, team.getName() + ": " + team.getTeamMembers().size());
             counts.put(team.getName(), team.getTeamMembers().size());
         }
@@ -110,7 +113,7 @@ public final class TeamManager {
         }
 
         int temp = -1;
-        for (final int i : counts.values()) {
+        for (int i : counts.values()) {
             if (temp == -1) {
                 temp = i;
                 continue;
@@ -133,8 +136,8 @@ public final class TeamManager {
         debug(arena, "counting active teams");
 
         final Set<String> activeteams = new HashSet<>();
-        for (final ArenaTeam team : arena.getTeams()) {
-            for (final ArenaPlayer ap : team.getTeamMembers()) {
+        for (ArenaTeam team : arena.getTeams()) {
+            for (ArenaPlayer ap : team.getTeamMembers()) {
                 if (ap.getStatus() == PlayerStatus.FIGHT) {
                     activeteams.add(team.getName());
                     break;
@@ -152,7 +155,7 @@ public final class TeamManager {
      */
     public static int countPlayersInTeams(final Arena arena) {
         int result = 0;
-        for (final ArenaTeam team : arena.getTeams()) {
+        for (ArenaTeam team : arena.getTeams()) {
             result += team.getTeamMembers().size();
         }
         debug(arena, "players having a team: " + result);
