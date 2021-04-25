@@ -5,14 +5,17 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.PlayerStatus;
 import net.slipcor.pvparena.classes.PALocation;
+import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.exceptions.GameplayException;
 import net.slipcor.pvparena.loadables.ArenaModule;
+import net.slipcor.pvparena.managers.SpawnManager;
+import net.slipcor.pvparena.managers.TeleportManager;
 import org.bukkit.entity.Player;
 
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -41,8 +44,14 @@ public class StandardSpectate extends ArenaModule {
     }
 
     @Override
-    public Set<String> checkForMissingSpawns(final Set<String> spawnsNames) {
-        return spawnsNames.contains(SPECTATOR) ? Collections.emptySet() : Collections.singleton(SPECTATOR);
+    public Set<PASpawn> checkForMissingSpawns(Set<PASpawn> spawns) {
+        final Set<PASpawn> missing = new HashSet<>();
+        if (spawns.stream().noneMatch(spawn ->
+                (spawn.getName().equals(SPECTATOR))
+                        && spawn.getTeamName() == null)) {
+            missing.add(new PASpawn(null, SPECTATOR, null, null));
+        }
+        return missing;
     }
 
     @Override
@@ -69,7 +78,7 @@ public class StandardSpectate extends ArenaModule {
         arenaPlayer.setArena(this.arena);
         arenaPlayer.setStatus(PlayerStatus.WATCH);
 
-        this.arena.tpPlayerToCoordNameForJoin(arenaPlayer, SPECTATOR, true);
+        TeleportManager.teleportPlayerToRandomSpawn(this.arena, arenaPlayer, SpawnManager.getPASpawnsStartingWith(this.arena, SPECTATOR));
         this.arena.msg(player, MSG.NOTICE_WELCOME_SPECTATOR);
 
         if (arenaPlayer.getState() == null) {
@@ -83,7 +92,7 @@ public class StandardSpectate extends ArenaModule {
 
             if (arenaPlayer.getArenaTeam() != null && arenaPlayer.getArenaClass() == null) {
                 String autoClass = arena.getConfig().getDefinedString(CFG.READY_AUTOCLASS);
-                if(arena.getConfig().getBoolean(CFG.USES_PLAYERCLASSES) && arena.getClass(player.getName()) != null) {
+                if(arena.getConfig().getBoolean(CFG.USES_PLAYER_OWN_INVENTORY) && arena.getClass(player.getName()) != null) {
                     autoClass = player.getName();
                 }
 
@@ -95,7 +104,7 @@ public class StandardSpectate extends ArenaModule {
     }
 
     @Override
-    public boolean hasSpawn(final String string) {
-        return SPECTATOR.equalsIgnoreCase(string);
+    public boolean hasSpawn(final String spawnName, final String teamName) {
+        return SPECTATOR.equalsIgnoreCase(spawnName);
     }
 }

@@ -20,7 +20,7 @@ The following food types exist:
 
 ## Setup
 
-You have to prepare chests. To define those, use `/pa [arenaname] [teamname]foodchest` \- this enables setting. 
+You have to prepare chests. To define those, use `/pa [arenaname] foodchest [teamname]` \- this enables setting. 
 
 Finish the setting by clicking the chest that should be the team's chest. 
 

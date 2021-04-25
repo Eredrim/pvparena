@@ -2,6 +2,7 @@ package net.slipcor.pvparena.classes;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.util.Vector;
 
 /**
@@ -21,11 +22,22 @@ public class PABlockLocation {
     private int y;
     private int z;
 
-    public PABlockLocation(final String world, final int x, final int y, final int z) {
+    // store orientations
+    private BlockData blockData;
+
+    public PABlockLocation(String world, int x, int y, int z) {
         this.world = world;
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+
+    public PABlockLocation(String world, int x, int y, int z, BlockData blockData) {
+        this.world = world;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.blockData = blockData;
     }
 
     public PABlockLocation(final String value) {
@@ -39,11 +51,26 @@ public class PABlockLocation {
         this.z = Integer.parseInt(ints[2]);
     }
 
+    public PABlockLocation(final String value, final String data) {
+        String[] split = value.split(":");
+        this.world = split[0];
+
+        String[] ints = split[1].split(",");
+
+        this.x = Integer.parseInt(ints[0]);
+        this.y = Integer.parseInt(ints[1]);
+        this.z = Integer.parseInt(ints[2]);
+
+        this.blockData = Bukkit.createBlockData(data);
+    }
+
     public PABlockLocation(final Location bukkitLocation) {
         this.world = bukkitLocation.getWorld().getName();
         this.x = bukkitLocation.getBlockX();
         this.y = bukkitLocation.getBlockY();
         this.z = bukkitLocation.getBlockZ();
+
+        this.blockData = bukkitLocation.getBlock().getBlockData();
     }
 
     @Override
@@ -177,5 +204,13 @@ public class PABlockLocation {
     @Override
     public String toString() {
         return this.world + ':' + this.x + ',' + this.y + ',' + this.z;
+    }
+
+    public BlockData getBlockData() {
+        return this.blockData;
+    }
+
+    public void setBlockData(BlockData blockData) {
+        this.blockData = blockData;
     }
 }

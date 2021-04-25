@@ -99,7 +99,7 @@ public final class StatisticsManager {
          * @return the type if found, null otherwise
          */
         public static Type getByString(final String string) {
-            for (final Type t : Type.values()) {
+            for (Type t : Type.values()) {
                 if (t.name().equalsIgnoreCase(string)) {
                     return t;
                 }
@@ -199,7 +199,7 @@ public final class StatisticsManager {
     public static Type getTypeBySignLine(final String line) {
         final String stripped = ChatColor.stripColor(line).replace("[PA]", "").toUpperCase();
 
-        for (final Type t : Type.values()) {
+        for (Type t : Type.values()) {
             if (t.name().equals(stripped)) {
                 return t;
             }

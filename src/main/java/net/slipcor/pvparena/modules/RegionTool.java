@@ -59,8 +59,8 @@ public class RegionTool extends ArenaModule {
             if (event.getClickedBlock() != null) {
                 loc = new PABlockLocation(event.getClickedBlock().getLocation());
             }
-            for (final Arena arena : ArenaManager.getArenas()) {
-                for (final ArenaRegion region : arena.getRegions()) {
+            for (Arena arena : ArenaManager.getArenas()) {
+                for (ArenaRegion region : arena.getRegions()) {
                     if (region.getShape().contains(loc)) {
                         arena.msg(event.getPlayer(), String.format("%sArena %s%s%s: region %s%s", ChatColor.WHITE,
                                 ChatColor.AQUA, arena.getName(), ChatColor.WHITE, ChatColor.AQUA, region.getRegionName()));

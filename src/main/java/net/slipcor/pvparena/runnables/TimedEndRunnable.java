@@ -80,7 +80,7 @@ public class TimedEndRunnable extends ArenaRunnable {
 
             int neededTeams = this.arena.getTeams().size();
 
-            for (final String team : this.arena.getTeamNames()) {
+            for (String team : this.arena.getTeamNames()) {
                 if (scores.containsKey(team)) {
                     final double teamScore = scores.get(team);
 
@@ -124,14 +124,14 @@ public class TimedEndRunnable extends ArenaRunnable {
 
             // several teams have max score!!
             double maxSum = 0;
-            for (final ArenaTeam team : this.arena.getTeams()) {
+            for (ArenaTeam team : this.arena.getTeams()) {
                 if (!winners.contains(team.getName())) {
                     continue;
                 }
 
                 double sum = 0;
 
-                for (final ArenaPlayer ap : team.getTeamMembers()) {
+                for (ArenaPlayer ap : team.getTeamMembers()) {
                     if (scores.containsKey(ap.getName())) {
                         sum += scores.get(ap.getName());
                     }
@@ -158,14 +158,14 @@ public class TimedEndRunnable extends ArenaRunnable {
             debug(this.arena, "FFA");
             final Set<String> preciseWinners = new HashSet<>();
 
-            for (final ArenaTeam team : this.arena.getTeams()) {
+            for (ArenaTeam team : this.arena.getTeams()) {
                 if (!winners.contains(team.getName())) {
                     continue;
                 }
 
                 double maxSum = 0;
 
-                for (final ArenaPlayer ap : team.getTeamMembers()) {
+                for (ArenaPlayer ap : team.getTeamMembers()) {
                     double sum = 0;
                     if (scores.containsKey(ap.getName())) {
                         sum = scores.get(ap.getName());
@@ -192,10 +192,10 @@ public class TimedEndRunnable extends ArenaRunnable {
 
         if (this.arena.isFreeForAll() && this.arena.getTeams().size() <= 1) {
             debug(this.arena, "FFA and <= 1!");
-            for (final ArenaTeam team : this.arena.getTeams()) {
+            for (ArenaTeam team : this.arena.getTeams()) {
                 final Set<ArenaPlayer> arenaPlayers = new HashSet<>(team.getTeamMembers());
 
-                for (final ArenaPlayer arenaPlayer : arenaPlayers) {
+                for (ArenaPlayer arenaPlayer : arenaPlayers) {
                     if (winners.isEmpty()) {
                         this.arena.removePlayer(arenaPlayer, this.arena.getConfig().getString(Config.CFG.TP_LOSE), true, false);
                     } else {
@@ -223,7 +223,7 @@ public class TimedEndRunnable extends ArenaRunnable {
         } else if (!winners.isEmpty()) {
 
             boolean hasBroadcasted = false;
-            for (final ArenaTeam team : this.arena.getTeams()) {
+            for (ArenaTeam team : this.arena.getTeams()) {
                 if (winners.contains(team.getName())) {
                     if (!hasBroadcasted) {
                         ArenaModuleManager.announce(
@@ -237,13 +237,13 @@ public class TimedEndRunnable extends ArenaRunnable {
                 } else {
 
                     final Set<ArenaPlayer> apSet = new HashSet<>(team.getTeamMembers());
-                    for (final ArenaPlayer p : apSet) {
+                    for (ArenaPlayer p : apSet) {
                         if (p.getStatus() != PlayerStatus.FIGHT) {
                             continue;
                         }
                         p.addLosses();
                         if (!hasBroadcasted) {
-                            for (final String winTeam : winners) {
+                            for (String winTeam : winners) {
                                 ArenaModuleManager.announce(this.arena, Language
                                         .parse(MSG.TEAM_HAS_WON, winTeam), WINNER);
 

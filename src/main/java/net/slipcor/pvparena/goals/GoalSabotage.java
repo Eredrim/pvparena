@@ -7,6 +7,7 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.PlayerStatus;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PABlockLocation;
+import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.classes.PADeathInfo;
 import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.core.Config.CFG;
@@ -50,11 +51,15 @@ import static net.slipcor.pvparena.config.Debugger.debug;
 
 public class GoalSabotage extends ArenaGoal {
 
+
+    public static final String TNT = "tnt";
+
     public GoalSabotage() {
         super("Sabotage");
     }
 
-    private String flagName;
+    private String blockName;
+    private String blockTeamName;
     private Map<String, String> teamFlags;
     private Map<ArenaTeam, TNTPrimed> teamTNTs;
 
@@ -70,26 +75,26 @@ public class GoalSabotage extends ArenaGoal {
 
     @Override
     public boolean checkCommand(final String string) {
-        return this.arena.getTeams().stream().anyMatch(team -> string.contains(team.getName() + "tnt"));
+        return this.arena.getTeams().stream().anyMatch(team -> string.contains(team.getName() + TNT));
     }
 
     @Override
     public List<String> getGoalCommands() {
         final List<String> result = new ArrayList<>();
         if (this.arena != null) {
-            for (final ArenaTeam team : this.arena.getTeams()) {
+            for (ArenaTeam team : this.arena.getTeams()) {
                 final String sTeam = team.getName();
-                result.add(sTeam + "tnt");
+                result.add(sTeam + TNT);
             }
         }
         return result;
     }
 
     @Override
-    public Set<String> checkForMissingSpawns(final Set<String> list) {
-        Set<String> errors = this.checkForMissingTeamSpawn(list);
-        errors.addAll(this.checkForMissingTeamCustom(list, "tnt"));
-        return errors;
+    public Set<PASpawn> checkForMissingSpawns(Set<PASpawn> spawns) {
+        Set<PASpawn> missing = SpawnManager.getMissingTeamSpawn(this.arena, spawns);
+        missing.addAll(SpawnManager.getMissingTeamCustom(this.arena, spawns, TNT));
+        return missing;
     }
 
     /**
@@ -126,7 +131,7 @@ public class GoalSabotage extends ArenaGoal {
             return false;
         }
         Vector vFlag = null;
-        for (final ArenaTeam team : this.arena.getTeams()) {
+        for (ArenaTeam team : this.arena.getTeams()) {
             final String aTeam = team.getName();
             if (team.getTeamMembers().size() < 1) {
                 continue; // dont check for inactive teams
@@ -134,10 +139,10 @@ public class GoalSabotage extends ArenaGoal {
             debug(this.arena, player, "checking for tnt of team " + aTeam);
             Vector vLoc = block.getLocation().toVector();
             debug(this.arena, player, "block: " + vLoc);
-            if (!SpawnManager.getBlocksStartingWith(this.arena, aTeam + "tnt").isEmpty()) {
+            if (!SpawnManager.getBlocksStartingWith(this.arena, TNT, aTeam).isEmpty()) {
                 vFlag = SpawnManager
                         .getBlockNearest(
-                                SpawnManager.getBlocksStartingWith(this.arena, aTeam + "tnt"),
+                                SpawnManager.getBlocksStartingWith(this.arena, TNT, aTeam),
                                 new PABlockLocation(player.getLocation()))
                         .toLocation().toVector();
             }
@@ -168,7 +173,7 @@ public class GoalSabotage extends ArenaGoal {
     @Override
     public boolean checkSetBlock(final Player player, final Block block) {
 
-        if (StringUtils.isBlank(this.flagName) || !PAA_Region.activeSelections.containsKey(player.getName())) {
+        if (StringUtils.isBlank(this.blockName) || !PAA_Region.activeSelections.containsKey(player.getName())) {
             return false;
         }
         if (block == null || block.getType() != Material.TNT) {
@@ -190,11 +195,11 @@ public class GoalSabotage extends ArenaGoal {
         Bukkit.getPluginManager().callEvent(gEvent);
         String winteam = sTeam;
 
-        for (final ArenaTeam team : arena.getTeams()) {
+        for (ArenaTeam team : arena.getTeams()) {
             if (!team.getName().equals(sTeam)) {
                 continue;
             }
-            for (final ArenaPlayer ap : team.getTeamMembers()) {
+            for (ArenaPlayer ap : team.getTeamMembers()) {
 
                 ap.addStatistic(arena.getName(), Type.LOSSES, 1);
                 /*
@@ -204,8 +209,8 @@ public class GoalSabotage extends ArenaGoal {
                 ap.setStatus(PlayerStatus.LOST);
             }
         }
-        for (final ArenaTeam team : arena.getTeams()) {
-            for (final ArenaPlayer ap : team.getTeamMembers()) {
+        for (ArenaTeam team : arena.getTeams()) {
+            for (ArenaPlayer ap : team.getTeamMembers()) {
                 if (ap.getStatus() != PlayerStatus.FIGHT) {
                     continue;
                 }
@@ -234,17 +239,26 @@ public class GoalSabotage extends ArenaGoal {
 
     @Override
     public void commitCommand(final CommandSender sender, final String[] args) {
-        if (args[0].contains("tnt")) {
-            for (final ArenaTeam team : this.arena.getTeams()) {
-                final String sTeam = team.getName();
-                if (args[0].contains(sTeam + "tnt")) {
-                    this.flagName = args[0];
-                    PAA_Region.activeSelections.put(sender.getName(), this.arena);
-
-                    this.arena.msg(sender, MSG.GOAL_SABOTAGE_TOSETTNT, this.flagName);
-                }
-            }
+        if (args[0].equals(TNT)) {
+            commitSetBlockCommand(sender, args);
         }
+    }
+
+    private void commitSetBlockCommand(CommandSender sender, String[] args) {
+        if (args.length >= 2) {
+            String teamName = args[1];
+            if (this.arena.getTeam(teamName) == null) {
+                this.arena.msg(sender, MSG.ERROR_TEAM_NOT_FOUND, this.blockName);
+                return;
+            }
+            this.blockTeamName = teamName;
+        } else {
+            this.blockTeamName = null;
+        }
+        this.blockName = args[0];
+        PAA_Region.activeSelections.put(sender.getName(), this.arena);
+
+        this.arena.msg(sender, MSG.GOAL_SABOTAGE_TOSETTNT, this.blockName);
     }
 
     @Override
@@ -257,8 +271,8 @@ public class GoalSabotage extends ArenaGoal {
 
         ArenaTeam aTeam = null;
 
-        for (final ArenaTeam team : this.arena.getTeams()) {
-            for (final ArenaPlayer ap : team.getTeamMembers()) {
+        for (ArenaTeam team : this.arena.getTeams()) {
+            for (ArenaPlayer ap : team.getTeamMembers()) {
                 if (ap.getStatus() == PlayerStatus.FIGHT) {
                     aTeam = team;
                     break;
@@ -287,18 +301,18 @@ public class GoalSabotage extends ArenaGoal {
     }
 
     @Override
-    public boolean commitSetFlag(final Player player, final Block block) {
+    public boolean commitSetBlock(final Player player, final Block block) {
 
         debug(this.arena, player, "trying to set a tnt");
 
-        // command : /pa redtnt1
-        // location: red1tnt:
+        // command : /pa red tnt1
+        // location: red.tnt1:
 
-        SpawnManager.setBlock(this.arena, new PABlockLocation(block.getLocation()), this.flagName);
-        this.arena.msg(player, MSG.GOAL_SABOTAGE_SETTNT, this.flagName);
+        SpawnManager.setBlock(this.arena, new PABlockLocation(block.getLocation()), this.blockName, this.blockTeamName);
+        this.arena.msg(player, MSG.GOAL_SABOTAGE_SETTNT, this.blockName);
 
         PAA_Region.activeSelections.remove(player.getName());
-        this.flagName = null;
+        this.blockName = null;
         return true;
     }
 
@@ -318,7 +332,7 @@ public class GoalSabotage extends ArenaGoal {
 
         int pos = new Random().nextInt(players.size());
 
-        for (final ArenaPlayer ap : players) {
+        for (ArenaPlayer ap : players) {
             debug(this.arena, ap.getPlayer(), "distributing sabotage: " + ap.getName());
             if (ap.equals(player)) {
                 continue;
@@ -339,7 +353,7 @@ public class GoalSabotage extends ArenaGoal {
         }
 
         debug(player, "getting held TNT of player {}", player);
-        for (final String sTeam : this.getFlagMap().keySet()) {
+        for (String sTeam : this.getFlagMap().keySet()) {
             debug(player, "team {}'s sabotage is carried by {}s hands", sTeam, this.getFlagMap().get(sTeam));
             if (player.getName().equals(this.getFlagMap().get(sTeam))) {
                 return sTeam;
@@ -363,22 +377,15 @@ public class GoalSabotage extends ArenaGoal {
     }
 
     @Override
-    public boolean hasSpawn(final String string) {
-        for (final String teamName : this.arena.getTeamNames()) {
-            if (string.toLowerCase().equals(teamName.toLowerCase() + "tnt")) {
+    public boolean hasSpawn(final String spawnName, final String spawnTeamName) {
+        boolean hasSpawn = super.hasSpawn(spawnName, spawnTeamName);
+        if (hasSpawn) {
+            return true;
+        }
+
+        for (String teamName : this.arena.getTeamNames()) {
+            if (spawnName.equalsIgnoreCase(TNT) && spawnTeamName.equalsIgnoreCase(teamName)) {
                 return true;
-            }
-            if (string.toLowerCase().startsWith(
-                    teamName.toLowerCase() + "spawn")) {
-                return true;
-            }
-            if (this.arena.getConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
-                for (final ArenaClass aClass : this.arena.getClasses()) {
-                    if (string.toLowerCase().startsWith(teamName.toLowerCase() +
-                            aClass.getName().toLowerCase() + "spawn")) {
-                        return true;
-                    }
-                }
             }
         }
         return false;
@@ -389,7 +396,7 @@ public class GoalSabotage extends ArenaGoal {
         final ArenaPlayer aPlayer = ArenaPlayer.fromPlayer(player);
         final ArenaTeam team = aPlayer.getArenaTeam();
         this.takeFlag(team.getName(), false,
-                SpawnManager.getBlockByExactName(this.arena, team.getName() + "tnt"));
+                SpawnManager.getBlockByExactName(this.arena, team.getName() + TNT));
         //TODO: allow multiple TNTs?
         if (!this.getFlagMap().containsKey(team.getName())) {
             debug(this.arena, player, "adding team " + team.getName());
@@ -412,10 +419,12 @@ public class GoalSabotage extends ArenaGoal {
     public void parseStart() {
         debug(this.arena, "initiating arena");
         this.getFlagMap().clear();
-        for (final ArenaTeam team : this.arena.getTeams()) {
-            this.takeFlag(team.getName(), false,
-                    SpawnManager.getBlockByExactName(this.arena, team.getName() + "tnt"));
-            // TODO: allow multiple TNTs?
+        for (ArenaTeam team : this.arena.getTeams()) {
+
+            SpawnManager.getBlocksStartingWith(this.arena, TNT, team.getName()).forEach(blockLocation ->
+                    this.takeFlag(team.getName(), false,
+                            blockLocation));
+
             if (!this.getFlagMap().containsKey(team.getName())) {
                 debug(this.arena, "adding team " + team.getName());
                 this.distributeFlag(null, team);
@@ -426,7 +435,7 @@ public class GoalSabotage extends ArenaGoal {
     @Override
     public void reset(final boolean force) {
         this.getFlagMap().clear();
-        for (final TNTPrimed t : this.getTNTmap().values()) {
+        for (TNTPrimed t : this.getTNTmap().values()) {
             t.remove();
         }
         this.getTNTmap().clear();
@@ -472,7 +481,7 @@ public class GoalSabotage extends ArenaGoal {
 
         final TNTPrimed tnt = (TNTPrimed) event.getEntity();
 
-        for (final ArenaTeam team : this.getTNTmap().keySet()) {
+        for (ArenaTeam team : this.getTNTmap().keySet()) {
             if (tnt.getUniqueId().equals(this.getTNTmap().get(team).getUniqueId())) {
                 event.setCancelled(true);
                 tnt.remove();
@@ -482,8 +491,8 @@ public class GoalSabotage extends ArenaGoal {
 
         final PABlockLocation tLoc = new PABlockLocation(event.getEntity().getLocation());
 
-        for (final String sTeam : this.arena.getTeamNames()) {
-            final Set<PABlockLocation> locs = SpawnManager.getBlocksStartingWith(this.arena, sTeam + "tnt");
+        for (String sTeam : this.arena.getTeamNames()) {
+            final Set<PABlockLocation> locs = SpawnManager.getBlocksStartingWith(this.arena, TNT, sTeam);
 
             final PABlockLocation nearest = SpawnManager.getBlockNearest(locs, tLoc);
 

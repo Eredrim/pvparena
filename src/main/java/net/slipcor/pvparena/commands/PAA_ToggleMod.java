@@ -45,15 +45,16 @@ public class PAA_ToggleMod extends AbstractArenaCommand {
         ArenaModuleManager moduleManager = PVPArena.getInstance().getAmm();
         if (moduleManager.hasLoadable(name)) {
             boolean isEnabling = !arena.hasMod(name);
-            arena.msg(sender, MSG.SET_DONE, name, String.valueOf(isEnabling));
             if(isEnabling) {
                 ArenaModule module = moduleManager.getNewInstance(name);
                 arena.addModule(module, true);
                 if (module.isMissingBattleRegion(arena)) {
                     arena.msg(sender, MSG.TOGGLEMOD_NOTICE);
                 }
+                arena.msg(sender, MSG.INFO_MOD_ENABLED, name);
             } else {
                 arena.removeModule(name);
+                arena.msg(sender, MSG.INFO_MOD_DISABLED, name);
             }
             return;
         }
@@ -83,10 +84,10 @@ public class PAA_ToggleMod extends AbstractArenaCommand {
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
         final CommandTree<String> result = new CommandTree<>(null);
-        for (final String string : PVPArena.getInstance().getAgm().getAllGoalNames()) {
+        for (String string : PVPArena.getInstance().getAgm().getAllGoalNames()) {
             result.define(new String[]{string});
         }
-        for (final Loadable<?> mod : PVPArena.getInstance().getAmm().getAllLoadables()) {
+        for (Loadable<?> mod : PVPArena.getInstance().getAmm().getAllLoadables()) {
             result.define(new String[]{mod.getName()});
         }
         return result;

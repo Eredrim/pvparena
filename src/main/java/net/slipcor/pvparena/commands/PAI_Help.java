@@ -100,7 +100,7 @@ public class PAI_Help extends AbstractGlobalCommand {
                 Arena.pmsg(sender, "/pa help stats");
                 Arena.pmsg(sender, "/pa help version");
             } else {
-                for (final AbstractArenaCommand aac : PVPArena.getInstance().getArenaCommands()) {
+                for (AbstractArenaCommand aac : PVPArena.getInstance().getArenaCommands()) {
                     if (aac.getMain().contains(args[0]) || aac.getShort().contains(args[0])) {
                         aac.displayHelp(sender);
                         return;
@@ -111,7 +111,7 @@ public class PAI_Help extends AbstractGlobalCommand {
                     args[0] = "list";
                 }
 
-                for (final AbstractGlobalCommand cmd : PVPArena.getInstance().getGlobalCommands()) {
+                for (AbstractGlobalCommand cmd : PVPArena.getInstance().getGlobalCommands()) {
                     if (cmd.getMain().contains(args[0]) || cmd.getShort().contains(args[0])) {
                         cmd.displayHelp(sender);
                         return;

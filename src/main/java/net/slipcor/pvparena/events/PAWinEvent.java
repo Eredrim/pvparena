@@ -59,7 +59,7 @@ public class PAWinEvent extends Event {
     public ItemStack[] getItems() {
         final ItemStack[] output = new ItemStack[this.items.size()];
         int pos = 0;
-        for (final ItemStack s : this.items) {
+        for (ItemStack s : this.items) {
             output[pos++] = s;
         }
         return output;

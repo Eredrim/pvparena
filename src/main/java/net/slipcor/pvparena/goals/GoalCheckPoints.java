@@ -2,7 +2,6 @@ package net.slipcor.pvparena.goals;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.PlayerStatus;
 import net.slipcor.pvparena.classes.PALocation;
@@ -68,16 +67,11 @@ public class GoalCheckPoints extends ArenaGoal {
     }
 
     @Override
-    public Set<String> checkForMissingSpawns(final Set<String> list) {
-        Set<String> errors = new HashSet<>();
-        if (!list.contains(SPAWN)) {
-            errors.add(SPAWN);
-        }
+    public Set<PASpawn> checkForMissingSpawns(Set<PASpawn> spawns) {
+        Set<PASpawn> missing = new HashSet<>(SpawnManager.getMissingSpawns(spawns, SPAWN));
         // check if the first checkpoint is set
-        if (!list.contains(CHECKPOINT + "1")) {
-            errors.add(CHECKPOINT + "1");
-        }
-        return errors;
+        missing.addAll(SpawnManager.getMissingSpawns(spawns, CHECKPOINT + "1"));
+        return missing;
     }
 
     /**
@@ -90,7 +84,7 @@ public class GoalCheckPoints extends ArenaGoal {
     private Set<ArenaPlayer> checkLocationPresentPlayers(final Location loc, final int distance) {
         final Set<ArenaPlayer> result = new HashSet<>();
 
-        for (final ArenaPlayer arenaPlayer : this.arena.getFighters()) {
+        for (ArenaPlayer arenaPlayer : this.arena.getFighters()) {
             if (arenaPlayer.getPlayer().getLocation().getWorld().getName().equals(loc.getWorld().getName())) {
                 if (arenaPlayer.getPlayer().getLocation().distance(loc) > distance) {
                     continue;
@@ -111,8 +105,8 @@ public class GoalCheckPoints extends ArenaGoal {
 
         final int checkDistance = this.arena.getConfig().getInt(CFG.GOAL_CHECKPOINTS_CLAIMRANGE);
 
-        for (final PASpawn spawn : SpawnManager.getPASpawnsStartingWith(this.arena, CHECKPOINT)) {
-            final PALocation paLoc = spawn.getLocation();
+        for (PASpawn spawn : SpawnManager.getPASpawnsStartingWith(this.arena, CHECKPOINT)) {
+            final PALocation paLoc = spawn.getPALocation();
             final Set<ArenaPlayer> arenaPlayers = this.checkLocationPresentPlayers(paLoc.toLocation(),
                     checkDistance);
 
@@ -160,7 +154,7 @@ public class GoalCheckPoints extends ArenaGoal {
         }
         debug(arena, "[CP] committing end: " + arenaPlayer);
         ArenaPlayer winner = null;
-        for (final ArenaPlayer fighter : arena.getFighters()) {
+        for (ArenaPlayer fighter : arena.getFighters()) {
             if (fighter.equals(arenaPlayer)) {
                 winner = fighter;
             } else {
@@ -223,7 +217,7 @@ public class GoalCheckPoints extends ArenaGoal {
         Player player = (Player) sender;
         String spawnName = CHECKPOINT + value;
         if (value > 0 && value <= cpLives) {
-            this.arena.spawnSet(spawnName, new PALocation(player.getLocation()));
+            this.arena.setSpawn(spawnName, new PALocation(player.getLocation()), null, null);
             this.arena.msg(sender, MSG.SPAWN_SET, spawnName);
         } else {
             this.arena.msg(sender, MSG.SPAWN_UNKNOWN, spawnName);
@@ -278,18 +272,10 @@ public class GoalCheckPoints extends ArenaGoal {
     }
 
     @Override
-    public boolean hasSpawn(final String string) {
-        if (string.startsWith(CHECKPOINT) || string.startsWith(SPAWN)) {
-            return true;
-        }
-        if (this.arena.getConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
-            for (final ArenaClass aClass : this.arena.getClasses()) {
-                if (string.toLowerCase().contains(aClass.getName().toLowerCase() + SPAWN)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    public boolean hasSpawn(final String spawnName, final String spawnTeamName) {
+        boolean hasSpawn = super.hasSpawn(spawnName, spawnTeamName);
+
+        return hasSpawn || spawnName.startsWith(CHECKPOINT);
     }
 
     @Override
@@ -309,7 +295,7 @@ public class GoalCheckPoints extends ArenaGoal {
     @Override
     public void parseStart() {
         this.getPlayerLifeMap().clear();
-        for (final ArenaPlayer arenaPlayer : this.arena.getFighters()) {
+        for (ArenaPlayer arenaPlayer : this.arena.getFighters()) {
             debug(this.arena, "adding player " + arenaPlayer.getName());
             this.getPlayerLifeMap().put(arenaPlayer.getPlayer(),
                     this.arena.getConfig().getInt(CFG.GOAL_CHECKPOINTS_LIVES, 3));
@@ -342,7 +328,7 @@ public class GoalCheckPoints extends ArenaGoal {
     @Override
     public Map<String, Double> timedEnd(final Map<String, Double> scores) {
 
-        for (final ArenaPlayer arenaPlayer : this.arena.getFighters()) {
+        for (ArenaPlayer arenaPlayer : this.arena.getFighters()) {
             double score = this.arena.getConfig().getInt(CFG.GOAL_CHECKPOINTS_LIVES)
                     - (this.getPlayerLifeMap()
                     .getOrDefault(arenaPlayer.getPlayer(), 0));

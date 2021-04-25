@@ -42,7 +42,7 @@ public class PAA_Regions extends AbstractArenaCommand {
         if (args.length < 1) {
             arena.msg(sender, MSG.REGIONS_LISTHEAD, arena.getName());
 
-            for (final ArenaRegion ars : arena.getRegions()) {
+            for (ArenaRegion ars : arena.getRegions()) {
                 arena.msg(sender, MSG.REGIONS_LISTVALUE, ars.getRegionName(), ars.getType().name(), ars.getShape().getName());
             }
             return;
@@ -90,7 +90,7 @@ public class PAA_Regions extends AbstractArenaCommand {
         if (arena == null) {
             return result;
         }
-        for (final ArenaRegion region : arena.getRegions()) {
+        for (ArenaRegion region : arena.getRegions()) {
             result.define(new String[]{region.getRegionName()});
         }
         return result;

@@ -41,21 +41,21 @@ public class PAI_Version extends AbstractGlobalCommand {
         if (args.length < 2 || args[1].toLowerCase().startsWith("goal")) {
             Arena.pmsg(sender, String.format("%s-----------------------------------", ChatColor.GRAY));
             Arena.pmsg(sender, String.format("%sArena Goals:", ChatColor.RED));
-            for (final Loadable<?> ag : PVPArena.getInstance().getAgm().getAllLoadables()) {
+            for (Loadable<?> ag : PVPArena.getInstance().getAgm().getAllLoadables()) {
                 Arena.pmsg(sender, String.format("%s%s - %s", ChatColor.RED, ag.getName(), ag.getVersion()));
             }
         }
         if (args.length < 2 || args[1].toLowerCase().startsWith("mod")) {
             Arena.pmsg(sender, String.format("%s-----------------------------------", ChatColor.GRAY));
             Arena.pmsg(sender, String.format("%sMods:", ChatColor.GREEN));
-            for (final Loadable<?> am : PVPArena.getInstance().getAmm().getAllLoadables()) {
+            for (Loadable<?> am : PVPArena.getInstance().getAmm().getAllLoadables()) {
                 Arena.pmsg(sender, String.format("%s%s - %s", ChatColor.GREEN, am.getName(), am.getVersion()));
             }
         }
         if (args.length < 2 || args[1].toLowerCase().startsWith("reg")) {
             Arena.pmsg(sender, String.format("%s-----------------------------------", ChatColor.GRAY));
             Arena.pmsg(sender, String.format("%sRegionshapes:", ChatColor.GREEN));
-            for (final Loadable<?> arsLoadable : PVPArena.getInstance().getArsm().getAllLoadables()) {
+            for (Loadable<?> arsLoadable : PVPArena.getInstance().getArsm().getAllLoadables()) {
                 Arena.pmsg(sender, String.format("%s%s - %s", ChatColor.GREEN, arsLoadable.getName(), arsLoadable.getVersion()));
             }
         }

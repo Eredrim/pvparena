@@ -99,7 +99,7 @@ public final class ArenaManager {
      */
     public static boolean checkJoin(final Player player, final Arena arena) {
         boolean found = false;
-        for (final ArenaRegion region : arena.getRegions()) {
+        for (ArenaRegion region : arena.getRegions()) {
             if (region.getType() == RegionType.JOIN) {
                 found = true;
                 if (region.getShape().contains(new PABlockLocation(player.getLocation()))) {
@@ -117,7 +117,7 @@ public final class ArenaManager {
      * @return true if no running arena interfering, false otherwise
      */
     public static boolean checkRegions(final Arena arena) {
-        for (final Arena a : ARENAS.values()) {
+        for (Arena a : ARENAS.values()) {
             if (a.equals(arena)) {
                 continue;
             }
@@ -153,17 +153,17 @@ public final class ArenaManager {
         if (arena != null) {
             return arena;
         }
-        for (final Map.Entry<String, Arena> stringArenaEntry2 : ARENAS.entrySet()) {
+        for (Map.Entry<String, Arena> stringArenaEntry2 : ARENAS.entrySet()) {
             if (stringArenaEntry2.getKey().endsWith(sName)) {
                 return stringArenaEntry2.getValue();
             }
         }
-        for (final Map.Entry<String, Arena> stringArenaEntry1 : ARENAS.entrySet()) {
+        for (Map.Entry<String, Arena> stringArenaEntry1 : ARENAS.entrySet()) {
             if (stringArenaEntry1.getKey().startsWith(sName)) {
                 return stringArenaEntry1.getValue();
             }
         }
-        for (final Map.Entry<String, Arena> stringArenaEntry : ARENAS.entrySet()) {
+        for (Map.Entry<String, Arena> stringArenaEntry : ARENAS.entrySet()) {
             if (stringArenaEntry.getKey().contains(sName)) {
                 return stringArenaEntry.getValue();
             }
@@ -194,11 +194,11 @@ public final class ArenaManager {
      * @return an arena instance if found, null otherwise
      */
     public static Arena getArenaByRegionLocation(final PABlockLocation location) {
-        for (final Arena arena : ARENAS.values()) {
+        for (Arena arena : ARENAS.values()) {
             if (arena.isLocked()) {
                 continue;
             }
-            for (final ArenaRegion region : arena.getRegions()) {
+            for (ArenaRegion region : arena.getRegions()) {
                 if (region.getShape().contains(location)) {
                     return arena;
                 }
@@ -209,11 +209,11 @@ public final class ArenaManager {
 
     public static Arena getArenaByProtectedRegionLocation(
             final PABlockLocation location, final RegionProtection regionProtection) {
-        for (final Arena arena : ARENAS.values()) {
+        for (Arena arena : ARENAS.values()) {
             if (!arena.getConfig().getBoolean(CFG.PROTECT_ENABLED)) {
                 continue;
             }
-            for (final ArenaRegion region : arena.getRegions()) {
+            for (ArenaRegion region : arena.getRegions()) {
                 if (region.getShape().contains(location)
                         && region.getProtections().contains(regionProtection)) {
                     return arena;
@@ -226,11 +226,11 @@ public final class ArenaManager {
     public static Set<Arena> getArenasByRegionLocation(
             final PABlockLocation location) {
         final Set<Arena> result = new HashSet<>();
-        for (final Arena arena : ARENAS.values()) {
+        for (Arena arena : ARENAS.values()) {
             if (arena.isLocked()) {
                 continue;
             }
-            for (final ArenaRegion region : arena.getRegions()) {
+            for (ArenaRegion region : arena.getRegions()) {
                 if (region.getShape().contains(location)) {
                     result.add(arena);
                 }
@@ -254,7 +254,7 @@ public final class ArenaManager {
      * @return the first arena instance
      */
     public static Arena getFirst() {
-        for (final Arena arena : ARENAS.values()) {
+        for (Arena arena : ARENAS.values()) {
             return arena;
         }
         return null;
@@ -345,6 +345,7 @@ public final class ArenaManager {
         if (arena.isValid()) {
             StatisticsManager.loadStatistics(arena);
             SpawnManager.loadSpawns(arena, cfg);
+            SpawnManager.loadBlocks(arena, cfg);
         } else {
             // not valid arena config file
             Arena.pmsg(Bukkit.getConsoleSender(), MSG.ERROR_ARENACONFIG, arena.getName());
@@ -370,7 +371,7 @@ public final class ArenaManager {
      * reset all arenas
      */
     public static void reset(final boolean force) {
-        for (final Arena arena : ARENAS.values()) {
+        for (Arena arena : ARENAS.values()) {
             debug("resetting arena {}", arena);
             arena.reset(force);
         }
@@ -413,7 +414,7 @@ public final class ArenaManager {
 
     public static int countAvailable() {
         int sum = 0;
-        for (final Arena a : getArenas()) {
+        for (Arena a : getArenas()) {
             if (!a.isLocked() && !a.isFightInProgress()) {
                 sum++;
             }
@@ -422,7 +423,7 @@ public final class ArenaManager {
     }
 
     public static Arena getAvailable() {
-        for (final Arena a : getArenas()) {
+        for (Arena a : getArenas()) {
             if (!a.isLocked() && !(a.isFightInProgress() && !a.getGoal().allowsJoinInBattle())) {
                 return a;
             }
@@ -441,7 +442,7 @@ public final class ArenaManager {
             return;
         }
 
-        for (final String key : cs.getKeys(false)) {
+        for (String key : cs.getKeys(false)) {
             debug("key: {}", key);
             final List<String> strings = cs.getStringList(key);
 
@@ -456,7 +457,7 @@ public final class ArenaManager {
             }
 
             boolean error = false;
-            for (final String arena : strings) {
+            for (String arena : strings) {
                 if (!ARENAS.containsKey(arena.toLowerCase())) {
                     PVPArena.getInstance().getLogger().warning("Arena not found: " + arena);
                     debug("Arena not found: {}", arena);
@@ -500,7 +501,7 @@ public final class ArenaManager {
 
         final List<String> result = new ArrayList<>();
 
-        for (final String definition : sorted) {
+        for (String definition : sorted) {
             if (DEF_VALUES.containsKey(definition)) {
                 final Arena a = DEF_VALUES.get(definition);
                 result.add((a.isLocked() ? "&c" : PAA_Edit.activeEdits.containsValue(a) || PAA_Setup.activeSetups.containsValue(a) ? "&e" : a.isFightInProgress() ? "&a" : "&f") + definition + "&r");
@@ -519,7 +520,7 @@ public final class ArenaManager {
 
     public static String getIndirectArenaName(final Arena arena) {
         if (usingShortcuts && PVPArena.getInstance().getConfig().getBoolean("only_shortcuts")) {
-            for (final Map.Entry<String, Arena> stringArenaEntry : DEF_VALUES.entrySet()) {
+            for (Map.Entry<String, Arena> stringArenaEntry : DEF_VALUES.entrySet()) {
                 if (stringArenaEntry.getValue().equals(arena)) {
                     return stringArenaEntry.getKey();
                 }
@@ -539,7 +540,7 @@ public final class ArenaManager {
 
         if (!DEF_LISTS.containsKey(string) && !PVPArena.getInstance().getConfig().getBoolean("only_shortcuts")) {
             // if we have not found an EXACT match for a shortcut, and we allow shortcuts -> find an exact arena in a shortcut
-            for (final String temp : DEF_LISTS.keySet()) {
+            for (String temp : DEF_LISTS.keySet()) {
                 if (temp.contains(string)) {
                     Arena a = ArenaManager.getArenaByName(temp);
                     if (a.isLocked()) {
@@ -648,7 +649,7 @@ public final class ArenaManager {
 
     public static void advance(final Arena arena) {
         if (usingShortcuts) {
-            for (final Map.Entry<String, Arena> stringArenaEntry : DEF_VALUES.entrySet()) {
+            for (Map.Entry<String, Arena> stringArenaEntry : DEF_VALUES.entrySet()) {
                 if (stringArenaEntry.getValue().equals(arena)) {
                     advance(stringArenaEntry.getKey());
                     return;
@@ -666,7 +667,7 @@ public final class ArenaManager {
         if (DEF_VALUES.containsKey(string)) {
             final Arena arena = DEF_VALUES.get(string);
             boolean found = false;
-            for (final String arenaName : defs) {
+            for (String arenaName : defs) {
                 if (found) {
                     // we just found it, this is the one!
                     final Arena nextArena = ARENAS.get(arenaName.toLowerCase());
@@ -685,7 +686,7 @@ public final class ArenaManager {
             }
         }
         // get the first available!
-        for (final String arenaName : defs) {
+        for (String arenaName : defs) {
             final Arena arena = ARENAS.get(arenaName.toLowerCase());
             if (arena.isFightInProgress() || arena.isLocked()) {
                 continue;
@@ -701,13 +702,13 @@ public final class ArenaManager {
 
     public static List<Arena> getArenasSorted() {
         debug("Sorting!");
-        for (final String s : ARENAS.keySet()) {
+        for (String s : ARENAS.keySet()) {
             debug(s);
         }
         final Map<String, Arena> sorted = new TreeMap<>(ARENAS);
         final List<Arena> result = new ArrayList<>();
         debug("Sorted!");
-        for (final Map.Entry<String, Arena> stringArenaEntry : sorted.entrySet()) {
+        for (Map.Entry<String, Arena> stringArenaEntry : sorted.entrySet()) {
             result.add(stringArenaEntry.getValue());
             debug(stringArenaEntry.getKey());
         }

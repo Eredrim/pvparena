@@ -154,7 +154,7 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
         if (arena == null) {
             return result;
         }
-        for (final ArenaClass aClass : arena.getClasses()) {
+        for (ArenaClass aClass : arena.getClasses()) {
             result.define(new String[]{aClass.getName()});
         }
         return result;

@@ -126,12 +126,12 @@ public class GoalTeamDeathMatch extends AbstractTeamKillGoal {
         final int iLives = this.getTeamLifeMap().get(arenaTeam);
 
         if (iLives <= 1) {
-            for (final ArenaTeam otherTeam : this.arena.getNotEmptyTeams()) {
+            for (ArenaTeam otherTeam : this.arena.getNotEmptyTeams()) {
                 if (otherTeam.equals(arenaTeam)) {
                     continue;
                 }
                 this.getTeamLifeMap().remove(otherTeam);
-                for (final ArenaPlayer arenaPlayer : otherTeam.getTeamMembers()) {
+                for (ArenaPlayer arenaPlayer : otherTeam.getTeamMembers()) {
                     if (arenaPlayer.getStatus() == PlayerStatus.FIGHT) {
                         arenaPlayer.setStatus(PlayerStatus.LOST);
                     }

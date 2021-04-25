@@ -2,7 +2,13 @@
 
 ## Description
 
-This module activates certain skins for teams / classes. IF you don't you disguise plugins, you can use a player name or one of the following:
+This module activates certain skins for teams / classes. 
+
+Compatible plugins:
+- [LibsDisguises](https://www.spigotmc.org/resources/libs-disguises-free.81/)
+
+If you don't use a disguise plugin, 
+you can use a player name or one of the following:
 
 - SKELETON
 - WITHER_SKELETON
@@ -19,7 +25,7 @@ Unzip the module files (files tab, "PA Files v*.*.*") into the /pvparena/files f
 
 ## Setup
 
-This module needs a full server restart to properly hook into DisguiseCraft / MobDisguise
+This module needs a full server restart to properly hook into a disguise plugin.
 
 ## Config settings
 
@@ -27,7 +33,7 @@ This module needs a full server restart to properly hook into DisguiseCraft / Mo
 
 ## Commands
 
-- `/pa [arena] !sk [name] [skin]` \- Set team/class to skin 
+- `/pa [arena] !sk [teamName or ClassName] [player's name or mob's name]` \- Set team/class to skin. See [EntityType](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html).
 
 ## Warnings
 
@@ -35,6 +41,7 @@ If you have issues with PVP, check your pvp settings of the disguise plugin, and
 
 ## Dependencies
 
-Optional: DisguiseCraft OR ModDisguise
+Optional (defaults to player heads): 
+- [LibsDisguises](https://www.spigotmc.org/resources/libs-disguises-free.81/)
 
-The module defaults to PLAYER HEADs
+

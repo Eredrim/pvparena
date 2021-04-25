@@ -29,7 +29,7 @@ public class StartRunnable extends ArenaRunnable {
         super(MSG.ARENA_STARTING_IN.getNode(), seconds, null, arena, false);
         debug(arena, "StartRunnable constructor");
         arena.startRunner = this;
-        for (final ArenaPlayer player : arena.getFighters()) {
+        for (ArenaPlayer player : arena.getFighters()) {
             if (player.getStatus() != PlayerStatus.READY) {
                 player.setStatus(PlayerStatus.READY);
             }

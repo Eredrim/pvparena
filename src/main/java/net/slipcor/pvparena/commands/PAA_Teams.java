@@ -3,7 +3,6 @@ package net.slipcor.pvparena.commands;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Help.HELP;
-import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
 import org.bukkit.ChatColor;
@@ -58,7 +57,7 @@ public class PAA_Teams extends AbstractArenaCommand {
         final ArenaTeam team = arena.getTeam(args[1]);
 
         if (team == null && !"add".equals(args[0])) {
-            arena.msg(sender, MSG.ERROR_TEAMNOTFOUND, args[1]);
+            arena.msg(sender, MSG.ERROR_TEAM_NOT_FOUND, args[1]);
             return;
         }
 
@@ -125,7 +124,7 @@ public class PAA_Teams extends AbstractArenaCommand {
         if (arena == null) {
             return result;
         }
-        for (final String team : arena.getTeamNames()) {
+        for (String team : arena.getTeamNames()) {
             result.define(new String[]{"remove", team});
             Arrays.stream(ChatColor.values()).forEach(color ->
                     result.define(new String[]{"set", team, color.name()})

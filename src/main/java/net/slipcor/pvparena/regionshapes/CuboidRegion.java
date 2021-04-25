@@ -211,7 +211,7 @@ public class CuboidRegion extends ArenaRegionShape {
                     .getBlock());
         }
 
-        for (final Block b : this.border) {
+        for (Block b : this.border) {
             if (!this.region.isInNoWoolSet(b)) {
                 player.sendBlockChange(b.getLocation(), Material.WHITE_WOOL.createBlockData());
             }
@@ -222,7 +222,7 @@ public class CuboidRegion extends ArenaRegionShape {
 
                     @Override
                     public void run() {
-                        for (final Block b : CuboidRegion.this.border) {
+                        for (Block b : CuboidRegion.this.border) {
                             player.sendBlockChange(b.getLocation(),
                                     b.getType().createBlockData());
                         }

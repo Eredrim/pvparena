@@ -53,7 +53,7 @@ public class PAI_Info extends AbstractArenaCommand {
                 StringParser.colorVar("enabled", !arena.isLocked()));
 
         final Set<String> classes = new HashSet<>();
-        for (final ArenaClass ac : arena.getClasses()) {
+        for (ArenaClass ac : arena.getClasses()) {
             if (!"custom".equalsIgnoreCase(ac.getName())) {
                 classes.add(ac.getName());
             }
@@ -88,10 +88,10 @@ public class PAI_Info extends AbstractArenaCommand {
         if (displayMode == null || "general".equals(displayMode)) {
             arena.msg(sender, MSG.INFO_SECTION, "general");
             arena.msg(sender,
-                    StringParser.colorVar("classspawn", cfg.getBoolean(CFG.GENERAL_CLASSSPAWN)) + " | " +
+                    StringParser.colorVar("classspawn", cfg.getBoolean(CFG.GENERAL_SPAWN_PER_CLASS)) + " | " +
                     StringParser.colorVar("leavedeath", cfg.getBoolean(CFG.GENERAL_LEAVEDEATH)) + " | " +
-                    StringParser.colorVar("quickspawn", cfg.getBoolean(CFG.GENERAL_QUICKSPAWN)) + " | " +
-                    StringParser.colorVar("smartspawn", cfg.getBoolean(CFG.GENERAL_SMARTSPAWN)));
+                    StringParser.colorVar("quickspawn", cfg.getBoolean(CFG.GENERAL_QUICK_SPAWN)) + " | " +
+                    StringParser.colorVar("smartspawn", cfg.getBoolean(CFG.GENERAL_SMART_SPAWN)));
 
             arena.msg(sender,
                     "gameMode: " + cfg.getGameMode(CFG.GENERAL_GAMEMODE) + " | " +
@@ -214,7 +214,7 @@ public class PAI_Info extends AbstractArenaCommand {
 
             if (arena.getRegions() != null) {
                 final Set<String> regions = new HashSet<>();
-                for (final ArenaRegion ar : arena.getRegions()) {
+                for (ArenaRegion ar : arena.getRegions()) {
                     regions.add(ar.getRegionName());
                 }
 
@@ -230,14 +230,14 @@ public class PAI_Info extends AbstractArenaCommand {
         }
 
         if (displayMode == null || "mod".equalsIgnoreCase(displayMode)) {
-            for (final ArenaModule mod : arena.getMods()) {
+            for (ArenaModule mod : arena.getMods()) {
                 arena.msg(sender, MSG.INFO_MOD_ACTIVE, mod.getName());
                 mod.displayInfo(sender);
             }
         }
 
         if (displayMode == null || "region".equalsIgnoreCase(displayMode)) {
-            for (final ArenaRegion reg : arena.getRegions()) {
+            for (ArenaRegion reg : arena.getRegions()) {
                 reg.getShape().displayInfo(sender);
             }
         }

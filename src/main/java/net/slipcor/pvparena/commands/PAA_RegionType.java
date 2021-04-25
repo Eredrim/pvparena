@@ -91,7 +91,7 @@ public class PAA_RegionType extends AbstractArenaCommand {
         if (arena == null) {
             return result;
         }
-        for (final ArenaRegion region : arena.getRegions()) {
+        for (ArenaRegion region : arena.getRegions()) {
             result.define(new String[]{region.getRegionName(), "{RegionType}"});
         }
         return result;

@@ -46,7 +46,7 @@ public class WorkflowManager {
             return true;
         }
 
-        for (final ArenaModule am : arena.getMods()) {
+        for (ArenaModule am : arena.getMods()) {
             if (am.checkCommand(args[0].toLowerCase())) {
                 am.commitCommand(sender, args);
                 return true;
@@ -121,10 +121,10 @@ public class WorkflowManager {
             return false;
         }
 
-        ArenaGoal joinGoal = arena.getGoal();
+        ArenaGoal arenaGoal = arena.getGoal();
 
         try {
-            joinGoal.checkJoin(player, args);
+            arenaGoal.checkJoin(player, args);
         } catch (GameplayException e) {
             arena.msg(player, MSG.ERROR_ERROR, e.getMessage());
             return false;
@@ -149,7 +149,7 @@ public class WorkflowManager {
         } else {
             arenaTeam = arena.getTeam(args[0]);
             if(arenaTeam == null) {
-                arena.msg(player, MSG.ERROR_TEAMNOTFOUND, args[0]);
+                arena.msg(player, MSG.ERROR_TEAM_NOT_FOUND, args[0]);
                 return false;
             }
         }
@@ -171,44 +171,50 @@ public class WorkflowManager {
         }
 
         if (joinModule == null) {
-            debug(arena, "join module null");
-            // join module null, just put the joiner to some spawn
-            if (!arena.tryJoin(player, arenaTeam)) {
-                return false;
-            }
-
-            if (arena.isFreeForAll()) {
-                arena.msg(player, arena.getConfig().getString(CFG.MSG_YOUJOINED));
-                arena.broadcastExcept(player, Language.parse(arena, CFG.MSG_PLAYERJOINED, player.getName()));
-            } else {
-                arena.msg(player, arena.getConfig().getString(CFG.MSG_YOUJOINEDTEAM).replace("%1%", arenaTeam.getColoredName() + ChatColor.RESET));
-                arena.broadcastExcept(player, Language.parse(arena, CFG.MSG_PLAYERJOINEDTEAM, arenaPlayer.getName(), arenaTeam.getColoredName() + ChatColor.RESET));
-            }
-
-            ArenaModuleManager.parseJoin(arena, player, arenaTeam);
-
-            joinGoal.initiate((player));
-            ArenaModuleManager.initiate(arena, player);
-
-            if (arena.getFighters().size() >= Math.max(1, arena.getConfig().getInt(CFG.READY_MINPLAYERS))) {
-                arena.setFightInProgress(true);
-
-                arena.getTeams().forEach(aTeam -> SpawnManager.distribute(arena, aTeam));
-                joinGoal.parseStart();
-
-                arena.getMods().forEach(ArenaModule::parseStart);
-            }
-
-            if (arenaPlayer.getArenaClass() != null && arena.startRunner != null) {
-                arenaPlayer.setStatus(PlayerStatus.READY);
-            }
-
-            return true;
+            return commitDefaultJoin(arena, player, arenaGoal, arenaPlayer);
+        } else {
+            joinModule.commitJoin(player, arenaTeam);
         }
 
-        joinModule.commitJoin(player, arenaTeam);
+        ArenaModuleManager.parseJoin(arena, player, arenaTeam);
+
+        if (arenaPlayer.getArenaClass() != null && arena.startRunner != null) {
+            arenaPlayer.setStatus(PlayerStatus.READY);
+        }
+
+        return true;
+    }
+
+    private static boolean commitDefaultJoin(Arena arena, Player player, ArenaGoal arenaGoal, ArenaPlayer arenaPlayer) {
+        debug(arena, "join module null");
+
+        ArenaTeam arenaTeam = arenaPlayer.getArenaTeam();
+        // join module null, just put the joiner to some spawn
+        if (!arena.tryJoin(player, arenaTeam)) {
+            return false;
+        }
+
+        if (arena.isFreeForAll()) {
+            arena.msg(player, arena.getConfig().getString(CFG.MSG_YOUJOINED));
+            arena.broadcastExcept(player, Language.parse(arena, CFG.MSG_PLAYERJOINED, player.getName()));
+        } else {
+            arena.msg(player, arena.getConfig().getString(CFG.MSG_YOUJOINEDTEAM).replace("%1%", arenaTeam.getColoredName() + ChatColor.RESET));
+            arena.broadcastExcept(player, Language.parse(arena, CFG.MSG_PLAYERJOINEDTEAM, arenaPlayer.getName(), arenaTeam.getColoredName() + ChatColor.RESET));
+        }
 
         ArenaModuleManager.parseJoin(arena, player, arenaTeam);
+
+        arenaGoal.initiate(player);
+        ArenaModuleManager.initiate(arena, player);
+
+        if (arena.getFighters().size() >= Math.max(1, arena.getConfig().getInt(CFG.READY_MINPLAYERS))) {
+            arena.setFightInProgress(true);
+
+            arena.getTeams().forEach(aTeam -> SpawnManager.distributeTeams(arena, aTeam));
+            arenaGoal.parseStart();
+
+            arena.getMods().forEach(ArenaModule::parseStart);
+        }
 
         if (arenaPlayer.getArenaClass() != null && arena.startRunner != null) {
             arenaPlayer.setStatus(PlayerStatus.READY);
@@ -320,7 +326,7 @@ public class WorkflowManager {
      */
     public static void handleRespawn(ArenaPlayer aPlayer, PADeathInfo deathInfo, List<ItemStack> keptItems) {
 
-        for (final ArenaModule mod : aPlayer.getArena().getMods()) {
+        for (ArenaModule mod : aPlayer.getArena().getMods()) {
             if (mod.tryDeathOverride(aPlayer, deathInfo, keptItems)) {
                 return;
             }
@@ -351,7 +357,7 @@ public class WorkflowManager {
 
         ArenaGoal goal = arena.getGoal();
         if (goal.checkSetBlock(player, block)) {
-            return goal.commitSetFlag(player, block);
+            return goal.commitSetBlock(player, block);
         }
 
         return false;
@@ -420,8 +426,8 @@ public class WorkflowManager {
         if (goal.overridesStart()) {
             goal.commitStart(); // override spawning
         } else {
-            for (final ArenaTeam team : arena.getTeams()) {
-                SpawnManager.distribute(arena, team);
+            for (ArenaTeam team : arena.getTeams()) {
+                SpawnManager.distributeTeams(arena, team);
             }
         }
 
@@ -432,7 +438,7 @@ public class WorkflowManager {
 
         goal.parseStart();
 
-        for (final ArenaModule x : arena.getMods()) {
+        for (ArenaModule x : arena.getMods()) {
             x.parseStart();
         }
 

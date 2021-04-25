@@ -109,7 +109,7 @@ public class PAA_RegionClear extends AbstractArenaCommand {
             return result;
         }
 
-        for (final EntityType et : EntityType.values()) {
+        for (EntityType et : EntityType.values()) {
             for (String val : StringParser.positive) {
                 result.define(new String[]{et.name(), val});
             }
