@@ -129,34 +129,7 @@ public final class ConfigurationManager {
 
         if (config.get("classitems") == null) {
             if (PVPArena.instance.getConfig().get("classitems") == null) {
-                config.addDefault("classitems.Ranger.items",
-                        Utils.getItemStacksFromMaterials(Material.BOW, Material.ARROW));
-                config.addDefault("classitems.Ranger.offhand",
-                        Utils.getItemStacksFromMaterials(Material.AIR));
-                config.addDefault("classitems.Ranger.armor",
-                        Utils.getItemStacksFromMaterials(Material.LEATHER_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_LEGGINGS, Material.LEATHER_BOOTS));
-
-                config.addDefault("classitems.Swordsman.items",
-                        Utils.getItemStacksFromMaterials(Material.DIAMOND_SWORD));
-                config.addDefault("classitems.Swordsman.offhand",
-                        Utils.getItemStacksFromMaterials(Material.AIR));
-                config.addDefault("classitems.Swordsman.armor",
-                        Utils.getItemStacksFromMaterials(Material.IRON_HELMET, Material.IRON_CHESTPLATE, Material.IRON_LEGGINGS, Material.IRON_BOOTS));
-
-                config.addDefault("classitems.Tank.items",
-                        Utils.getItemStacksFromMaterials(Material.STONE_SWORD));
-                config.addDefault("classitems.Tank.offhand",
-                        Utils.getItemStacksFromMaterials(Material.AIR));
-                config.addDefault("classitems.Tank.armor",
-                        Utils.getItemStacksFromMaterials(Material.DIAMOND_HELMET, Material.DIAMOND_CHESTPLATE, Material.DIAMOND_LEGGINGS, Material.DIAMOND_BOOTS));
-
-                config.addDefault("classitems.Pyro.items",
-                        Utils.getItemStacksFromMaterials(Material.FLINT_AND_STEEL, Material.TNT, Material.TNT, Material.TNT));
-                config.addDefault("classitems.Pyro.offhand",
-                        Utils.getItemStacksFromMaterials(Material.AIR));
-                config.addDefault("classitems.Pyro.armor",
-                        Utils.getItemStacksFromMaterials(Material.LEATHER_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_LEGGINGS, Material.LEATHER_BOOTS));
-
+                config.addDefault("classitems", generateDefaultClasses());
             }
         }
 
@@ -198,8 +171,8 @@ public final class ConfigurationManager {
         ArenaClass.addGlobalClasses(arena);
         for (final Map.Entry<String, Object> stringObjectEntry1 : classes.entrySet()) {
             ItemStack[] items;
-            ItemStack offHand = new ItemStack(Material.AIR, 1);
-            ItemStack[] armors = new ItemStack[]{new ItemStack(Material.AIR, 1)};
+            ItemStack offHand;
+            ItemStack[] armors;
 
             try {
                 items = getItemStacksFromConfig(config.getList("classitems."+stringObjectEntry1.getKey()+".items"));
@@ -301,6 +274,36 @@ public final class ConfigurationManager {
 
         arena.setPrefix(cfg.getString(CFG.GENERAL_PREFIX));
         return true;
+    }
+
+    public static Map<String, Object> generateDefaultClasses() {
+        Map<String, Object> classItems = new HashMap<>();
+
+        classItems.put("Ranger", new HashMap<String, List<?>>() {{
+            put("items", Utils.getItemStacksFromMaterials(Material.BOW, Material.ARROW));
+            put("offhand", Utils.getItemStacksFromMaterials(Material.AIR));
+            put("armor", Utils.getItemStacksFromMaterials(Material.LEATHER_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_LEGGINGS, Material.LEATHER_BOOTS));
+        }});
+
+        classItems.put("Swordsman", new HashMap<String, List<?>>() {{
+            put("items", Utils.getItemStacksFromMaterials(Material.DIAMOND_SWORD));
+            put("offhand", Utils.getItemStacksFromMaterials(Material.AIR));
+            put("armor", Utils.getItemStacksFromMaterials(Material.LEATHER_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_LEGGINGS, Material.LEATHER_BOOTS));
+        }});
+
+        classItems.put("Tank", new HashMap<String, List<?>>() {{
+            put("items", Utils.getItemStacksFromMaterials(Material.STONE_SWORD));
+            put("offhand", Utils.getItemStacksFromMaterials(Material.AIR));
+            put("armor", Utils.getItemStacksFromMaterials(Material.DIAMOND_HELMET, Material.DIAMOND_CHESTPLATE, Material.DIAMOND_LEGGINGS, Material.DIAMOND_BOOTS));
+        }});
+
+        classItems.put("Pyro", new HashMap<String, List<?>>() {{
+            put("items", Utils.getItemStacksFromMaterials(Material.FLINT_AND_STEEL, Material.TNT, Material.TNT, Material.TNT));
+            put("offhand", Utils.getItemStacksFromMaterials(Material.AIR));
+            put("armor", Utils.getItemStacksFromMaterials(Material.LEATHER_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_LEGGINGS, Material.LEATHER_BOOTS));
+        }});
+
+        return classItems;
     }
 
     /**

@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -20,6 +21,7 @@ import java.util.*;
 
 import static java.util.Arrays.asList;
 import static net.slipcor.pvparena.core.ItemStackUtils.getItemStacksFromConfig;
+import static net.slipcor.pvparena.managers.ConfigurationManager.generateDefaultClasses;
 
 /**
  * <pre>Arena Class class</pre>
@@ -49,53 +51,59 @@ public final class ArenaClass {
         final File classFile = new File(PVPArena.instance.getDataFolder(), "classes.yml");
         final YamlConfiguration cfg = YamlConfiguration.loadConfiguration(classFile);
 
-        cfg.addDefault("classes.Ranger",
-                "BOW,ARROW:64,LEATHER_HELMET,LEATHER_CHESTPLATE,LEATHER_LEGGINGS,LEATHER_BOOTS");
-        cfg.addDefault("classes.Swordsman",
-                "DIAMOND_SWORD,IRON_HELMET,IRON_CHESTPLATE,IRON_LEGGINGS,IRON_BOOTS");
-        cfg.addDefault("classes.Tank",
-                "STONE_SWORD,DIAMOND_HELMET,DIAMOND_CHESTPLATE,DIAMOND_LEGGINGS,DIAMOND_BOOTS");
-        cfg.addDefault("classes.Pyro",
-                "FLINT_AND_STEEL,TNT:3,LEATHER_HELMET,LEATHER_CHESTPLATE,LEATHER_LEGGINGS,LEATHER_BOOTS");
-
-        cfg.options().copyDefaults();
-        try {
-            cfg.save(classFile);
-        } catch (final IOException e1) {
-            e1.printStackTrace();
-        }
-
-        for (final String className : cfg.getConfigurationSection("classes").getKeys(false)) {
-            ItemStack[] items;
-            ItemStack offHand;
-            ItemStack[] armors;
+        if(cfg.get("classes") == null) {
+            cfg.addDefault("classes", generateDefaultClasses());
+            cfg.options().copyDefaults(true);
 
             try {
-                ConfigurationSection classesCfg = cfg.getConfigurationSection("classes").getConfigurationSection(className);
-                items = getItemStacksFromConfig(classesCfg.getList("items"));
-                offHand = getItemStacksFromConfig(classesCfg.getList("items"))[0];
-                armors = getItemStacksFromConfig(classesCfg.getList("items"));
-            } catch (final Exception e) {
-                Bukkit.getLogger().severe(
-                        "[PVP Arena] Error while parsing class, skipping: "
-                                + className);
-                e.printStackTrace();
-                continue;
+                cfg.save(classFile);
+                cfg.load(classFile);
+            } catch (IOException|InvalidConfigurationException e1) {
+                e1.printStackTrace();
             }
-            final String classChest;
-            try {
-                classChest = (String) cfg.getConfigurationSection("classchests").get(className);
-                PABlockLocation loc = new PABlockLocation(classChest);
-                Chest c = (Chest) loc.toLocation().getBlock().getState();
-                ItemStack[] contents = c.getInventory().getContents();
-                items = Arrays.copyOfRange(contents, 0, contents.length-5);
-                offHand = contents[contents.length-5];
-                armors = Arrays.copyOfRange(contents, contents.length-4, contents.length);
-                globals.put(className, new ArenaClass(className, items, offHand, armors));
-            } catch (Exception e) {
+        }
+
+        ConfigurationSection classesSection = cfg.getConfigurationSection("classes");
+        if(classesSection != null) {
+            for (final String className : classesSection.getKeys(false)) {
+                ItemStack[] items;
+                ItemStack offHand;
+                ItemStack[] armors;
+
+                try {
+                    ConfigurationSection classesCfg = classesSection.getConfigurationSection(className);
+                    items = getItemStacksFromConfig(classesCfg.getList("items"));
+                    offHand = getItemStacksFromConfig(classesCfg.getList("items"))[0];
+                    armors = getItemStacksFromConfig(classesCfg.getList("items"));
+                } catch (final Exception e) {
+                    PVPArena.instance.getLogger().severe(
+                            "(classes.yml) Error while parsing class, skipping: " + className);
+                    e.printStackTrace();
+                    continue;
+                }
+
+                final String classChest;
+                if (cfg.contains("classchests." + className)) {
+                    classChest = (String) cfg.getConfigurationSection("classchests").get(className);
+                    try {
+                        PABlockLocation loc = new PABlockLocation(classChest);
+                        Chest c = (Chest) loc.toLocation().getBlock().getState();
+                        ItemStack[] contents = c.getInventory().getContents();
+                        items = Arrays.copyOfRange(contents, 0, contents.length-5);
+                        offHand = contents[contents.length-5];
+                        armors = Arrays.copyOfRange(contents, contents.length-4, contents.length);
+                    } catch (Exception e) {
+                        PVPArena.instance.getLogger().severe(
+                                "(classes.yml) Error while parsing location of classchest, skipping: " + className);
+                        e.printStackTrace();
+                        continue;
+                    }
+                }
+
                 globals.put(className, new ArenaClass(className, items, offHand, armors));
             }
         }
+
     }
 
     public static void addGlobalClasses(final Arena arena) {

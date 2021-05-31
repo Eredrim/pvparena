@@ -2,6 +2,7 @@ package net.slipcor.pvparena.commands;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language;
@@ -56,6 +57,7 @@ public class PAA_ReloadAll extends AbstractGlobalCommand {
             scmd.commit(a, sender, emptyArray);
         }
 
+        ArenaClass.addGlobalClasses(); // reload classes.yml
         ArenaManager.load_arenas();
         if (config.getBoolean("use_shortcuts") || config.getBoolean("only_shortcuts")) {
             ArenaManager.readShortcuts(config.getConfigurationSection("shortcuts"));
