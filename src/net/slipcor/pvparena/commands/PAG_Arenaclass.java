@@ -37,7 +37,7 @@ import static net.slipcor.pvparena.arena.ArenaPlayer.Status.LOUNGE;
 
 public class PAG_Arenaclass extends AbstractArenaCommand {
     public PAG_Arenaclass() {
-        super(new String[]{"pvparena.user", "pvparena.cmds.arenaclass"});
+        super(new String[]{"pvparena.cmds.arenaclass"});
     }
 
     @Override

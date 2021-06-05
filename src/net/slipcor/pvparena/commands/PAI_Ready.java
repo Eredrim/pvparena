@@ -30,7 +30,7 @@ import java.util.Set;
 public class PAI_Ready extends AbstractArenaCommand {
 
     public PAI_Ready() {
-        super(new String[]{"pvparena.user", "pvparena.cmds.ready"});
+        super(new String[]{"pvparena.cmds.ready"});
     }
 
     @Override

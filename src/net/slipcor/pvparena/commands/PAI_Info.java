@@ -30,7 +30,7 @@ import java.util.Set;
 public class PAI_Info extends AbstractArenaCommand {
 
     public PAI_Info() {
-        super(new String[]{"pvparena.user", "pvparena.cmds.info"});
+        super(new String[]{"pvparena.cmds.info"});
     }
 
     @Override

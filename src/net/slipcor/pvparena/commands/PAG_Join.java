@@ -32,7 +32,7 @@ public class PAG_Join extends AbstractArenaCommand {
     //private final Debug debug = new Debug(200);
 
     public PAG_Join() {
-        super(new String[]{"pvparena.user", "pvparena.cmds.join"});
+        super(new String[]{"pvparena.cmds.join"});
     }
 
     @Override

@@ -24,7 +24,7 @@ import java.util.*;
 public class PAI_List extends AbstractArenaCommand {
 
     public PAI_List() {
-        super(new String[]{"pvparena.user", "pvparena.cmds.list"});
+        super(new String[]{"pvparena.cmds.list"});
     }
 
     private static final Map<ArenaPlayer.Status, Character> colorMap = new HashMap<>();

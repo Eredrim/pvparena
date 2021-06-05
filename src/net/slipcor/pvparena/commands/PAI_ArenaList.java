@@ -26,7 +26,7 @@ import java.util.List;
 public class PAI_ArenaList extends AbstractGlobalCommand {
 
     public PAI_ArenaList() {
-        super(new String[]{"pvparena.user", "pvparena.cmds.arenalist"});
+        super(new String[]{"pvparena.cmds.arenalist"});
     }
 
     @Override
