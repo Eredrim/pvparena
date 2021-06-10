@@ -463,7 +463,7 @@ public class GoalInfect extends ArenaGoal {
                 PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "playerDeath:" + player.getName());
                 Bukkit.getPluginManager().callEvent(gEvent);
                 // dying player -> infected
-                this.getLifeMap().put(player.getName(), this.arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_ILIVES));
+                this.getLifeMap().put(player.getName(), this.arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_NORMAL_INFECTED_LIVES));
                 this.arena.msg(player, Language.parse(this.arena, MSG.GOAL_INFECTED_YOU));
                 this.arena.broadcast(Language.parse(this.arena, MSG.GOAL_INFECTED_PLAYER, player.getName()));
 
@@ -568,10 +568,10 @@ public class GoalInfect extends ArenaGoal {
 
     @Override
     public void displayInfo(final CommandSender sender) {
-        sender.sendMessage("normal lives: "
-                + this.arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_NLIVES) + " || " +
-                "infected lives: "
-                + this.arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_ILIVES));
+        sender.sendMessage(String.format("normal lives: %s || start infected lives: %s || when infected lives: %s",
+                this.arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_NORMAL_LIVES),
+                this.arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_STARTING_INFECTED_LIVES),
+                this.arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_NORMAL_INFECTED_LIVES)));
     }
 
     @Override
@@ -609,7 +609,7 @@ public class GoalInfect extends ArenaGoal {
 
     @Override
     public void initate(final Player player) {
-        this.updateLives(player, this.arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_NLIVES));
+        this.updateLives(player, this.arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_NORMAL_LIVES));
     }
 
     @Override
@@ -640,11 +640,11 @@ public class GoalInfect extends ArenaGoal {
             for (final ArenaPlayer ap : team.getTeamMembers()) {
                 this.arena.getDebugger().i("#" + pos + ": " + ap, ap.getName());
                 this.getLifeMap().put(ap.getName(),
-                        this.arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_NLIVES));
+                        this.arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_NORMAL_LIVES));
                 if (pos-- == 0) {
                     infected = ap;
                     this.getLifeMap().put(ap.getName(),
-                            this.arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_ILIVES));
+                            this.arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_STARTING_INFECTED_LIVES));
                 }
                 //break;
             }
