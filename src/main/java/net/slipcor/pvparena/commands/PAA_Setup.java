@@ -128,7 +128,7 @@ public class PAA_Setup extends AbstractArenaCommand {
                     return;
                 } else if (word[2].startsWith("b")) {
                     // show block [name]
-                    final Set<PABlock> blocks = SpawnManager.getPABlocksContaining(arena, word[2]);
+                    final Set<PABlock> blocks = SpawnManager.getPABlocksStartingWith(arena, word[2]);
                     for (PABlock block : blocks) {
                         final Location loc = block.getLocation().toLocation();
 

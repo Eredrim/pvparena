@@ -55,7 +55,6 @@ public class StandardLounge extends ArenaModule {
     @Override
     public Set<PASpawn> checkForMissingSpawns(Set<PASpawn> spawns) {
         debug("checking missing lounge spawn(s)");
-        List<String> ignoredTeams = Arrays.asList("infected", "tank");
         final Set<PASpawn> missing = new HashSet<>();
 
         if (this.arena.isFreeForAll()) {
@@ -67,11 +66,11 @@ public class StandardLounge extends ArenaModule {
             return missing;
         } else {
             return this.arena.getTeams().stream()
-                    .filter(team -> !ignoredTeams.contains(team.getName()))
                     .map(team -> new PASpawn(null, LOUNGE, team.getName(), null))
                     .filter(teamSpawn -> spawns.stream()
                             .noneMatch(spawn -> spawn.getName().equals(teamSpawn.getName())
                                     && spawn.getTeamName().equals(teamSpawn.getTeamName())))
+                    .filter(paSpawn -> !this.arena.getTeam(paSpawn.getTeamName()).isVirtual())
                     .collect(Collectors.toSet());
         }
     }
@@ -83,15 +82,15 @@ public class StandardLounge extends ArenaModule {
             throw new GameplayException(Language.parse(MSG.ERROR_DISABLED));
         }
 
-        final ArenaPlayer aPlayer = ArenaPlayer.fromPlayer(player);
+        final ArenaPlayer arenaPlayer = ArenaPlayer.fromPlayer(player);
 
-        if (aPlayer.getArena() != null) {
-            debug(aPlayer.getArena(), player, this.getName());
+        if (arenaPlayer.getArena() != null) {
+            debug(arenaPlayer.getArena(), player, this.getName());
             throw new GameplayException(Language.parse(
-                    MSG.ERROR_ARENA_ALREADY_PART_OF, ArenaManager.getIndirectArenaName(aPlayer.getArena())));
+                    MSG.ERROR_ARENA_ALREADY_PART_OF, ArenaManager.getIndirectArenaName(arenaPlayer.getArena())));
         }
 
-        if (aPlayer.getArenaClass() == null) {
+        if (arenaPlayer.getArenaClass() == null) {
             String autoClass = this.arena.getConfig().getDefinedString(CFG.READY_AUTOCLASS);
             if (this.arena.getConfig().getBoolean(CFG.USES_PLAYER_OWN_INVENTORY) && this.arena.getClass(player.getName()) != null) {
                 autoClass = player.getName();

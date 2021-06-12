@@ -1,7 +1,6 @@
 package net.slipcor.pvparena.goals;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PASpawn;
@@ -58,7 +57,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 
     @Override
     public boolean allowsJoinInBattle() {
-        return this.arena.getConfig().getBoolean(CFG.PERMS_JOININBATTLE);
+        return this.arena.getConfig().getBoolean(CFG.PERMS_JOIN_IN_BATTLE);
     }
 
     @Override

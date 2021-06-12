@@ -130,7 +130,7 @@ public final class ColorUtils {
      * @param flagBlock Block (location) of the flag
      * @param flagColor New flag color
      */
-    public static void setNewFlagColor(Block flagBlock, ChatColor flagColor) {
+    public static void setNewBlockColor(Block flagBlock, ChatColor flagColor) {
         final BlockData originalBlockData = flagBlock.getBlockData().clone();
         Material newMaterial = ColorUtils.getColoredMaterialFromChatColor(flagColor, flagBlock.getType());
         BlockData newData = Bukkit.getServer().createBlockData(newMaterial);

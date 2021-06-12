@@ -432,7 +432,7 @@ public class PlayerListener implements Listener {
 
         if (arenaPlayer.getStatus() != PlayerStatus.FIGHT) {
             if (whyMe) {
-                debug(arena, player, "exiting! fight in progress AND no INBATTLEJOIN arena!");
+                debug(arena, player, "Exiting! fight in progress AND no INBATTLEJOIN arena!");
                 return;
             }
             if (asList(PlayerStatus.LOUNGE, PlayerStatus.READY).contains(arenaPlayer.getStatus()) &&
@@ -471,18 +471,18 @@ public class PlayerListener implements Listener {
                     }
                 } else {
                     debug(arena, player, '|' + sign.getLine(0) + '|');
-                    debug(arena, player, arena.getClass(sign.getLine(0)));
-                    debug(arena, player, team);
+                    debug(arena, player, "Class: " + arena.getClass(sign.getLine(0)));
+                    debug(arena, player, "Team: " + team);
 
                     if (whyMe) {
-                        debug(arena, player, "exiting! fight in progress AND no INBATTLEJOIN arena!");
+                        debug(arena, player, "exiting! there're a fight in progress AND no INBATTLEJOIN arena!");
                     }
                 }
                 return;
             }
 
             if (whyMe) {
-                debug(arena, player, "exiting! fight in progress AND no INBATTLEJOIN arena!");
+                debug(arena, player, "Exiting! there are a fight in progress AND no INBATTLEJOIN arena!");
                 return;
             }
             debug(arena, player, "block click!");

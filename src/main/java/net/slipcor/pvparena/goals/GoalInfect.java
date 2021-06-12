@@ -191,10 +191,10 @@ public class GoalInfect extends ArenaGoal {
 
     @Override
     public void checkPlace(BlockPlaceEvent event) throws GameplayException {
-        ArenaPlayer ap = ArenaPlayer.fromPlayer(event.getPlayer().getName());
-        if (this.arena.equals(ap.getArena())
-                && ap.getStatus() == PlayerStatus.FIGHT
-                && INFECTED.equals(ap.getArenaTeam().getName())) {
+        ArenaPlayer arenaPlayer = ArenaPlayer.fromPlayer(event.getPlayer().getName());
+        if (this.arena.equals(arenaPlayer.getArena())
+                && arenaPlayer.getStatus() == PlayerStatus.FIGHT
+                && INFECTED.equals(arenaPlayer.getArenaTeam().getName())) {
             if (PlayerPrevention.has(
                     this.arena.getConfig().getInt(CFG.GOAL_INFECTED_PPROTECTS), PlayerPrevention.PLACE
             )) {
@@ -479,15 +479,15 @@ public class GoalInfect extends ArenaGoal {
     }
 
     @Override
-    public void parseStart() {
-        // we already build the infected team
-        if (this.arena.getTeam(INFECTED) != null) {
-            this.infectedTeam = this.arena.getTeam(INFECTED);
-            return;
-        }
+    public void commitArenaLoaded() {
         // create the team infected
-        this.infectedTeam = new ArenaTeam(INFECTED, "PINK");
+        this.infectedTeam = new ArenaTeam(INFECTED, "PINK", true);
+        this.arena.getTeams().add(this.infectedTeam);
+    }
 
+    @Override
+    public void parseStart() {
+        debug(this.arena, "[{}] commit Arena Loaded", this.name);
         // select starting infected players
         ArenaPlayer infected = null;
         final Random random = new Random();

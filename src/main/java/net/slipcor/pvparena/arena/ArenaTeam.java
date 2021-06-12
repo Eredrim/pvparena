@@ -24,6 +24,13 @@ public class ArenaTeam {
     private final Set<ArenaPlayer> players;
     private final ChatColor color;
     private final String name;
+    /**
+     * Used by goals (like infected, flags, tank) which need custom team
+     *
+     * Virtual teams no need spawn, may have none players
+     * and doesn't count in score computing, statistic etc.
+     */
+    private final boolean virtual;
 
     /**
      * create an arena team instance
@@ -35,6 +42,21 @@ public class ArenaTeam {
         this.players = new HashSet<>();
         this.color = ColorUtils.getChatColorFromDyeColor(color);
         this.name = name;
+        this.virtual = false;
+    }
+
+    /**
+     * create an arena team instance
+     *
+     * @param name  the arena team name
+     * @param color the arena team color string
+     * @param virtual is the team virtual
+     */
+    public ArenaTeam(final String name, final String color, final boolean virtual) {
+        this.players = new HashSet<>();
+        this.color = ColorUtils.getChatColorFromDyeColor(color);
+        this.name = name;
+        this.virtual = virtual;
     }
 
     /**
@@ -92,6 +114,10 @@ public class ArenaTeam {
      */
     public String getName() {
         return this.name;
+    }
+
+    public boolean isVirtual() {
+        return this.virtual;
     }
 
     /**

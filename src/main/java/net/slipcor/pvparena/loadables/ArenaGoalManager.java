@@ -43,7 +43,6 @@ public class ArenaGoalManager {
         this.addInternalLoadable(GoalFood.class);
         this.addInternalLoadable(GoalInfect.class);
         this.addInternalLoadable(GoalLiberation.class);
-        this.addInternalLoadable(GoalPhysicalFlags.class);
         this.addInternalLoadable(GoalPlayerDeathMatch.class);
         this.addInternalLoadable(GoalPlayerKillReward.class);
         this.addInternalLoadable(GoalPlayerLives.class);

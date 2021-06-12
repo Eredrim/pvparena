@@ -113,25 +113,28 @@ public class EntityListener implements Listener {
                     ArenaModuleManager.onEntityExplode(arena, event);
                 }
 
+                debug("onEntityExplode: no arena, out!");
                 return; // no arena => out
             }
         }
         debug(arena, "explosion inside an arena, TNT should be blocked");
-        if (!arena.getConfig().getBoolean(CFG.PROTECT_ENABLED)
-                || !(event.getEntity() instanceof TNTPrimed)
-                && !(event.getEntity() instanceof Creeper)) {
+        debug(arena, "protection enabled: " + arena.getConfig().getBoolean(CFG.PROTECT_ENABLED));
 
-            try {
-                arena.getGoal().checkExplode(event);
-            } catch (GameplayException e) {
+        try {
+            arena.getGoal().checkExplode(event);
+            if (event.isCancelled()) {
                 debug(arena, "onEntityExplode cancelled by goal: {}", arena.getGoal().getName());
             }
-
-            ArenaModuleManager.onEntityExplode(arena, event);
-            return;
+        } catch (GameplayException e) {
+            debug(arena, "onEntityExplode cancelled by goal: {}", arena.getGoal().getName());
         }
 
-        event.setCancelled(true); // ELSE => cancel event
+        if(!event.isCancelled()) {
+            ArenaModuleManager.onEntityExplode(arena, event);
+            if (event.isCancelled()) {
+                debug(arena, "onEntityExplode cancelled by a module");
+            }
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -290,7 +293,7 @@ public class EntityListener implements Listener {
         }
 
         // cancel if defender or attacker are not fighting
-        if (apAttacker.getStatus() != PlayerStatus.FIGHT || apDefender.getStatus() != PlayerStatus.FIGHT ) {
+        if (apAttacker.getStatus() != PlayerStatus.FIGHT || apDefender.getStatus() != PlayerStatus.FIGHT) {
             debug(arena, attacker, "player or target is not fighting, cancel!");
             debug(arena, defender, "player or target is not fighting, cancel!");
             event.setCancelled(true);
@@ -335,7 +338,7 @@ public class EntityListener implements Listener {
             return;
         }
 
-        if(eDamager instanceof Player && eDamagee instanceof Player) {
+        if (eDamager instanceof Player && eDamagee instanceof Player) {
             final Player attacker = (Player) eDamager;
             final Player defender = (Player) eDamagee;
             final ArenaPlayer apDefender = ArenaPlayer.fromPlayer(defender.getName());

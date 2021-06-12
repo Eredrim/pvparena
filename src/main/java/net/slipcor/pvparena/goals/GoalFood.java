@@ -1,7 +1,10 @@
 package net.slipcor.pvparena.goals;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.arena.*;
+import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.arena.PlayerStatus;
+import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PABlock;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PASpawn;
@@ -83,7 +86,7 @@ public class GoalFood extends ArenaGoal {
 
     @Override
     public boolean allowsJoinInBattle() {
-        return this.arena.getConfig().getBoolean(CFG.PERMS_JOININBATTLE);
+        return this.arena.getConfig().getBoolean(CFG.PERMS_JOIN_IN_BATTLE);
     }
 
     @Override
@@ -169,7 +172,7 @@ public class GoalFood extends ArenaGoal {
         this.blockName = args[0];
         PAA_Region.activeSelections.put(sender.getName(), this.arena);
 
-        this.arena.msg(sender, MSG.GOAL_SABOTAGE_TOSETTNT, this.blockName);
+        this.arena.msg(sender, MSG.GOAL_FOOD_TOSET, this.blockName);
     }
 
     @Override
@@ -293,7 +296,7 @@ public class GoalFood extends ArenaGoal {
             return false;
         }
 
-        final Set<PABlock> spawns = SpawnManager.getPABlocksContaining(this.arena, FOODFURNACE);
+        final Set<PABlock> spawns = SpawnManager.getPABlocksStartingWith(this.arena, FOODFURNACE);
 
         if (spawns.isEmpty()) {
             return false;

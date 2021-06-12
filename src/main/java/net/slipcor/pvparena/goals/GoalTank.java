@@ -17,6 +17,7 @@ import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.TeleportManager;
+import net.slipcor.pvparena.managers.TeleportManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.WorkflowManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
@@ -46,6 +47,7 @@ import static net.slipcor.pvparena.config.Debugger.debug;
 public class GoalTank extends ArenaGoal {
 
     public static final String TANK = "tank";
+    private ArenaTeam tankTeam;
 
     public GoalTank() {
         super("Tank");
@@ -63,6 +65,13 @@ public class GoalTank extends ArenaGoal {
     @Override
     public boolean isFreeForAll() {
         return true;
+    }
+
+    @Override
+    public void commitArenaLoaded() {
+        debug(this.arena, "[{}] commit Arena Loaded", this.name);
+        this.tankTeam = new ArenaTeam(TANK, "PINK", true);
+        this.arena.getTeams().add(this.tankTeam);
     }
 
     @Override
@@ -228,9 +237,6 @@ public class GoalTank extends ArenaGoal {
 
     @Override
     public void parseStart() {
-        if (this.arena.getTeam(TANK) != null) {
-            return;
-        }
         ArenaPlayer tank = null;
         final Random random = new Random();
         for (ArenaTeam team : this.arena.getTeams()) {
@@ -244,18 +250,17 @@ public class GoalTank extends ArenaGoal {
                 this.getPlayerLifeMap().put(arenaPlayer.getPlayer(), this.arena.getConfig().getInt(CFG.GOAL_TANK_LIVES));
             }
         }
-        final ArenaTeam tankTeam = new ArenaTeam(TANK, "PINK");
 
         assert tank != null;
         for (ArenaTeam team : this.arena.getTeams()) {
             if (team.getTeamMembers().contains(tank)) {
-                final PATeamChangeEvent tcEvent = new PATeamChangeEvent(this.arena, tank.getPlayer(), team, tankTeam);
+                final PATeamChangeEvent tcEvent = new PATeamChangeEvent(this.arena, tank.getPlayer(), team, this.tankTeam);
                 Bukkit.getPluginManager().callEvent(tcEvent);
-                this.arena.getScoreboard().switchPlayerTeam(tank.getPlayer(), team, tankTeam);
+                this.arena.getScoreboard().switchPlayerTeam(tank.getPlayer(), team, this.tankTeam);
                 team.remove(tank);
             }
         }
-        tankTeam.add(tank);
+        this.tankTeam.add(tank);
         this.tank = tank;
 
         final ArenaClass tankClass = this.arena.getClass("%tank%");
@@ -264,7 +269,7 @@ public class GoalTank extends ArenaGoal {
             InventoryManager.clearInventory(tank.getPlayer());
             tankClass.equip(tank.getPlayer());
             for (ArenaModule mod : this.arena.getMods()) {
-                mod.parseRespawn(tank.getPlayer(), tankTeam, DamageCause.CUSTOM,
+                mod.parseRespawn(tank.getPlayer(), this.tankTeam, DamageCause.CUSTOM,
                         tank.getPlayer());
             }
         }
@@ -273,7 +278,7 @@ public class GoalTank extends ArenaGoal {
 
         TeleportManager.teleportPlayerToRandomSpawn(this.arena, tank, SpawnManager.getPASpawnsStartingWith(this.arena, TANK));
 
-        this.arena.getTeams().add(tankTeam);
+        this.arena.getTeams().add(this.tankTeam);
     }
 
     @Override

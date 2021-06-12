@@ -6,12 +6,11 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Help.HELP;
-import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.managers.RegionManager;
-import net.slipcor.pvparena.regions.ArenaRegion;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
 import net.slipcor.pvparena.loader.Loadable;
+import net.slipcor.pvparena.managers.RegionManager;
+import net.slipcor.pvparena.regions.ArenaRegion;
 import net.slipcor.pvparena.regionshapes.CuboidRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -75,7 +74,7 @@ public class PAA_Region extends AbstractArenaCommand {
             // selecting now!
             activeSelections.put(sender.getName(), arena);
             arena.msg(sender, MSG.REGION_YOUSELECT, arena.getName());
-            arena.msg(sender, MSG.REGION_SELECT, arena.getName());
+            arena.msg(sender, MSG.REGION_SELECT, arena.getName(), PVPArena.getInstance().getWandItem().name());
             return;
         }
         if (args.length == 2 && args[1].equalsIgnoreCase("border")) {
@@ -111,7 +110,7 @@ public class PAA_Region extends AbstractArenaCommand {
             final ArenaPlayer aPlayer = ArenaPlayer.fromPlayer((Player) sender);
 
             if (!aPlayer.didValidSelection()) {
-                arena.msg(sender, MSG.REGION_SELECT, arena.getName());
+                arena.msg(sender, MSG.REGION_SELECT, arena.getName(), PVPArena.getInstance().getWandItem().name());
                 return;
             }
 

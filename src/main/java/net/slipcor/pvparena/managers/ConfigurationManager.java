@@ -250,6 +250,17 @@ public final class ConfigurationManager {
 
         cfg.save();
 
+        if(arena.getGoal() != null) {
+            loadArenaGoalConfig(arena, cfg, config);
+        }
+
+        arena.setPrefix(cfg.getString(CFG.GENERAL_PREFIX));
+        return true;
+    }
+
+    private static void loadArenaGoalConfig(Arena arena, Config cfg, YamlConfiguration config) {
+
+        arena.getGoal().setDefaults(config);
         arena.getGoal().configParse(config);
 
         if (cfg.getYamlConfiguration().getConfigurationSection("teams") == null) {
@@ -285,9 +296,6 @@ public final class ConfigurationManager {
         ArenaModuleManager.configParse(arena, config);
         cfg.save();
         cfg.reloadMaps();
-
-        arena.setPrefix(cfg.getString(CFG.GENERAL_PREFIX));
-        return true;
     }
 
     /**

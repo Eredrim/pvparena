@@ -66,6 +66,8 @@ public final class TeamManager {
 
         // collect the available teams into a map and get count of "players missing" or "space available"
         Map<ArenaTeam, Integer> availableTeamsWithMemberCount = arena.getTeams().stream()
+                // don't use virtual team. there are reserved by goals.
+                .filter(arenaTeam -> !arenaTeam.isVirtual())
                 // don't map full teams
                 .filter(arenaTeam -> arenaTeam.getTeamMembers().size() < maxPlayerPerTeam)
                 .collect(Collectors.toMap(
@@ -135,17 +137,22 @@ public final class TeamManager {
     public static int countActiveTeams(final Arena arena) {
         debug(arena, "counting active teams");
 
-        final Set<String> activeteams = new HashSet<>();
-        for (ArenaTeam team : arena.getTeams()) {
-            for (ArenaPlayer ap : team.getTeamMembers()) {
-                if (ap.getStatus() == PlayerStatus.FIGHT) {
-                    activeteams.add(team.getName());
-                    break;
-                }
-            }
-        }
+        final List<ArenaTeam> activeteams = getArenaTeamsWithFighters(arena);
         debug(arena, "result: " + activeteams.size());
         return activeteams.size();
+    }
+
+    /**
+     * Return teams with active fighter
+     *
+     * @param arena arena
+     * @return arenaTeam with active players
+     */
+    public static List<ArenaTeam> getArenaTeamsWithFighters(final Arena arena) {
+        return arena.getNotEmptyTeams().stream()
+                .filter(arenaTeam -> arenaTeam.getTeamMembers().stream()
+                        .anyMatch(arenaPlayer -> arenaPlayer.getStatus() == PlayerStatus.FIGHT))
+                .collect(Collectors.toList());
     }
 
     /**

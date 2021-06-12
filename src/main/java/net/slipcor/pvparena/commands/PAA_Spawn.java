@@ -178,7 +178,7 @@ public class PAA_Spawn extends AbstractArenaCommand {
         arena.msg(player, MSG.ERROR_SPAWN_UNKNOWN, spawnName);
     }
 
-    private void commitSet(@NotNull  Arena arena, @NotNull  CommandSender sender, @NotNull  PALocation loc, @NotNull String name, String teamName, String className) {
+    private void commitSet(@NotNull Arena arena, @NotNull CommandSender sender, @NotNull PALocation loc, @NotNull String name, String teamName, String className) {
         boolean replaced = arena.setSpawn(name, loc, teamName, className);
         if (replaced) {
             arena.msg(sender, MSG.SPAWN_REMOVED, name, ofNullable(teamName)

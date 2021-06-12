@@ -107,11 +107,11 @@ public class BlockListener implements Listener {
             debug(event.getPlayer(), "willbeskipped. GFYS!!!!");
             return;
         }
-
-        if (ArenaPlayer.fromPlayer(event.getPlayer().getName()).getStatus() == PlayerStatus.LOST
-                || ArenaPlayer.fromPlayer(event.getPlayer().getName()).getStatus() == PlayerStatus.WATCH
-                || ArenaPlayer.fromPlayer(event.getPlayer().getName()).getStatus() == PlayerStatus.LOUNGE
-                || ArenaPlayer.fromPlayer(event.getPlayer().getName()).getStatus() == PlayerStatus.READY) {
+        final PlayerStatus playerStatus = ArenaPlayer.fromPlayer(event.getPlayer().getName()).getStatus();
+        if (playerStatus == PlayerStatus.LOST
+                || playerStatus == PlayerStatus.WATCH
+                || playerStatus == PlayerStatus.LOUNGE
+                || playerStatus == PlayerStatus.READY) {
             event.setCancelled(true);
             return;
         }
@@ -122,7 +122,14 @@ public class BlockListener implements Listener {
 
         final List<String> list = arena.getConfig().getStringList(
                 CFG.LISTS_WHITELIST.getNode() + ".break",
-                new ArrayList<String>());
+                new ArrayList<>());
+
+        try {
+            arena.getGoal().checkBreak(event);
+        } catch (GameplayException e) {
+            debug(event.getPlayer(), "onBlockBreak cancelled by goal: {}", arena.getGoal().getName());
+            return;
+        }
 
         if (!list.isEmpty()
                 && !list.contains(event.getBlock().getType()
@@ -152,13 +159,6 @@ public class BlockListener implements Listener {
             // on blacklist. DENY!
             event.setCancelled(true);
             debug(event.getPlayer(), "blacklist out");
-            return;
-        }
-
-        try {
-            arena.getGoal().checkBreak(event);
-        } catch (GameplayException e) {
-            debug(event.getPlayer(), "onBlockBreak cancelled by goal: {}", arena.getGoal().getName());
             return;
         }
 
@@ -400,6 +400,7 @@ public class BlockListener implements Listener {
 
         final ArenaPlayer arenaPlayer = ArenaPlayer.fromPlayer(player);
         if (asList(PlayerStatus.LOST, PlayerStatus.WATCH, PlayerStatus.LOUNGE, PlayerStatus.READY).contains(arenaPlayer.getStatus())) {
+            debug(player, "Player status: lost, watch, lounge or ready. Cancelling.");
             event.setCancelled(true);
             return;
         }

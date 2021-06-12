@@ -3,6 +3,7 @@ package net.slipcor.pvparena.loadables;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.api.IArenaCommandHandler;
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PABlock;
@@ -31,6 +32,8 @@ import org.jetbrains.annotations.NotNull;
 import static net.slipcor.pvparena.config.Debugger.trace;
 
 import java.util.*;
+
+import static java.util.Optional.ofNullable;
 
 /**
  * <pre>
@@ -297,6 +300,7 @@ public class ArenaGoal implements IArenaCommandHandler {
      *
      * @param player the setting player
      * @param block  the flag block
+     *
      * @return true if the interact event should be cancelled
      */
     public boolean commitSetBlock(final Player player, final Block block) {
@@ -403,7 +407,7 @@ public class ArenaGoal implements IArenaCommandHandler {
                                 && spawnTeamName.equalsIgnoreCase(teamName));
             }
             trace("Has team {} spawn: class spawn: {}, spawn name: {}", teamName, hasByClass, spawnName);
-            final boolean hasSpawn = hasByClass || (spawnName.toLowerCase().startsWith(SPAWN)
+            boolean hasSpawn = hasByClass || (spawnName.toLowerCase().startsWith(SPAWN)
                     && teamName.equalsIgnoreCase(spawnTeamName));
             if (hasSpawn) {
                 return true;
@@ -572,5 +576,13 @@ public class ArenaGoal implements IArenaCommandHandler {
             this.arena.broadcast(Language.parse(Language.MSG.FIGHT_KILLED_BY,
                     coloredPlayerName, deathCause));
         }
+    }
+
+    /**
+     * When arena is loaded and valid.
+     * (Before spawns & blocks loading)
+     */
+    public void commitArenaLoaded() {
+        // add for goal custom team, custom arena setting etc.
     }
 }

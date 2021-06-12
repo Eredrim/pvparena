@@ -125,7 +125,7 @@ public class PAI_Info extends AbstractArenaCommand {
             arena.msg(sender,
                     StringParser.colorVar("explicitarena", cfg.getBoolean(CFG.PERMS_EXPLICITARENA)) + " | " +
                     StringParser.colorVar("explicitclass", cfg.getBoolean(CFG.PERMS_EXPLICITCLASS)) + " | " +
-                    StringParser.colorVar("joininbattle", cfg.getBoolean(CFG.PERMS_JOININBATTLE)) + " | " +
+                    StringParser.colorVar("joininbattle", cfg.getBoolean(CFG.PERMS_JOIN_IN_BATTLE)) + " | " +
                     StringParser.colorVar("teamkill", cfg.getBoolean(CFG.PERMS_TEAMKILL)));
 
         }

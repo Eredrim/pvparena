@@ -64,7 +64,7 @@ public class GoalLiberation extends ArenaGoal {
     private EndRunnable endRunner;
     private String blockName;
     private String blockTeamName;
-    private final Map<Player, List<ItemStack>> keptItemsMap = new HashMap<>();
+    private Map<Player, List<ItemStack>> keptItemsMap = new HashMap<>();
 
     @Override
     public String version() {
@@ -72,7 +72,7 @@ public class GoalLiberation extends ArenaGoal {
     }
 
     @Override
-    public boolean checkCommand(final String command) {
+    public boolean checkCommand(String command) {
         return command.equalsIgnoreCase(BUTTON);
     }
 
@@ -92,7 +92,7 @@ public class GoalLiberation extends ArenaGoal {
 
     @Override
     public Set<PASpawn> checkForMissingSpawns(Set<PASpawn> spawns) {
-        final Set<PASpawn> missing = SpawnManager.getMissingTeamSpawn(this.arena, spawns);
+        Set<PASpawn> missing = SpawnManager.getMissingTeamSpawn(this.arena, spawns);
         missing.addAll(SpawnManager.getMissingTeamCustom(this.arena, spawns, JAIL));
         return missing;
     }
@@ -115,7 +115,7 @@ public class GoalLiberation extends ArenaGoal {
         if (block == null) {
             return false;
         }
-        debug(this.arena, player, "checking interact");
+        debug(this.arena, player, String.format("[%s] checking interact", this.name));
 
         if (Tag.BUTTONS.isTagged(block.getType())) {
             debug(this.arena, player, "block, but not button");
@@ -284,7 +284,7 @@ public class GoalLiberation extends ArenaGoal {
     @Override
     public void commitPlayerDeath(final Player player, final boolean doesRespawn, PADeathInfo deathInfo) {
 
-        ArenaPlayer arenaPlayer = ArenaPlayer.fromPlayer(player);
+        final ArenaPlayer arenaPlayer = ArenaPlayer.fromPlayer(player);
         ArenaTeam arenaTeam = arenaPlayer.getArenaTeam();
 
         if (!this.getTeamLifeMap().containsKey(arenaTeam)) {

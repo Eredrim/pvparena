@@ -119,7 +119,7 @@ public class Config {
         PERMS_EXPLICITCLASS("perms.explicitClassNeeded", false, null),
         PERMS_FLY("perms.fly", false, null),
         PERMS_LOUNGEINTERACT("perms.loungeinteract", false, null),
-        PERMS_JOININBATTLE("perms.joinInBattle", false, null),
+        PERMS_JOIN_IN_BATTLE("perms.joinInBattle", false, null),
         PERMS_JOINWITHSCOREBOARD("perms.joinWithScoreboard", true, null),
         PERMS_TEAMKILL("perms.teamkill", true, null),
         PERMS_SPECTALK("perms.specTalk", true, null),
@@ -198,21 +198,22 @@ public class Config {
         GOAL_CHECKPOINTS_LIVES("goal.checkpoints.cplives", 10, "CheckPoints"),
         GOAL_CHECKPOINTS_TICKINTERVAL("goal.checkpoints.cptickinterval", 20, "CheckPoints"),
 
-        GOAL_DOM_ANNOUNCEOFFSET("goal.dom.spamoffset", 3, "Domination"),
+        GOAL_DOM_ANNOUNCE_OFFSET("goal.dom.spamoffset", 3, "Domination"),
         GOAL_DOM_BOSSBAR("goal.dom.domBossBar", true, "Domination"),
-        GOAL_DOM_CLAIMRANGE("goal.dom.claimrange", 3, "Domination"),
+        GOAL_DOM_CLAIM_RANGE("goal.dom.claimrange", 3, "Domination"),
         GOAL_DOM_LIVES("goal.dom.dlives", 10, "Domination"),
         GOAL_DOM_ONLYWHENMORE("goal.dom.onlywhenmore", false, "Domination"),
-        GOAL_DOM_PARTICLECIRCLE("goal.dom.particlecircle", true, "Domination"),
-        GOAL_DOM_TICKINTERVAL("goal.dom.tickinterval", 60, "Domination"),
-        GOAL_DOM_TICKREWARD("goal.dom.tickreward", 1, "Domination"),
+        GOAL_DOM_PARTICLE_CIRCLE("goal.dom.particlecircle", true, "Domination"),
+        GOAL_DOM_TICK_INTERVAL("goal.dom.tickinterval", 60, "Domination"),
+        GOAL_DOM_TICK_REWARD("goal.dom.tickreward", 1, "Domination"),
 
-        GOAL_FLAGS_FLAGTYPE("goal.flags.flagType", Material.WHITE_WOOL, "Flags"),
         GOAL_FLAGS_LIVES("goal.flags.flives", 3, "Flags"),
-        GOAL_FLAGS_MUSTBESAFE("goal.flags.mustBeSafe", true, "Flags"),
-        GOAL_FLAGS_WOOLFLAGHEAD("goal.flags.woolFlagHead", true, "Flags"),
-        GOAL_FLAGS_FLAGEFFECT("goal.flags.effect", "none", "Flags"),
-        GOAL_FLAGS_ALTERONCATCH("goal.flags.alterOnCatch", true, "Flags"),
+        GOAL_FLAGS_MUST_BE_SAFE("goal.flags.mustBeSafe", true, "Flags"),
+        GOAL_FLAGS_WOOL_FLAG_HEAD("goal.flags.woolFlagHead", true, "Flags"),
+        GOAL_FLAGS_FLAG_EFFECT("goal.flags.effect", "none", "Flags"),
+        GOAL_FLAGS_BREAK_TO_CAPTURE("goal.flags.breakToCapture", false, "Flags"),
+        GOAL_FLAGS_WHITE_IF_CAPTURED("goal.flags.whiteIfCaptured", true, "Flags"),
+        GOAL_FLAGS_NONE_IF_CAPTURED("goal.flags.noneIfCaptured", false, "Flags"),
 
         GOAL_FOOD_FMAXITEMS("goal.food.fmaxitems", 50, "Food"),
         GOAL_FOOD_FPLAYERITEMS("goal.food.fplayeritems", 10, "Food"),
@@ -226,12 +227,6 @@ public class Config {
 
         GOAL_LLIVES_LIVES("goal.liberation.llives", 3, "Liberation"),
         GOAL_PDM_LIVES("goal.playerdm.pdlives", 3, "PlayerDeathMatch"),
-
-        GOAL_PFLAGS_FLAGTYPE("goal.physicalflags.flagType", Material.WHITE_WOOL, "PhysicalFlags"),
-        GOAL_PFLAGS_LIVES("goal.physicalflags.flives", 3, "PhysicalFlags"),
-        GOAL_PFLAGS_MUSTBESAFE("goal.physicalflags.mustBeSafe", true, "PhysicalFlags"),
-        GOAL_PFLAGS_WOOLFLAGHEAD("goal.physicalflags.woolFlagHead", true, "PhysicalFlags"),
-        GOAL_PFLAGS_FLAGEFFECT("goal.physicalflags.effect", "none", "PhysicalFlags"),
 
         GOAL_PLIVES_LIVES("goal.playerlives.plives", 3, "PlayerLives"),
         GOAL_TANK_LIVES("goal.tank.tlives", 1, "Tank"),
@@ -257,6 +252,8 @@ public class Config {
 
         GOAL_PLAYERKILLREWARD_GRADUALLYDOWN("goal.playerkillreward.graduallyDown", false, "PlayerKillReward"),
         GOAL_PLAYERKILLREWARD_ONLYGIVE("goal.playerkillreward.onlyGive", false, "PlayerKillReward"),
+
+        GOAL_SABOTAGE_ITEM("goal.sabotage.item", Material.FLINT_AND_STEEL, "Sabotage"),
 
         // -----------
 
@@ -940,7 +937,6 @@ public class Config {
         if(coords == null) {
             throw new IllegalArgumentException("Block node format is incorrect.");
         }
-
         final String[] parts = coords.split(",");
         if (parts.length < 4) {
             throw new IllegalArgumentException(

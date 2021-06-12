@@ -66,7 +66,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 
     @Override
     public boolean allowsJoinInBattle() {
-        return this.arena.getConfig().getBoolean(CFG.PERMS_JOININBATTLE);
+        return this.arena.getConfig().getBoolean(CFG.PERMS_JOIN_IN_BATTLE);
     }
 
     @Override

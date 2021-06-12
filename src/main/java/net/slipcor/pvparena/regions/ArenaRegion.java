@@ -28,11 +28,9 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static net.slipcor.pvparena.config.Debugger.debug;
@@ -109,6 +107,7 @@ public class ArenaRegion {
     public static boolean checkRegionSetPosition(final PlayerInteractEvent event,
                                                  final Player player) {
         if (!PAA_Region.activeSelections.containsKey(player.getName())) {
+            debug(player, "not active selections");
             return false;
         }
         final Arena arena = PAA_Region.activeSelections.get(player.getName());
@@ -134,6 +133,11 @@ public class ArenaRegion {
                 arena.msg(player, MSG.REGION_POS2);
                 return true; // right click => pos2
             }
+        } else {
+            debug(player, "perms: " + PVPArena.hasAdminPerms(player));
+            debug(player, "perms create: " + PVPArena.hasCreatePerms(player, arena));
+            debug(player, "equipemnt: " + Optional.ofNullable(player.getEquipment())
+                    .map(entityEquipment -> entityEquipment.getItemInMainHand().getType().name()).orElse(null));
         }
         return false;
     }
@@ -159,13 +163,12 @@ public class ArenaRegion {
     /**
      * Location is inside region
      * This will include all edge cases to account for:
-     *
+     * <p>
      * CUBE - absolute maximum due to maximum X&Y&Z and minimum X&Y&Z
      * CYLINDER - absolute maximum due to maximum X&Y,Y&Z and minimum X&Y,Y&Z
      * SPHERE - current minimum with only minimum X, Y, Z and minimum X, Y, Z
      *
      * @param location location
-     *
      * @return true if location is in region
      */
     public boolean containsLocation(PALocation location) {
@@ -412,7 +415,7 @@ public class ArenaRegion {
         if (this.flags.contains(RegionFlag.NOCAMP)) {
             this.handleNoCampRegionFlag(arenaPlayer, pLoc);
 
-        } else if(Stream.of(RegionFlag.DEATH, RegionFlag.WIN, RegionFlag.LOSE).anyMatch(this.flags::contains) && this.shape.contains(pLoc)) {
+        } else if (Stream.of(RegionFlag.DEATH, RegionFlag.WIN, RegionFlag.LOSE).anyMatch(this.flags::contains) && this.shape.contains(pLoc)) {
 
             if (this.flags.contains(RegionFlag.DEATH)) {
                 debug(arenaPlayer, "entering DEATH region");

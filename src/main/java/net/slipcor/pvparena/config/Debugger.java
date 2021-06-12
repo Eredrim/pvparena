@@ -125,6 +125,22 @@ public class Debugger {
         }
     }
 
+    public static void trace(ArenaPlayer arenaPlayer, String string) {
+        if (active && FINER.equals(level)) {
+            if (arenaPlayer.getArena() != null) {
+                formatAndPrint(arenaPlayer.getArena(), arenaPlayer.getPlayer(), FINER, string);
+            } else {
+                formatAndPrint(null, arenaPlayer.getPlayer(), FINER, string);
+            }
+        }
+    }
+
+    public static void trace(ArenaPlayer aPlayer, String template, Object... args) {
+        if (active && FINER.equals(level)) {
+            trace(aPlayer, getTemplatedLine(template, args));
+        }
+    }
+
     public static void trace(CommandSender sender, String template, Object... args) {
         if (active && FINER.equals(level)) {
             formatAndPrint(null, sender, FINER, getTemplatedLine(template, args));

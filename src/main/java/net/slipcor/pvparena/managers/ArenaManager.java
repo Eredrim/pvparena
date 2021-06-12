@@ -200,8 +200,10 @@ public final class ArenaManager {
             }
             for (ArenaRegion region : arena.getRegions()) {
                 if (region.getShape().contains(location)) {
+                    debug(String.format("region %s contains the location %s.", region.getRegionName(), location));
                     return arena;
                 }
+                debug(String.format("region %s doesn't contain the location %s.", region.getRegionName(), location));
             }
         }
         return null;
@@ -343,9 +345,12 @@ public final class ArenaManager {
         arena.setValid(ConfigurationManager.configParse(arena, cfg));
         debug(arena, "valid: {}", arena.isValid());
         if (arena.isValid()) {
-            StatisticsManager.loadStatistics(arena);
+            // Some goals need to add custom teams, custom arena settings etc.
+            arena.getGoal().commitArenaLoaded();
+            // Spawns and blocks may required goal custom teams
             SpawnManager.loadSpawns(arena, cfg);
             SpawnManager.loadBlocks(arena, cfg);
+            StatisticsManager.loadStatistics(arena);
         } else {
             // not valid arena config file
             Arena.pmsg(Bukkit.getConsoleSender(), MSG.ERROR_ARENACONFIG, arena.getName());

@@ -40,11 +40,11 @@ Players claim this flag and bring it home. Only one team can bring this flag hom
 ## Config settings
 
 - `flives` \- the count of flags being brought home that lead to winning
-- `flagType` \- the material checked for flags (default: WHITE_WOOL). Plugin handle automatically flag colors if flagType 
-is a colorable item.
 - `mustBeSafe` \- do claimed flags prevent bringing home other flags? \- (default: true)
 - `woolFlagHead` \- should PVP Arena enforce putting a wool head on flag carriers? - (default: true)
 - `effect` \- the potion effect a player should get when carrying the flag (default: none; possible value: SLOWx2 - 
 slowness, level 2) ; [see bukkit docs](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html)
-- `alterOnCatch` \- change flag aspect when a player catch it. If flag is colorable (list below), color is passed to white
+- `breakToCapture` \- Players must break the flag to capture it. If true, noneIfCaptured is automatically set to true. (Replace the old PhysicalFlag goal) (default: false)
+- `whiteIfCaptured` \- If flag is colorable (list below), color is passed to white when captured
  otherwise block is replaced by bedrock. (default: true)
+- `noneIfCaptured` \- Flag is removed when captured. Override whiteIfCaptured option. mustBeSafe option must be true (default: false)

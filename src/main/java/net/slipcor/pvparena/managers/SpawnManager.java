@@ -395,13 +395,13 @@ public final class SpawnManager {
                 .collect(Collectors.toSet());
     }
 
-    public static Set<PABlockLocation> getBlocksContaining(@NotNull Arena arena, @NotNull String name) {
-        return getPABlocksContaining(arena, name).stream()
+    public static Set<PABlockLocation> getPABlockLocationsStartingWith(@NotNull Arena arena, @NotNull String name) {
+        return getPABlocksStartingWith(arena, name).stream()
                 .map(PABlock::getLocation)
                 .collect(Collectors.toSet());
     }
 
-    public static Set<PABlock> getPABlocksContaining(Arena arena, String name) {
+    public static Set<PABlock> getPABlocksStartingWith(Arena arena, String name) {
         return arena.getBlocks().stream()
                 .filter(block -> block.getName().startsWith(name))
                 .collect(Collectors.toSet());
@@ -693,6 +693,11 @@ public final class SpawnManager {
     public static void setBlock(Arena arena, PABlockLocation loc, String blockName, String teamName) {
         // "x,y,z,yaw,pitch"
 
+        if(blockName == null){
+            PVPArena.getInstance().getLogger().warning("Trying to save a block without name !");
+            return;
+        }
+
         final String location = Config.parseToString(loc);
         debug(arena, "setting spawn " + blockName + " to " + location);
         final PABlock paBlock = new PABlock(loc, blockName, teamName);
@@ -836,10 +841,11 @@ public final class SpawnManager {
      */
     public static Set<PASpawn> getMissingTeamSpawn(Arena arena, Set<PASpawn> spawns) {
         return arena.getTeams().stream()
-                .map(team -> new PASpawn(null, SPAWN, team.getName(), null))
+                .map(arenaTeam -> new PASpawn(null, SPAWN, arenaTeam.getName(), null))
                 .filter(teamSpawn -> spawns.stream()
                         .noneMatch(spawn -> spawn.getName().startsWith(teamSpawn.getName())
                                 && spawn.getTeamName().equals(teamSpawn.getTeamName())))
+                .filter(paSpawn -> !arena.getTeam(paSpawn.getTeamName()).isVirtual())
                 .collect(Collectors.toSet());
     }
 
@@ -874,6 +880,7 @@ public final class SpawnManager {
                                 (block.getName().equals(teamBlock.getName())
                                         || block.getName().startsWith(custom))
                                         && block.getTeamName().equals(teamBlock.getTeamName())))
+                .filter(paSpawn -> !arena.getTeam(paSpawn.getTeamName()).isVirtual())
                 .collect(Collectors.toSet());
     }
 
