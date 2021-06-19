@@ -44,7 +44,7 @@ public class DamageResetRunnable implements Runnable {
             try {
                 final ItemStack[] items = this.defender.getInventory().getArmorContents();
 
-                for (final ItemStack is : items) {
+                for (ItemStack is : items) {
                     if (is == null || !is.getType().name().endsWith("_HELMET")) {
                         continue;
                     }

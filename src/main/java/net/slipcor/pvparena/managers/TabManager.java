@@ -112,7 +112,7 @@ public final class TabManager {
             }
         }
 
-        for (final CommandTree<String> tree : commands) {
+        for (CommandTree<String> tree : commands) {
             addMatchesFromCommandTree(matches, Arrays.copyOfRange(args, 1, args.length), tree);
         }
         return new ArrayList<>(matches);
@@ -128,16 +128,16 @@ public final class TabManager {
     private static void addCommandsStartingWithPrefix(final Set<String> matches, final CommandSender sender,
                                                       final Arena arena, final List<? extends IArenaCommandHandler> list,
                                                       final String prefix) {
-        for (final IArenaCommandHandler ach : list) {
+        for (IArenaCommandHandler ach : list) {
             if (ach.hasPerms(sender, arena)) {
                 if(prefix.startsWith("!") || prefix.startsWith("-")) {
-                    for (final String value : ach.getShort()) {
+                    for (String value : ach.getShort()) {
                         if (startsWithIgnoreCase(value, prefix)) {
                             matches.add(value);
                         }
                     }
                 } else {
-                    for (final String value : ach.getMain()) {
+                    for (String value : ach.getMain()) {
                         if (startsWithIgnoreCase(value, prefix)) {
                             matches.add(value);
                         }
@@ -155,7 +155,7 @@ public final class TabManager {
      * @param list   the Enum list to search
      */
     private static void addEnumMatchesToList(final List<String> result, final String key, final List<? extends Enum> list) {
-        for (final Enum e : list) {
+        for (Enum e : list) {
             if (startsWithIgnoreCase(e.name(), key)) {
                 result.add(e.name());
             }
@@ -176,7 +176,7 @@ public final class TabManager {
         String override = args[0];
         if (args.length == 1) {
             // we have the last argument
-            for (final String key : sub.getContent()) {
+            for (String key : sub.getContent()) {
                 matches.addAll(getKeyMatchesInsideDefinition(override, key));
             }
             return;
@@ -211,14 +211,14 @@ public final class TabManager {
     private static void addTreesMatchingValueInHandlerList(final List<CommandTree<String>> treeList, final List<? extends IArenaCommandHandler> handlerList, final Arena arena, final String value) {
 
         outer:
-        for (final IArenaCommandHandler aac : handlerList) {
-            for (final String entry : aac.getMain()) {
+        for (IArenaCommandHandler aac : handlerList) {
+            for (String entry : aac.getMain()) {
                 if (entry.equals(value)) {
                     treeList.add(aac.getSubs(arena));
                     continue outer;
                 }
             }
-            for (final String entry : aac.getShort()) {
+            for (String entry : aac.getShort()) {
                 if (entry.equals(value)) {
                     treeList.add(aac.getSubs(arena));
                     continue outer;
@@ -246,11 +246,11 @@ public final class TabManager {
             } else if ("{Player}".equals(definition)) {
                 final Collection<? extends Player> players = Bukkit.getOnlinePlayers();
                 if (key != null && key.isEmpty()) {
-                    for (final Player val : players) {
+                    for (Player val : players) {
                         result.add(val.getName());
                     }
                 } else if (key != null) {
-                    for (final Player val : players) {
+                    for (Player val : players) {
                         if (startsWithIgnoreCase(val.getName(), key)) {
                             result.add(val.getName());
                         }
@@ -272,7 +272,7 @@ public final class TabManager {
                 if (key != null && key.isEmpty()) {
                     result.addAll(values);
                 } else if (key != null) {
-                    for (final String val : values) {
+                    for (String val : values) {
                         if (startsWithIgnoreCase(val, key)) {
                             result.add(val);
                         }
@@ -281,11 +281,11 @@ public final class TabManager {
             } else if ("{PotionEffectType}".equals(definition)) {
                 final PotionEffectType[] pet = PotionEffectType.values();
                 if (key != null && key.isEmpty()) {
-                    for (final PotionEffectType val : pet) {
+                    for (PotionEffectType val : pet) {
                         result.add(val.getName());
                     }
                 } else if (key != null) {
-                    for (final PotionEffectType val : pet) {
+                    for (PotionEffectType val : pet) {
                         if (startsWithIgnoreCase(val.getName(), key)) {
                             result.add(val.getName());
                         }
@@ -315,7 +315,7 @@ public final class TabManager {
                 return definition;
             } else if ("{Player}".equals(definition)) {
                 final Collection<? extends Player> players = Bukkit.getOnlinePlayers();
-                for (final Player val : players) {
+                for (Player val : players) {
                     if (val.getName().equals(key)) {
                         return definition;
                     }
@@ -334,7 +334,7 @@ public final class TabManager {
                 final List<String> values = new ArrayList<>();
                 values.addAll(StringParser.negative);
                 values.addAll(StringParser.positive);
-                for (final String val : values) {
+                for (String val : values) {
                     if (val.equals(key)) {
                         return definition;
                     }
@@ -350,7 +350,7 @@ public final class TabManager {
             } else if ("{PotionEffectType}".equals(definition)) {
                 final PotionEffectType[] pet = PotionEffectType.values();
 
-                for (final PotionEffectType val : pet) {
+                for (PotionEffectType val : pet) {
                     if (val.getName().equals(key)) {
                         return definition;
                     }
@@ -375,7 +375,7 @@ public final class TabManager {
      * @return the definition if found, the key, if not
      */
     private static String getOverrideKey(final String key, final String definition, final List<? extends Enum> list) {
-        for (final Enum e : list) {
+        for (Enum e : list) {
             if (e.name().equals(key)) {
                 return definition;
             }

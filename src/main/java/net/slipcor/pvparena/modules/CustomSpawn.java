@@ -15,7 +15,7 @@ public class CustomSpawn extends ArenaModule {
     }
 
     @Override
-    public boolean hasSpawn(final String s) {
+    public boolean hasSpawn(final String spawnName, final String teamName) {
         return true;
     }
 }

@@ -14,7 +14,7 @@ public class CommandTree<T> {
 
     public List<T> getContent() {
         final List<T> result = new ArrayList<>();
-        for (final CommandTree<T> tree : this.children) {
+        for (CommandTree<T> tree : this.children) {
             result.add(tree.key);
         }
         return result;
@@ -41,7 +41,7 @@ public class CommandTree<T> {
     }
 
     public boolean contains(final T key) {
-        for (final CommandTree<T> tree : this.children) {
+        for (CommandTree<T> tree : this.children) {
             if (tree.key.equals(key)) {
                 return true;
             }
@@ -53,7 +53,7 @@ public class CommandTree<T> {
     }
 
     public CommandTree<T> get(final T key) {
-        for (final CommandTree<T> tree : this.children) {
+        for (CommandTree<T> tree : this.children) {
             if (tree.key.equals(key)) {
                 return tree;
             }
@@ -65,7 +65,7 @@ public class CommandTree<T> {
     }
 
     private boolean remove(final T key) {
-        for (final CommandTree<T> tree : this.children) {
+        for (CommandTree<T> tree : this.children) {
             if (tree.key.equals(key)) {
                 this.children.remove(tree);
                 return true;
@@ -87,7 +87,7 @@ public class CommandTree<T> {
         System.out.print(c.toString()+"key:");
         System.out.println(key);
         System.out.print(c.toString()+"children:");
-        for (final CommandTree<T> child : children) {
+        for (CommandTree<T> child : children) {
             child.debug(level+1);
         }
     }*/

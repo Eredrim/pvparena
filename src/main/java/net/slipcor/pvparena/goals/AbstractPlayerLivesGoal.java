@@ -48,7 +48,7 @@ public abstract class AbstractPlayerLivesGoal extends ArenaGoal {
         final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "");
         Bukkit.getPluginManager().callEvent(gEvent);
 
-        for (final ArenaTeam arenaTeam : this.arena.getNotEmptyTeams()) {
+        for (ArenaTeam arenaTeam : this.arena.getNotEmptyTeams()) {
             this.broadcastEndMessagesIfNeeded(arenaTeam);
 
             if (ArenaModuleManager.commitEnd(this.arena, arenaTeam)) {
@@ -127,8 +127,8 @@ public abstract class AbstractPlayerLivesGoal extends ArenaGoal {
 
     @Override
     public void parseStart() {
-        for (final ArenaTeam team : this.arena.getTeams()) {
-            for (final ArenaPlayer ap : team.getTeamMembers()) {
+        for (ArenaTeam team : this.arena.getTeams()) {
+            for (ArenaPlayer ap : team.getTeamMembers()) {
                 this.updateLives(ap.getPlayer(), this.arena.getConfig().getInt(CFG.GOAL_PLIVES_LIVES));
             }
         }

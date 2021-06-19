@@ -120,7 +120,7 @@ public class PAA_Class extends AbstractArenaCommand {
         if (arena == null) {
             return result;
         }
-        for (final ArenaClass aclass : arena.getClasses()) {
+        for (ArenaClass aclass : arena.getClasses()) {
             result.define(new String[]{"load", aclass.getName()});
             result.define(new String[]{"remove", aclass.getName()});
         }

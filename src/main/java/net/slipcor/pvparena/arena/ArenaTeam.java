@@ -108,7 +108,7 @@ public class ArenaTeam {
     }
 
     public boolean isEveryoneReady() {
-        for (final ArenaPlayer ap : this.players) {
+        for (ArenaPlayer ap : this.players) {
             if (ap.getStatus() != PlayerStatus.READY) {
                 return false;
             }

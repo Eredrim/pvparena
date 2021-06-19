@@ -5,7 +5,6 @@ import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Help.HELP;
-import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.managers.SpawnManager;
 import org.bukkit.command.CommandSender;
@@ -85,7 +84,7 @@ public class PAA_Teleport extends AbstractArenaCommand {
         if (arena == null) {
             return result;
         }
-        for (final PASpawn spawn : arena.getSpawns()) {
+        for (PASpawn spawn : arena.getSpawns()) {
             result.define(new String[]{spawn.getName()});
         }
         return result;

@@ -20,13 +20,13 @@ The following food types exist:
 
 ## Setup
 
-You have to prepare chests. To define those, use `/pa [arenaname] [teamname]foodchest` \- this enables setting. 
+You have to prepare chests. To define those, use `/pa [arenaname] [teamname]_foodchest` \- this enables setting. 
 
 Finish the setting by clicking the chest that should be the team's chest. 
 
 This chest will be checked for incoming and outgoing food items (of the team type). You can optionally prepare furnaces so that a team can ONLY use this furnace. 
 
-Set this by `/pa [arenaname] [teamname]foodfurnace` and hit the furnace. 
+Set this by `/pa [arenaname] [teamname]_foodfurnace` and hit the furnace. 
 
 > 🚩 **Notes:**  
 > - Teams not having a corresponding furnace will be able to access all of them.

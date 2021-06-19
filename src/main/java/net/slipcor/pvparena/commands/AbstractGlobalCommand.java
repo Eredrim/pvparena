@@ -29,7 +29,7 @@ public abstract class AbstractGlobalCommand implements IArenaCommandHandler {
     static boolean argCountValid(final CommandSender sender, final String[] args,
                                  final Integer[] validCounts) {
 
-        for (final int i : validCounts) {
+        for (int i : validCounts) {
             if (i == args.length) {
                 return true;
             }
@@ -58,7 +58,7 @@ public abstract class AbstractGlobalCommand implements IArenaCommandHandler {
             return true;
         }
 
-        for (final String perm : this.perms) {
+        for (String perm : this.perms) {
             if (sender.hasPermission(perm)) {
                 return true;
             }
@@ -73,7 +73,7 @@ public abstract class AbstractGlobalCommand implements IArenaCommandHandler {
 
         boolean done = false;
 
-        for (final String perm : this.perms) {
+        for (String perm : this.perms) {
             if (sender.hasPermission(perm)) {
                 return true;
             }

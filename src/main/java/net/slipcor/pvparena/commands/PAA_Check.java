@@ -37,7 +37,7 @@ public class PAA_Check extends AbstractArenaCommand {
 
         boolean hasError = false;
 
-        for (final CFG c : CFG.getValues()) {
+        for (CFG c : CFG.getValues()) {
             if (c == null || c.getNode() == null) {
                 continue;
             }

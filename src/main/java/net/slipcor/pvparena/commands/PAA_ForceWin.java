@@ -41,16 +41,16 @@ public class PAA_ForceWin extends AbstractArenaCommand {
             ArenaTeam aTeam = arena.getTeam(args[0]);
             if (aTeam == null) {
                 arena.msg(sender, MSG.ERROR_PLAYER_NOTFOUND, args[0]);
-                arena.msg(sender, MSG.ERROR_TEAMNOTFOUND, args[0]);
+                arena.msg(sender, MSG.ERROR_TEAM_NOT_FOUND, args[0]);
                 return;
             }
             // existing team
-            for (final ArenaTeam team : arena.getTeams()) {
+            for (ArenaTeam team : arena.getTeams()) {
                 if (team.getName().equalsIgnoreCase(aTeam.getName())) {
                     // skip winner
                     continue;
                 }
-                for (final ArenaPlayer arenaPlayer : team.getTeamMembers()) {
+                for (ArenaPlayer arenaPlayer : team.getTeamMembers()) {
                     if (arenaPlayer.getStatus() == PlayerStatus.FIGHT) {
                         arenaPlayer.getPlayer().getWorld().strikeLightningEffect(arenaPlayer.getPlayer().getLocation());
                         arenaPlayer.handleDeathAndLose(pluginDeathCause);
@@ -75,12 +75,12 @@ public class PAA_ForceWin extends AbstractArenaCommand {
                     }
                 }
             } else {
-                for (final ArenaTeam team : arena.getTeams()) {
+                for (ArenaTeam team : arena.getTeams()) {
                     if (team.getName().equalsIgnoreCase(aplayer.getArenaTeam().getName())) {
                         // skip winner
                         continue;
                     }
-                    for (final ArenaPlayer arenaPlayer : team.getTeamMembers()) {
+                    for (ArenaPlayer arenaPlayer : team.getTeamMembers()) {
                         if (arenaPlayer.getStatus() == PlayerStatus.FIGHT) {
                             arenaPlayer.getPlayer().getWorld().strikeLightningEffect(arenaPlayer.getPlayer().getLocation());
                             arenaPlayer.handleDeathAndLose(pluginDeathCause);

@@ -200,7 +200,7 @@ public class Debugger {
             logger.setLevel(ALL);
             logger.setUseParentHandlers(false);
 
-            for (final Handler handler : logger.getHandlers()) {
+            for (Handler handler : logger.getHandlers()) {
                 logger.removeHandler(handler);
             }
 

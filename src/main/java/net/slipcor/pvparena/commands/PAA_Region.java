@@ -203,8 +203,8 @@ public class PAA_Region extends AbstractArenaCommand {
             return result;
         }
 
-        for (final ArenaRegion region : arena.getRegions()) {
-            for (final Loadable<?> shapeLoadable : PVPArena.getInstance().getArsm().getAllLoadables()) {
+        for (ArenaRegion region : arena.getRegions()) {
+            for (Loadable<?> shapeLoadable : PVPArena.getInstance().getArsm().getAllLoadables()) {
                 result.define(new String[]{region.getRegionName(), shapeLoadable.getName()});
                 result.define(new String[]{region.getRegionName(), "border"});
                 result.define(new String[]{region.getRegionName(), "remove"});

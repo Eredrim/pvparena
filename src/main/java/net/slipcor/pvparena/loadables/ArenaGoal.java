@@ -5,6 +5,8 @@ import net.slipcor.pvparena.api.IArenaCommandHandler;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.classes.PABlock;
+import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.classes.PADeathInfo;
 import net.slipcor.pvparena.commands.CommandTree;
 import net.slipcor.pvparena.core.Config.CFG;
@@ -26,8 +28,9 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
 
+import static net.slipcor.pvparena.config.Debugger.trace;
+
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * <pre>
@@ -60,7 +63,9 @@ public class ArenaGoal implements IArenaCommandHandler {
         return this.name;
     }
 
-    public boolean isFreeForAll() { return false; }
+    public boolean isFreeForAll() {
+        return false;
+    }
 
     /**
      * does the arena type allow joining in battle?
@@ -81,7 +86,7 @@ public class ArenaGoal implements IArenaCommandHandler {
 
     @Override
     public final List<String> getMain() {
-        return Collections.emptyList();
+        return getGoalCommands();
     }
 
     /**
@@ -90,12 +95,12 @@ public class ArenaGoal implements IArenaCommandHandler {
      * @return list of commands for the goal
      */
     public List<String> getGoalCommands() {
-        return getMain();
+        return Collections.emptyList();
     }
 
     @Override
     public final List<String> getShort() {
-        return Collections.emptyList();
+        return this.getGoalShortCommands();
     }
 
     /**
@@ -104,12 +109,12 @@ public class ArenaGoal implements IArenaCommandHandler {
      * @return list of shortcuts commands for the goal
      */
     public List<String> getGoalShortCommands() {
-        return getShort();
+        return Collections.emptyList();
     }
 
     @Override
     public final CommandTree<String> getSubs(final Arena arena) {
-        return new CommandTree<>(null);
+        return this.getGoalSubCommands(arena);
     }
 
     /**
@@ -118,7 +123,7 @@ public class ArenaGoal implements IArenaCommandHandler {
      * @return list of sub-commands for the goal
      */
     public CommandTree<String> getGoalSubCommands(final Arena arena) {
-        return getSubs(arena);
+        return new CommandTree<>(null);
     }
 
     @Override
@@ -174,78 +179,28 @@ public class ArenaGoal implements IArenaCommandHandler {
     /**
      * check if all necessary spawns are set
      *
-     * @param spawnsNames the list of all set spawns
-     * @return empty if ready, error message otherwise
+     * @param spawns the list of all set spawns
+     * @return empty if ready, missing spawn otherwise
      */
-    public Set<String> checkForMissingSpawns(final Set<String> spawnsNames) {
+    public Set<PASpawn> checkForMissingSpawns(Set<PASpawn> spawns) {
         return new HashSet<>();
     }
 
     /**
-     * check if necessary FFA spawns are set
+     * check if all necessary blocks are set
      *
-     * @return null if ready, error message otherwise
+     * @param blocks the list of all set blocks
+     * @return empty if ready, missing blocks otherwise
      */
-    protected Set<String> checkForMissingFFASpawn(final Set<String> spawnNames) {
-        final Set<String> errors = new HashSet<>();
-        int minPlayers = this.arena.getConfig().getInt(CFG.READY_MINPLAYERS);
-        for (int i = 1; i <= minPlayers; i++) {
-            if(!spawnNames.contains(SPAWN + i)){
-                errors.add(String.format("spawn%s", i));
-            }
-        }
-
-        return errors;
-    }
-
-    /**
-     * check if necessary custom FFA spawns areList.of set
-     *
-     * + check if a spawn start with custom
-     *
-     * @return null if ready, error message otherwise
-     */
-    protected Set<String> checkForMissingFFACustom(final Set<String> spawnsNames, final String custom) {
-        final Set<String> errors = new HashSet<>();
-        if (!spawnsNames.contains(custom)
-                && spawnsNames.stream().noneMatch(spawnName -> spawnName.startsWith(custom))){
-            errors.add(custom);
-        }
-        return errors;
-    }
-
-    /**
-     * check if necessary team spawns are set
-     *
-     * @return empty if ready, team(s) missing otherwise
-     */
-    protected Set<String> checkForMissingTeamSpawn(final Set<String> spawnsNames) {
-        return this.arena.getTeams().stream()
-                .map(team -> team.getName() + SPAWN)
-                .filter(teamSpawnName -> !spawnsNames.contains(teamSpawnName))
-                .collect(Collectors.toSet());
-    }
-
-    /**
-     * check if necessary custom team spawns are set
-     *
-     * + check if a spawn start with team's name + custom
-     *
-     * @return null if ready, error message otherwise
-     */
-    protected Set<String> checkForMissingTeamCustom(final Set<String> spawnsNames, final String custom) {
-        return this.arena.getTeams().stream()
-                .filter(arenaTeam -> !spawnsNames.contains(arenaTeam.getName() + custom))
-                .filter(arenaTeam -> spawnsNames.stream().noneMatch(spawnName -> spawnName.startsWith(arenaTeam + custom)))
-                .map(arenaTeam -> arenaTeam.getName() + custom)
-                .collect(Collectors.toSet());
+    public Set<PABlock> checkForMissingBlocks(Set<PABlock> blocks) {
+        return new HashSet<>();
     }
 
     /**
      * hook into an interacting player
      *
-     * @param player       the interacting player
-     * @param event        the interact event
+     * @param player the interacting player
+     * @param event  the interact event
      * @return true if the goals handle the event
      */
     public boolean checkInteract(final Player player, final PlayerInteractEvent event) {
@@ -254,7 +209,8 @@ public class ArenaGoal implements IArenaCommandHandler {
 
     /**
      * check if the goal should commit a player join
-     *  @param player the joining player
+     *
+     * @param player the joining player
      * @param args   command arguments
      */
     public void checkJoin(final Player player, final String[] args) throws GameplayException {
@@ -278,7 +234,7 @@ public class ArenaGoal implements IArenaCommandHandler {
     /**
      * check if the goal should commit a player death
      *
-     * @param player the dying player
+     * @param player    the dying player
      * @param deathInfo death info
      * @return true if player should respawn, false otherwise, null if goal doesn't handle respawn
      */
@@ -327,9 +283,10 @@ public class ArenaGoal implements IArenaCommandHandler {
 
     /**
      * commit a player death
+     *
      * @param player      the dying player
      * @param doesRespawn true if the player will respawn
-     * @param deathInfo death information object containing cause and damager
+     * @param deathInfo   death information object containing cause and damager
      */
     public void commitPlayerDeath(Player player, boolean doesRespawn, PADeathInfo deathInfo) {
         throw new IllegalStateException(this.getName());
@@ -342,7 +299,7 @@ public class ArenaGoal implements IArenaCommandHandler {
      * @param block  the flag block
      * @return true if the interact event should be cancelled
      */
-    public boolean commitSetFlag(final Player player, final Block block) {
+    public boolean commitSetBlock(final Player player, final Block block) {
         throw new IllegalStateException(this.getName());
     }
 
@@ -405,7 +362,7 @@ public class ArenaGoal implements IArenaCommandHandler {
      * containing the lives
      */
     public int getLives(ArenaPlayer arenaPlayer) {
-        if(this.arena.isFreeForAll()){
+        if (this.arena.isFreeForAll()) {
             return this.getPlayerLifeMap().getOrDefault(arenaPlayer.getPlayer(), 0);
         } else {
             return this.getTeamLifeMap().getOrDefault(arenaPlayer.getArenaTeam(), 0);
@@ -415,10 +372,43 @@ public class ArenaGoal implements IArenaCommandHandler {
     /**
      * does a goal know this spawn?
      *
-     * @param string the spawn name to check
+     * @param spawnName     the spawn name to check
+     * @param spawnTeamName the team name owner of the spawn
      * @return if the goal knows this spawn
      */
-    public boolean hasSpawn(final String string) {
+    public boolean hasSpawn(final String spawnName, final String spawnTeamName) {
+        if (this.arena.isFreeForAll()) {
+            return hasFfaSpawn(spawnName);
+        } else {
+            return hasTeamSpawn(spawnName, spawnTeamName);
+        }
+    }
+
+    public boolean hasFfaSpawn(String spawnName) {
+        boolean hasByClass = false;
+        if (this.arena.getConfig().getBoolean(CFG.GENERAL_SPAWN_PER_CLASS)) {
+            hasByClass = this.arena.getClasses().stream().
+                    anyMatch(aClass -> spawnName.toLowerCase().startsWith(aClass.getName().toLowerCase() + SPAWN));
+        }
+        return hasByClass || spawnName.toLowerCase().startsWith(SPAWN);
+    }
+
+    public boolean hasTeamSpawn(String spawnName, String spawnTeamName) {
+        for (String teamName : this.arena.getTeamNames()) {
+
+            boolean hasByClass = false;
+            if (this.arena.getConfig().getBoolean(CFG.GENERAL_SPAWN_PER_CLASS)) {
+                hasByClass = this.arena.getClasses().stream().
+                        anyMatch(aClass -> spawnName.toLowerCase().startsWith(aClass.getName().toLowerCase() + SPAWN)
+                                && spawnTeamName.equalsIgnoreCase(teamName));
+            }
+            trace("Has team {} spawn: class spawn: {}, spawn name: {}", teamName, hasByClass, spawnName);
+            final boolean hasSpawn = hasByClass || (spawnName.toLowerCase().startsWith(SPAWN)
+                    && teamName.equalsIgnoreCase(spawnTeamName));
+            if (hasSpawn) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -458,7 +448,8 @@ public class ArenaGoal implements IArenaCommandHandler {
 
     /**
      * hook into a player dying
-     *  @param player          the dying player
+     *
+     * @param player    the dying player
      * @param deathInfo the last damage cause
      */
     public void parsePlayerDeath(Player player, PADeathInfo deathInfo) {
@@ -512,6 +503,7 @@ public class ArenaGoal implements IArenaCommandHandler {
         this.playerLifeMap.entrySet()
                 .forEach(playerIntegerEntry -> playerIntegerEntry.setValue(lives));
     }
+
     /**
      * set a specific player's lives
      *
@@ -538,7 +530,7 @@ public class ArenaGoal implements IArenaCommandHandler {
      * @param player the player to unload
      */
     public void unload(final Player player) {
-        if(player != null) {
+        if (player != null) {
             this.getPlayerLifeMap().remove(player);
         }
     }
@@ -569,12 +561,12 @@ public class ArenaGoal implements IArenaCommandHandler {
         String deathCause = this.arena.parseDeathCause(player, deathInfo.getCause(), deathInfo.getDamager());
         String coloredPlayerName = respawnTeam.colorizePlayer(player) + ChatColor.YELLOW;
 
-        if(deathMessage == Language.MSG.FIGHT_KILLED_BY_REMAINING || deathMessage == Language.MSG.FIGHT_KILLED_BY_REMAINING_FRAGS) {
+        if (deathMessage == Language.MSG.FIGHT_KILLED_BY_REMAINING || deathMessage == Language.MSG.FIGHT_KILLED_BY_REMAINING_FRAGS) {
             this.arena.broadcast(Language.parse(deathMessage,
                     coloredPlayerName, deathCause, String.valueOf(remainingLives)));
-        } else if(deathMessage == Language.MSG.FIGHT_KILLED_BY_REMAINING_TEAM || deathMessage == Language.MSG.FIGHT_KILLED_BY_REMAINING_TEAM_FRAGS) {
+        } else if (deathMessage == Language.MSG.FIGHT_KILLED_BY_REMAINING_TEAM || deathMessage == Language.MSG.FIGHT_KILLED_BY_REMAINING_TEAM_FRAGS) {
             this.arena.broadcast(Language.parse(deathMessage,
-                    coloredPlayerName,deathCause, String.valueOf(remainingLives),
+                    coloredPlayerName, deathCause, String.valueOf(remainingLives),
                     respawnTeam.getColoredName()));
         } else {
             this.arena.broadcast(Language.parse(Language.MSG.FIGHT_KILLED_BY,

@@ -307,7 +307,7 @@ public class GoalPhysicalFlags extends AbstractFlagGoal {
     public void parseStart() {
         this.getTeamLifeMap().clear();
         this.getFlagDataMap().clear();
-        for (final ArenaTeam arenaTeam : this.arena.getTeams()) {
+        for (ArenaTeam arenaTeam : this.arena.getTeams()) {
             if (!arenaTeam.getTeamMembers().isEmpty()) {
                 debug(this.arena, "adding team " + arenaTeam.getName());
                 // team is active
@@ -329,7 +329,7 @@ public class GoalPhysicalFlags extends AbstractFlagGoal {
         this.getTeamLifeMap().clear();
         this.getFlagMap().clear();
         if(!this.getFlagDataMap().isEmpty()) {
-            for (final ArenaTeam arenaTeam : this.arena.getTeams()) {
+            for (ArenaTeam arenaTeam : this.arena.getTeams()) {
                 this.releaseFlag(arenaTeam);
             }
             this.releaseFlag(this.touchdownTeam);
@@ -386,7 +386,7 @@ public class GoalPhysicalFlags extends AbstractFlagGoal {
         final Set<ArenaTeam> setTeam = new HashSet<>(this.arena.getTeams());
 
         setTeam.add(new ArenaTeam(TOUCHDOWN, "BLACK"));
-        for (final ArenaTeam arenaTeam : setTeam) {
+        for (ArenaTeam arenaTeam : setTeam) {
             final PABlockLocation teamFlagLoc = this.getTeamFlagLoc(arenaTeam);
 
             if (arenaTeam.equals(pTeam)) {

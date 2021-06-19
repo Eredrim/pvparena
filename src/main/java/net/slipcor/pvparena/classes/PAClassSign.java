@@ -79,7 +79,7 @@ public class PAClassSign {
      * @param player the player to remove
      */
     public static void remove(final Set<PAClassSign> signs, final Player player) {
-        for (final PAClassSign s : signs) {
+        for (PAClassSign s : signs) {
             s.remove(player.getName());
         }
     }
@@ -167,7 +167,7 @@ public class PAClassSign {
      */
     public static PAClassSign used(final Location loc,
                                    final Set<PAClassSign> signs) {
-        for (final PAClassSign sign : signs) {
+        for (PAClassSign sign : signs) {
             if (sign.location.getDistanceSquared(new PABlockLocation(loc)) < 1) {
                 return sign;
             }
