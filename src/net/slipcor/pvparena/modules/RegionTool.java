@@ -8,6 +8,7 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaRegion;
 import net.slipcor.pvparena.managers.ArenaManager;
+import net.slipcor.pvparena.managers.PermissionManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -48,7 +49,7 @@ public class RegionTool extends ArenaModule {
             return false;
         }
 
-        if (!PVPArena.hasAdminPerms(event.getPlayer())) {
+        if (!PermissionManager.hasAdminPerm(event.getPlayer())) {
             return false;
         }
 

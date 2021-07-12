@@ -21,6 +21,7 @@ import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.loadables.ArenaRegion;
 import net.slipcor.pvparena.loadables.ArenaRegion.RegionType;
+import net.slipcor.pvparena.managers.PermissionManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
@@ -187,8 +188,8 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
             return res;
         }
 
-        if (!PVPArena.hasAdminPerms(player)
-                && !PVPArena.hasCreatePerms(player, arena)) {
+        if (!PermissionManager.hasAdminPerm(player)
+                && !PermissionManager.hasBuilderPerm(player, arena)) {
             return res;
         }
         res.setPriority(this, PRIORITY); // success :)

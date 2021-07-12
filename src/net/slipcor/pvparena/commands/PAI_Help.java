@@ -23,7 +23,7 @@ import java.util.List;
 public class PAI_Help extends AbstractGlobalCommand {
 
     public PAI_Help() {
-        super(new String[]{"pvparena.user", "pvparena.cmds.help"});
+        super(new String[]{"pvparena.cmds.help"});
     }
 
     @Override

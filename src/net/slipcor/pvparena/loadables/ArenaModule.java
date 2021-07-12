@@ -1,6 +1,5 @@
 package net.slipcor.pvparena.loadables;
 
-import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.api.IArenaCommandHandler;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaClass;
@@ -10,6 +9,7 @@ import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.commands.CommandTree;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.loadables.ArenaRegion.RegionType;
+import net.slipcor.pvparena.managers.PermissionManager;
 import net.slipcor.pvparena.ncloader.NCBLoadable;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -99,11 +99,11 @@ public abstract class ArenaModule extends NCBLoadable implements IArenaCommandHa
     }
 
     @Override
-    public boolean hasPerms(final CommandSender sender, final Arena arena) {
+    public boolean hasPerms(final CommandSender sender, final Arena arena, final boolean silent) {
         if (arena == null) {
-            return PVPArena.hasAdminPerms(sender);
+            return PermissionManager.hasAdminPerm(sender);
         }
-        return PVPArena.hasAdminPerms(sender) || PVPArena.hasCreatePerms(sender, arena);
+        return PermissionManager.hasAdminPerm(sender) || PermissionManager.hasBuilderPerm(sender, arena);
     }
 
     /**

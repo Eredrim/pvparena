@@ -25,6 +25,7 @@ import net.slipcor.pvparena.loadables.ArenaRegion.RegionProtection;
 import net.slipcor.pvparena.loadables.ArenaRegion.RegionType;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.InventoryManager;
+import net.slipcor.pvparena.managers.PermissionManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.TeamManager;
 import org.bukkit.Bukkit;
@@ -81,7 +82,7 @@ public class PlayerListener implements Listener {
         }
 
         DEBUG.i("checkAndCommitCancel", player);
-        if (arena == null || player.hasPermission("pvparena.admin")) {
+        if (arena == null || PermissionManager.hasAdminPerm(player)) {
             DEBUG.i("no arena or admin", player);
             DEBUG.i("> false", player);
             return false;
@@ -211,8 +212,8 @@ public class PlayerListener implements Listener {
         }
 
         final Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
-        if (arena == null || player.isOp() || PVPArena.hasAdminPerms(player)
-                || PVPArena.hasCreatePerms(player, arena)) {
+        if (arena == null || player.isOp() || PermissionManager.hasAdminPerm(player)
+                || PermissionManager.hasBuilderPerm(player, arena)) {
             return; // no fighting player => OUT
         }
 
@@ -267,8 +268,8 @@ public class PlayerListener implements Listener {
         final Player player = (Player) event.getWhoClicked();
 
         final Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
-        if (arena == null || player.isOp() || PVPArena.hasAdminPerms(player)
-                || PVPArena.hasCreatePerms(player, arena)) {
+        if (arena == null || player.isOp() || PermissionManager.hasAdminPerm(player)
+                || PermissionManager.hasBuilderPerm(player, arena)) {
             return; // no fighting player => OUT
         }
 

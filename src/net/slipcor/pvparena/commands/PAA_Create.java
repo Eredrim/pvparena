@@ -6,6 +6,7 @@ import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.managers.ArenaManager;
+import net.slipcor.pvparena.managers.PermissionManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -54,7 +55,7 @@ public class PAA_Create extends AbstractGlobalCommand {
 
         arena = new Arena(args[0]);
 
-        if (!sender.hasPermission("pvparena.admin")) {
+        if (!PermissionManager.hasAdminPerm(sender)) {
             // no admin perms => create perms => set owner
             arena.setOwner(sender.getName());
         }

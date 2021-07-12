@@ -151,13 +151,13 @@ nulang:
     nospawns: Pas de spawn enregistré !
     classperms: Vous n'avez pas les permissions pour la classe &a%1%&r
     permjoin: Vous n'avez pas la permission de rejoindre l'arène !
-    noperm: '&cPas la permission de %1%'
+    noperm: '&cVous n''avez pas la permission %1%'
     noplayerfound: Aucun joueur trouvé!
     notinarena: Vous n'êtes pas entré dans l'arène !
     notnumeric: '&cArgument non numérique:&r %1%'
     notsameworld: Vous n'êtes pas dans le même mode que l'arène (%1%)!
     noteamfound: Aucune équipe trouvée!
-    onlyplayers: '&cCette comande ne peut être utilisée que par des joueurs!'
+    onlyplayers: '&cCette commande ne peut être utilisée que par des joueurs!'
     playernotfound: '&cJoueur non trouvé: &f%1%&c!'
     positives: 'Valeur positive: &b%1%&r'
     potioneffecttypenotfound: 'Effet de potion non trouvé: &e%1%&r'
@@ -198,18 +198,18 @@ nulang:
       unknownsubcommand: 'Sous-commande inconnue. Commandes valides: &a%1%&r'
       unknowntype: 'Type inconnu. Types valides: &e%1%&r'
   nopermto:
-    madmin: administrer
-    create: créer une arène
-    disable: désactiver
-    edit: éditer une arène
-    enable: activer
-    nopermjoin: rejoindre une arène
-    reload: actualiser
-    remove: supprimer une arène
-    set: définir une configuration
-    setup: configurer une arène
-    teleport: téléporter au spawn d'une arène
-    user: utiliser l'arène
+    madmin: d'administrer
+    create: de créer une arène
+    disable: de désactiver une arène
+    edit: d'éditer une arène
+    enable: d'activer une arène
+    nopermjoin: de rejoindre une arène
+    reload: d'actualiser la config
+    remove: de supprimer une arène
+    set: de définir une configuration
+    setup: de configurer une arène
+    teleport: de téléporter au spawn d'une arène
+    user: d'utiliser l'arène
     cmds:
       blacklist: d'utiliser la commande blacklist
       check: d'utiliser la commande check
@@ -539,7 +539,7 @@ nulang:
       ignoreon: Vous ignorez maintenant les annonces !
       ignoreoff: Vous recevrez maintenant les annonces !
     arenaboards:
-      createarenaboard: créer un tableau des scores
+      createarenaboard: de créer un tableau des scores
       arenaboarddestroyed: tableau des scores détruit !
       boardexists: Le tableau des scores existe déjà !'
       sortingby: Tableau des scores maintenant trié par %1%

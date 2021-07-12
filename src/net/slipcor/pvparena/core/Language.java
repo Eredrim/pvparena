@@ -157,7 +157,7 @@ public final class Language {
         ERROR_NO_GOAL("nulang.error.nogoal", "You did not add a goal! &a/pa [arena] goal [goalname]"),
         ERROR_NO_SPAWNS("nulang.error.nospawns", "No spawns set!"),
         ERROR_NOPERM_CLASS("nulang.error.classperms", "You do not have permission for class &a%1%&r!"),
-        ERROR_NOPERM_JOIN("nulang.error.permjoin", "You don't have permission to join the arena!"),
+        ERROR_NOPERM_JOIN("nulang.error.permjoin", "You don't have permission to join this arena!"),
 
         ERROR_NOPERM_X_ADMIN("nulang.nopermto.madmin", "administrate"),
         ERROR_NOPERM_X_CREATE("nulang.nopermto.create", "create an arena"),

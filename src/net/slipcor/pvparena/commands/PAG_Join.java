@@ -1,6 +1,5 @@
 package net.slipcor.pvparena.commands;
 
-import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PACheck;
@@ -12,6 +11,7 @@ import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaRegion;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.ConfigurationManager;
+import net.slipcor.pvparena.managers.PermissionManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -29,15 +29,20 @@ import java.util.List;
 
 public class PAG_Join extends AbstractArenaCommand {
 
+    public static final String JOIN = "join";
+    public static final String JOIN_SHORT = "-j";
+
     //private final Debug debug = new Debug(200);
 
     public PAG_Join() {
-        super(new String[]{"pvparena.user", "pvparena.cmds.join"});
+        super(new String[]{"pvparena.cmds.join"});
     }
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!hasPerms(sender, arena)) {
+        if (!(hasPerms(sender, arena) && PermissionManager.hasExplicitArenaPerm(sender, arena, JOIN))) {
+            arena.getDebugger().i(String.join(", ", this.perms));
+            arena.msg(sender, Language.parse(arena, MSG.ERROR_NOPERM_JOIN));
             return;
         }
 
@@ -58,11 +63,6 @@ public class PAG_Join extends AbstractArenaCommand {
                                 && !arena.hasAlreadyPlayed(sender.getName()))) {
 
             arena.msg(sender, Language.parse(arena, MSG.ERROR_FIGHT_IN_PROGRESS));
-            return;
-        }
-
-        if (!PVPArena.hasPerms(sender, arena)) {
-            arena.msg(sender, Language.parse(arena, MSG.ERROR_NOPERM_JOIN));
             return;
         }
 
@@ -108,12 +108,12 @@ public class PAG_Join extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Collections.singletonList("join");
+        return Collections.singletonList(JOIN);
     }
 
     @Override
     public List<String> getShort() {
-        return Collections.singletonList("-j");
+        return Collections.singletonList(JOIN_SHORT);
     }
 
     @Override
@@ -129,4 +129,5 @@ public class PAG_Join extends AbstractArenaCommand {
         }
         return result;
     }
+
 }

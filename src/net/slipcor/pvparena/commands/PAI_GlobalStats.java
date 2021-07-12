@@ -21,7 +21,7 @@ import java.util.List;
 public class PAI_GlobalStats extends AbstractGlobalCommand {
 
     public PAI_GlobalStats() {
-        super(new String[]{"pvparena.user", "pvparena.cmds.stats"});
+        super(new String[]{"pvparena.cmds.stats"});
     }
 
     @Override

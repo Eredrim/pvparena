@@ -16,6 +16,7 @@ import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.events.PAGoalEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
+import net.slipcor.pvparena.managers.PermissionManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.StatisticsManager.Type;
 import net.slipcor.pvparena.runnables.EndRunnable;
@@ -259,8 +260,8 @@ public class GoalSabotage extends ArenaGoal implements Listener {
             return res;
         }
 
-        if (!PVPArena.hasAdminPerms(player)
-                && !PVPArena.hasCreatePerms(player, this.arena)) {
+        if (!PermissionManager.hasAdminPerm(player)
+                && !PermissionManager.hasBuilderPerm(player, this.arena)) {
             return res;
         }
         res.setPriority(this, PRIORITY); // success :)

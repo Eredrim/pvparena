@@ -14,6 +14,7 @@ import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.events.PAGoalEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
+import net.slipcor.pvparena.managers.PermissionManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.CircleParticleRunnable;
@@ -562,8 +563,8 @@ public class GoalDomination extends ArenaGoal {
     @Override
     public boolean commitSetFlag(final Player player, final Block block) {
 
-        if (PVPArena.hasAdminPerms(player)
-                || PVPArena.hasCreatePerms(player, this.arena)
+        if (PermissionManager.hasAdminPerm(player)
+                || PermissionManager.hasBuilderPerm(player, this.arena)
                 && player.getInventory().getItemInMainHand().getType().toString().equals(this.arena
                 .getArenaConfig().getString(CFG.GENERAL_WAND))) {
 

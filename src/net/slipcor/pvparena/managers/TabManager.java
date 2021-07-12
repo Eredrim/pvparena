@@ -121,7 +121,7 @@ public final class TabManager {
      */
     private static void addCommandsStartingWithPrefix(final Set<String> matches, final CommandSender sender, final Arena arena, final List<? extends IArenaCommandHandler> list, final String prefix) {
         for (final IArenaCommandHandler ach : list) {
-            if (ach.hasPerms(sender, arena)) {
+            if (ach.hasPerms(sender, arena, true)) {
                 if(prefix.startsWith("!") || prefix.startsWith("-")) {
                     for (final String value : ach.getShort()) {
                         if (startsWithIgnoreCase(value, prefix)) {

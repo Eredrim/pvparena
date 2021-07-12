@@ -1,12 +1,16 @@
 package net.slipcor.pvparena.commands;
 
-import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.api.IArenaCommandHandler;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
+import net.slipcor.pvparena.managers.PermissionManager;
 import org.bukkit.command.CommandSender;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * <pre>
@@ -23,16 +27,14 @@ public abstract class AbstractGlobalCommand implements IArenaCommandHandler {
     private final String[] perms;
 
     AbstractGlobalCommand(final String[] permissions) {
-        perms = permissions.clone();
+        this.perms = permissions.clone();
     }
 
     static boolean argCountValid(final CommandSender sender, final String[] args,
                                  final Integer[] validCounts) {
 
-        for (final int i : validCounts) {
-            if (i == args.length) {
-                return true;
-            }
+        if (Arrays.stream(validCounts).anyMatch(count -> count == args.length)) {
+            return true;
         }
 
         Arena.pmsg(
@@ -49,63 +51,49 @@ public abstract class AbstractGlobalCommand implements IArenaCommandHandler {
 
     /**
      * Check if the global command also exists in arena context
+     *
      * @return true if there is the same command for arena context
      */
     public boolean hasVersionForArena() {
         return false;
     }
 
-    @Override
-    public boolean hasPerms(final CommandSender sender, final Arena arena) {
-        // tabComplete check
-        if (PVPArena.hasAdminPerms(sender)) {
-            return true;
-        }
-
-        for (final String perm : perms) {
-            if (sender.hasPermission(perm)) {
-                return true;
-            }
-        }
-        return false;
+    public boolean hasPerms(final CommandSender sender) {
+        return hasPerms(sender, null, false);
     }
 
-    boolean hasPerms(final CommandSender sender) {
-        if (PVPArena.hasAdminPerms(sender)) {
+    @Override
+    public boolean hasPerms(final CommandSender sender, final Arena arena, final boolean silent) {
+
+        if (PermissionManager.hasAdminPerm(sender)) {
             return true;
         }
 
-        boolean done = false;
+        boolean hasNotPermission = false;
+        List<String> messages = new ArrayList<>();
 
-        for (final String perm : perms) {
+        for (String perm : this.perms) {
             if (sender.hasPermission(perm)) {
                 return true;
             }
-            final String[] split = perm.split("\\.");
-            String permString = split[1];
-            try {
-                if (split.length > 2) {
-                    permString = split[1]+"."+split[2];
-                }
-                Arena.pmsg(
-                        sender,
-                        Language.parse(MSG.ERROR_NOPERM,
-                                Language.parse(MSG.getByNode("nulang.nopermto." + permString))));
-            } catch (final Exception e) {
-                PVPArena.instance.getLogger().warning("Unknown MSG for pvparena." + permString);
-                Arena.pmsg(
-                        sender,
-                        Language.parse(MSG.ERROR_NOPERM,
-                                Language.parse(MSG.ERROR_NOPERM_X_USER)));
+
+            // Get the permission deny message
+            if (!silent) {
+                messages.add(PermissionManager.getMissingPermissionMessage(perm));
+                hasNotPermission = true;
             }
-            done = true;
         }
 
-        if (!done) {
-            Arena.pmsg(
-                    sender,
-                    Language.parse(MSG.ERROR_NOPERM,
-                            MSG.ERROR_NOPERM_X_ADMIN.toString()));
+        if (!silent) {
+            if (hasNotPermission) {
+                messages.forEach(message -> Arena.pmsg(sender, message));
+            } else {
+                // perms is empty
+                Arena.pmsg(
+                        sender,
+                        Language.parse(MSG.ERROR_NOPERM,
+                                MSG.ERROR_NOPERM_X_ADMIN.toString()));
+            }
         }
 
         return false;

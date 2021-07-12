@@ -16,6 +16,7 @@ import net.slipcor.pvparena.events.PAGoalEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.InventoryManager;
+import net.slipcor.pvparena.managers.PermissionManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
@@ -275,8 +276,8 @@ public class GoalLiberation extends ArenaGoal {
             return res;
         }
 
-        if (!PVPArena.hasAdminPerms(player)
-                && !PVPArena.hasCreatePerms(player, arena)) {
+        if (!PermissionManager.hasAdminPerm(player)
+                && !PermissionManager.hasBuilderPerm(player, arena)) {
             return res;
         }
         res.setPriority(this, PRIORITY); // success :)

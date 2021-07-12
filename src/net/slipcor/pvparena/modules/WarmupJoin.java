@@ -11,6 +11,7 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.managers.ArenaManager;
+import net.slipcor.pvparena.managers.PermissionManager;
 import net.slipcor.pvparena.runnables.ArenaWarmupRunnable;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -67,7 +68,7 @@ public class WarmupJoin extends ArenaModule {
         }
 
 
-        if (arena.isLocked() && !player.hasPermission("pvparena.admin") && !(player.hasPermission("pvparena.create") && arena.getOwner().equals(player.getName()))) {
+        if (arena.isLocked() && !PermissionManager.hasAdminPerm(player) && !PermissionManager.hasBuilderPerm(player, arena)) {
             result.setError(this, Language.parse(arena, MSG.ERROR_DISABLED));
             return result;
         }

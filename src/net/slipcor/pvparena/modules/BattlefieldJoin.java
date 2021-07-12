@@ -14,6 +14,7 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.managers.ArenaManager;
+import net.slipcor.pvparena.managers.PermissionManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -66,9 +67,8 @@ public class BattlefieldJoin extends ArenaModule {
         }
 
         if (arena.isLocked()
-                && !player.hasPermission("pvparena.admin")
-                && !(player.hasPermission("pvparena.create") && arena.getOwner()
-                .equals(player.getName()))) {
+                && !PermissionManager.hasAdminPerm(player)
+                && !PermissionManager.hasBuilderPerm(player, arena)) {
             result.setError(this, Language.parse(arena, MSG.ERROR_DISABLED));
             return result;
         }

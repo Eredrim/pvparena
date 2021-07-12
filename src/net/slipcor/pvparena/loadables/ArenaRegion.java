@@ -15,6 +15,7 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.managers.ArenaManager;
+import net.slipcor.pvparena.managers.PermissionManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.runnables.RegionRunnable;
 import org.bukkit.Bukkit;
@@ -199,7 +200,7 @@ public class ArenaRegion {
         }
         final Arena arena = PAA_Region.activeSelections.get(player.getName());
         if (arena != null
-                && (PVPArena.hasAdminPerms(player) || PVPArena.hasCreatePerms(
+                && (PermissionManager.hasAdminPerm(player) || PermissionManager.hasBuilderPerm(
                 player, arena))
                 && player.getEquipment().getItemInMainHand() != null
                 && player.getEquipment().getItemInMainHand().getType().toString().equals(arena

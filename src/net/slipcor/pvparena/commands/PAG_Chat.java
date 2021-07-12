@@ -26,7 +26,7 @@ import java.util.List;
 public class PAG_Chat extends AbstractArenaCommand {
 
     public PAG_Chat() {
-        super(new String[]{"pvparena.user", "pvparena.cmds.chat"});
+        super(new String[]{"pvparena.cmds.chat"});
     }
 
     @Override

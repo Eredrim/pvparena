@@ -5,7 +5,10 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
+import net.slipcor.pvparena.managers.PermissionManager;
 import org.bukkit.command.CommandSender;
+
+import java.util.Arrays;
 
 /**
  * <pre>
@@ -19,19 +22,17 @@ import org.bukkit.command.CommandSender;
  */
 
 public abstract class AbstractArenaCommand implements IArenaCommandHandler {
-    private final String[] perms;
+    protected final String[] perms;
 
     AbstractArenaCommand(final String[] permissions) {
-        perms = permissions.clone();
+        this.perms = permissions.clone();
     }
 
     public static boolean argCountValid(final CommandSender sender, final Arena arena,
                                         final String[] args, final Integer[] validCounts) {
 
-        for (final int i : validCounts) {
-            if (i == args.length) {
-                return true;
-            }
+        if (Arrays.stream(validCounts).anyMatch(count -> count == args.length)) {
+            return true;
         }
 
         final String msg = Language.parse(arena, MSG.ERROR_INVALID_ARGUMENT_COUNT,
@@ -50,24 +51,24 @@ public abstract class AbstractArenaCommand implements IArenaCommandHandler {
 
     public abstract String getName();
 
+    public boolean hasPerms(CommandSender sender, Arena arena) {
+        return hasPerms(sender, arena, false);
+    }
+
     @Override
-    public boolean hasPerms(final CommandSender sender, final Arena arena) {
-        if (sender.hasPermission("pvparena.admin")) {
+    public boolean hasPerms(CommandSender sender, Arena arena, boolean silent) {
+
+        if (arena != null && PermissionManager.hasBuilderPerm(sender, arena)) {
             return true;
         }
 
-        if (arena != null && sender.hasPermission("pvparena.create")
-                && sender.getName().equals(arena.getOwner())) {
-            return true;
+        boolean hasPermission = Arrays.stream(this.perms).anyMatch(sender::hasPermission);
+        if (!silent && !hasPermission) {
+            Arrays.stream(this.perms)
+                    .forEach(perm -> Arena.pmsg(sender, PermissionManager.getMissingPermissionMessage(perm)));
         }
 
-        for (final String perm : perms) {
-            if (sender.hasPermission(perm)) {
-                return true;
-            }
-        }
-
-        return false;
+        return hasPermission;
     }
 
     public abstract void displayHelp(final CommandSender sender);

@@ -1,6 +1,5 @@
 package net.slipcor.pvparena.commands;
 
-import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Help.HELP;
@@ -8,6 +7,7 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.managers.ArenaManager;
+import net.slipcor.pvparena.managers.PermissionManager;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ import java.util.List;
 public class PAI_ArenaList extends AbstractGlobalCommand {
 
     public PAI_ArenaList() {
-        super(new String[]{"pvparena.user", "pvparena.cmds.arenalist"});
+        super(new String[]{"pvparena.cmds.arenalist"});
     }
 
     @Override
@@ -40,7 +40,7 @@ public class PAI_ArenaList extends AbstractGlobalCommand {
         }
         final List<String> names;
 
-        if (!PVPArena.hasOverridePerms(sender) && ArenaManager.isUsingShortcuts()) {
+        if (!PermissionManager.hasOverridePerm(sender) && ArenaManager.isUsingShortcuts()) {
             names = ArenaManager.getColoredShortcuts();
         } else {
             names = new ArrayList<>();

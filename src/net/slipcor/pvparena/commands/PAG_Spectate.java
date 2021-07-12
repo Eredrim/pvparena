@@ -25,7 +25,7 @@ import java.util.List;
 public class PAG_Spectate extends AbstractArenaCommand {
 
     public PAG_Spectate() {
-        super(new String[]{"pvparena.user", "pvparena.cmds.spectate"});
+        super(new String[]{"pvparena.cmds.spectate"});
     }
 
     @Override
