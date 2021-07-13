@@ -12,10 +12,15 @@ import net.slipcor.pvparena.commands.PAG_Arenaclass;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.events.PAGoalEvent;
+import net.slipcor.pvparena.events.goal.PAGoalEvent;
 import net.slipcor.pvparena.exceptions.GameplayException;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
-import net.slipcor.pvparena.managers.*;
+import net.slipcor.pvparena.managers.ArenaManager;
+import net.slipcor.pvparena.managers.InventoryManager;
+import net.slipcor.pvparena.managers.RegionManager;
+import net.slipcor.pvparena.managers.SpawnManager;
+import net.slipcor.pvparena.managers.TeamManager;
+import net.slipcor.pvparena.managers.WorkflowManager;
 import net.slipcor.pvparena.regions.ArenaRegion;
 import net.slipcor.pvparena.regions.RegionProtection;
 import net.slipcor.pvparena.regions.RegionType;
@@ -42,7 +47,11 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.plugin.IllegalPluginAccessException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 import static java.util.Arrays.asList;
 import static net.slipcor.pvparena.config.Debugger.debug;
@@ -209,7 +218,7 @@ public class PlayerListener implements Listener {
         for (final String s : list) {
             if ("*".equals(s) ||
                     ((wildcard || s.endsWith(" ")) && event.getMessage().toLowerCase().startsWith('/' + s)) ||
-                    (!wildcard && event.getMessage().toLowerCase().startsWith('/' + s +' '))) {
+                    (!wildcard && event.getMessage().toLowerCase().startsWith('/' + s + ' '))) {
                 debug(arena, player, "command allowed: " + s);
                 return;
             }
@@ -313,23 +322,8 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerGoal(final PAGoalEvent event) {
-        /*
-         * content[X].contains(playerDeath) => "playerDeath:playerName"
-         * content[X].contains(playerKill) => "playerKill:playerKiller:playerKilled"
-         * content[X].contains(trigger) => "trigger:playerName" triggered a score
-         * content[X].equals(tank) => player is tank
-         * content[X].equals(infected) => player is infected
-         * content[X].equals(doesRespawn) => player will respawn
-         * content[X].contains(score) => "score:player:team:value"
-         */
-        String[] args = event.getContents();
-        for (String content : args) {
-            if (content != null) {
-                if (content.startsWith("playerDeath")||content.startsWith("trigger")||content.startsWith("playerKill")||content.startsWith("score")) {
-                    event.getArena().getScoreboard().refresh();
-                    return;
-                }
-            }
+        if (event.refreshScoreboard() && event.getArena() != null) {
+            event.getArena().getScoreboard().refresh();
         }
     }
 
@@ -744,9 +738,9 @@ public class PlayerListener implements Listener {
     public void onPlayerMove(PlayerMoveEvent event) {
         Location to = event.getTo();
         Location from = event.getFrom();
-        if(to != null && (from.getBlockX() != to.getBlockX() || from.getBlockY() != to.getBlockY() || from.getBlockZ() != to.getBlockZ())) {
-                PABlockLocation locTo = new PABlockLocation(to);
-                RegionManager.getInstance().checkPlayerLocation(event.getPlayer(), locTo);
+        if (to != null && (from.getBlockX() != to.getBlockX() || from.getBlockY() != to.getBlockY() || from.getBlockZ() != to.getBlockZ())) {
+            PABlockLocation locTo = new PABlockLocation(to);
+            RegionManager.getInstance().checkPlayerLocation(event.getPlayer(), locTo);
         }
     }
 
@@ -826,7 +820,7 @@ public class PlayerListener implements Listener {
             debug(arena, player, "onPlayerTeleport: using telepass");
         }
 
-        if(arena.isFightInProgress() && !arenaPlayer.isTeleporting() && arenaPlayer.getStatus() == PlayerStatus.FIGHT) {
+        if (arena.isFightInProgress() && !arenaPlayer.isTeleporting() && arenaPlayer.getStatus() == PlayerStatus.FIGHT) {
             RegionManager.getInstance().handleFightingPlayerMove(arenaPlayer, toLoc);
         }
 

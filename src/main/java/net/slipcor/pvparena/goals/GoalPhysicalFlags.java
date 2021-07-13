@@ -12,7 +12,8 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
-import net.slipcor.pvparena.events.PAGoalEvent;
+
+import net.slipcor.pvparena.events.goal.PAGoalFlagTakeEvent;
 import net.slipcor.pvparena.exceptions.GameplayException;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -185,7 +186,7 @@ public class GoalPhysicalFlags extends AbstractFlagGoal {
                     this.reduceLivesCheckEndAndCommit(this.arena, flagTeam);
                 }
 
-                final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "trigger:" + player.getName());
+                final PAGoalFlagTakeEvent gEvent = new PAGoalFlagTakeEvent(this.arena, this, arenaPlayer, flagTeam);
                 Bukkit.getPluginManager().callEvent(gEvent);
 
                 return true;

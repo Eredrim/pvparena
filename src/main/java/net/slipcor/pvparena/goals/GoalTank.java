@@ -10,8 +10,10 @@ import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.events.PAGoalEvent;
+
 import net.slipcor.pvparena.events.PATeamChangeEvent;
+import net.slipcor.pvparena.events.goal.PAGoalEndEvent;
+import net.slipcor.pvparena.events.goal.PAGoalPlayerDeathEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
@@ -99,7 +101,7 @@ public class GoalTank extends ArenaGoal {
             debug(this.arena, "[TANK] already ending");
             return;
         }
-        final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "");
+        final PAGoalEndEvent gEvent = new PAGoalEndEvent(this.arena, this);
         Bukkit.getPluginManager().callEvent(gEvent);
         for (final ArenaTeam team : this.arena.getTeams()) {
             for (final ArenaPlayer ap : team.getTeamMembers()) {
@@ -145,15 +147,10 @@ public class GoalTank extends ArenaGoal {
 
             if (this.tank.getName().equals(arenaPlayer.getName())) {
 
-                final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "tank", "playerDeath:" + player.getName());
-                Bukkit.getPluginManager().callEvent(gEvent);
-            } else if (doesRespawn) {
-
-                final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "doesRespawn", "playerDeath:" + player.getName());
+                final PAGoalPlayerDeathEvent gEvent = new PAGoalPlayerDeathEvent(this.arena, this, arenaPlayer, null, false);
                 Bukkit.getPluginManager().callEvent(gEvent);
             } else {
-
-                final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "playerDeath:" + player.getName());
+                final PAGoalPlayerDeathEvent gEvent = new PAGoalPlayerDeathEvent(this.arena, this, arenaPlayer, null, doesRespawn);
                 Bukkit.getPluginManager().callEvent(gEvent);
             }
 
@@ -166,7 +163,7 @@ public class GoalTank extends ArenaGoal {
             // player died => commit death!
             WorkflowManager.handleEnd(this.arena, false);
         } else {
-            final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "doesRespawn", "playerDeath:" + player.getName());
+            final PAGoalPlayerDeathEvent gEvent = new PAGoalPlayerDeathEvent(this.arena, this, arenaPlayer, null, true);
             Bukkit.getPluginManager().callEvent(gEvent);
             iLives--;
             this.getPlayerLifeMap().put(player, iLives);

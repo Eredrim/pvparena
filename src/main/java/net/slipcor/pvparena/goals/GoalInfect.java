@@ -8,8 +8,10 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
-import net.slipcor.pvparena.events.PAGoalEvent;
+
 import net.slipcor.pvparena.events.PATeamChangeEvent;
+import net.slipcor.pvparena.events.goal.PAGoalEndEvent;
+import net.slipcor.pvparena.events.goal.PAGoalPlayerDeathEvent;
 import net.slipcor.pvparena.exceptions.GameplayException;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
@@ -306,7 +308,7 @@ public class GoalInfect extends ArenaGoal {
             debug(this.arena, "[INFECT] already ending");
             return;
         }
-        final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "");
+        final PAGoalEndEvent gEvent = new PAGoalEndEvent(this.arena, this);
         Bukkit.getPluginManager().callEvent(gEvent);
 
         for (final ArenaTeam team : this.arena.getTeams()) {
@@ -355,7 +357,7 @@ public class GoalInfect extends ArenaGoal {
         if (iLives <= 1 || INFECTED.equals(aPlayer.getArenaTeam().getName())) {
             if (iLives <= 1 && INFECTED.equals(aPlayer.getArenaTeam().getName())) {
 
-                final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, INFECTED, "playerDeath:" + player.getName());
+                final PAGoalPlayerDeathEvent gEvent = new PAGoalPlayerDeathEvent(this.arena, this, aPlayer, null, false);
                 Bukkit.getPluginManager().callEvent(gEvent);
                 // kill, remove!
                 this.getPlayerLifeMap().remove(player);
@@ -366,7 +368,7 @@ public class GoalInfect extends ArenaGoal {
                 return;
             }
             if (iLives <= 1) {
-                PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "playerDeath:" + player.getName());
+                PAGoalPlayerDeathEvent gEvent = new PAGoalPlayerDeathEvent(this.arena, this, aPlayer, null, false);
                 Bukkit.getPluginManager().callEvent(gEvent);
                 // dying player -> infected
                 this.getPlayerLifeMap().put(player.getPlayer(), this.arena.getConfig().getInt(CFG.GOAL_INFECTED_ILIVES));
@@ -403,7 +405,7 @@ public class GoalInfect extends ArenaGoal {
                 return;
             }
             // dying infected player, has lives remaining
-            PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, INFECTED, "doesRespawn", "playerDeath:" + player.getName());
+            PAGoalPlayerDeathEvent gEvent = new PAGoalPlayerDeathEvent(this.arena, this,  aPlayer, null, true);
             Bukkit.getPluginManager().callEvent(gEvent);
             iLives--;
             this.getPlayerLifeMap().put(player, iLives);

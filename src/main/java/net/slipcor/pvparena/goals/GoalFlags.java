@@ -11,7 +11,10 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
-import net.slipcor.pvparena.events.PAGoalEvent;
+
+import net.slipcor.pvparena.events.goal.PAGoalFlagBringEvent;
+import net.slipcor.pvparena.events.goal.PAGoalFlagSaveEvent;
+import net.slipcor.pvparena.events.goal.PAGoalFlagTakeEvent;
 import net.slipcor.pvparena.exceptions.GameplayException;
 import net.slipcor.pvparena.managers.SpawnManager;
 import org.bukkit.Bukkit;
@@ -27,6 +30,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import static net.slipcor.pvparena.config.Debugger.debug;
@@ -178,7 +182,7 @@ public class GoalFlags extends AbstractFlagGoal {
                 } else {
                     this.reduceLivesCheckEndAndCommit(this.arena, flagTeam);
                 }
-                final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "trigger:" + arenaPlayer.getName());
+                final PAGoalFlagBringEvent gEvent = new PAGoalFlagBringEvent(this.arena, this, arenaPlayer, arenaTeam);
                 Bukkit.getPluginManager().callEvent(gEvent);
                 return true;
             }
@@ -252,6 +256,9 @@ public class GoalFlags extends AbstractFlagGoal {
 
                     this.takeFlag(new PABlockLocation(vFlag.toLocation(block.getWorld())));
                     this.getFlagMap().put(arenaTeam, player.getName());
+
+                    final PAGoalFlagTakeEvent gEvent = new PAGoalFlagTakeEvent(this.arena, this, arenaPlayer, arenaTeam);
+                    Bukkit.getPluginManager().callEvent(gEvent);
 
                     return true;
                 }
@@ -357,6 +364,10 @@ public class GoalFlags extends AbstractFlagGoal {
             player.getInventory().setHelmet(this.getHeadGearMap().get(arenaPlayer).clone());
             this.getHeadGearMap().remove(arenaPlayer);
         }
+
+        final PAGoalFlagSaveEvent gEvent = new PAGoalFlagSaveEvent(this.arena, this,
+                Optional.ofNullable(deathInfo.getKiller()).map(ArenaPlayer::fromPlayer).orElse(null), flagTeam);
+        Bukkit.getPluginManager().callEvent(gEvent);
 
         this.releaseFlag(flagTeam.getColor(), this.getTeamFlagLoc(flagTeam));
     }

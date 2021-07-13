@@ -10,7 +10,9 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringUtils;
-import net.slipcor.pvparena.events.PAGoalEvent;
+
+import net.slipcor.pvparena.events.goal.PAGoalEndEvent;
+import net.slipcor.pvparena.events.goal.PAGoalScoreEvent;
 import net.slipcor.pvparena.exceptions.GameplayException;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
@@ -177,7 +179,7 @@ public class GoalFood extends ArenaGoal {
         }
         debug(this.arena, "[FOOD]");
 
-        final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "");
+        final PAGoalEndEvent gEvent = new PAGoalEndEvent(this.arena, this);
         Bukkit.getPluginManager().callEvent(gEvent);
         ArenaTeam aTeam = null;
 
@@ -360,8 +362,8 @@ public class GoalFood extends ArenaGoal {
         }
 
         // INTO container
-        final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this,
-                String.format("score:%s:%s:%d", arenaPlayerOptional.get().getName(), arenaTeam.getName(), stack.getAmount()));
+        final PAGoalScoreEvent gEvent = new PAGoalScoreEvent(this.arena, this,
+                arenaPlayerOptional.get(), arenaTeam, (long) stack.getAmount());
         Bukkit.getPluginManager().callEvent(gEvent);
         this.reduceLives(this.arena, arenaTeam, stack.getAmount());
     }
@@ -402,14 +404,12 @@ public class GoalFood extends ArenaGoal {
 
         if (sType == SlotType.CONTAINER) {
             // OUT of container
-            final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "score:" +
-                    aPlayer.getName() + ':' + team.getName() + ":-" + stack.getAmount());
+            final PAGoalScoreEvent gEvent = new PAGoalScoreEvent(this.arena, this, aPlayer, team, (long) stack.getAmount() * -1);
             Bukkit.getPluginManager().callEvent(gEvent);
             this.reduceLives(this.arena, team, -stack.getAmount());
         } else {
             // INTO container
-            final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "score:" +
-                    aPlayer.getName() + ':' + team.getName() + ':' + stack.getAmount());
+            final PAGoalScoreEvent gEvent = new PAGoalScoreEvent(this.arena, this, aPlayer, team, (long) stack.getAmount());
             Bukkit.getPluginManager().callEvent(gEvent);
             this.reduceLives(this.arena, team, stack.getAmount());
         }

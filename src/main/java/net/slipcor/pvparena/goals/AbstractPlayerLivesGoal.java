@@ -6,7 +6,9 @@ import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PADeathInfo;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.events.PAGoalEvent;
+
+import net.slipcor.pvparena.events.goal.PAGoalEndEvent;
+import net.slipcor.pvparena.events.goal.PAGoalPlayerDeathEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.WorkflowManager;
@@ -45,7 +47,7 @@ public abstract class AbstractPlayerLivesGoal extends ArenaGoal {
             debug(this.arena, "[LIVES] already ending");
             return;
         }
-        final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "");
+        final PAGoalEndEvent gEvent = new PAGoalEndEvent(this.arena, this);
         Bukkit.getPluginManager().callEvent(gEvent);
 
         for (final ArenaTeam arenaTeam : this.arena.getNotEmptyTeams()) {
@@ -70,16 +72,11 @@ public abstract class AbstractPlayerLivesGoal extends ArenaGoal {
             return;
         }
 
-        if (doesRespawn) {
-            final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "doesRespawn", "playerDeath:" + player.getName());
-            Bukkit.getPluginManager().callEvent(gEvent);
-        } else {
-            final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "playerDeath:" + player.getName());
-            Bukkit.getPluginManager().callEvent(gEvent);
-        }
+        ArenaPlayer arenaPlayer = ArenaPlayer.fromPlayer(player);
+        final PAGoalPlayerDeathEvent gEvent = new PAGoalPlayerDeathEvent(this.arena, this, arenaPlayer, null, doesRespawn);
+        Bukkit.getPluginManager().callEvent(gEvent);
 
         final int currentPlayerOrTeamLive = this.getPlayerLifeMap().get(player);
-        ArenaPlayer arenaPlayer = ArenaPlayer.fromPlayer(player);
 
         debug(this.arena, player, "lives before death: " + currentPlayerOrTeamLive);
         if (currentPlayerOrTeamLive <= 1) {

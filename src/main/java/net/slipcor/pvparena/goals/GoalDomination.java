@@ -12,7 +12,9 @@ import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.core.*;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.events.PAGoalEvent;
+
+import net.slipcor.pvparena.events.goal.PAGoalEndEvent;
+import net.slipcor.pvparena.events.goal.PAGoalScoreEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.SpawnManager;
@@ -461,7 +463,7 @@ public class GoalDomination extends ArenaGoal {
         }
         debug(this.arena, "[DOMINATION]");
 
-        final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "");
+        final PAGoalEndEvent gEvent = new PAGoalEndEvent(this.arena, this);
         Bukkit.getPluginManager().callEvent(gEvent);
         ArenaTeam aTeam = null;
 
@@ -609,7 +611,7 @@ public class GoalDomination extends ArenaGoal {
             final int score = arena.getConfig().getInt(CFG.GOAL_DOM_TICKREWARD);
             final int iLives = this.getTeamLifeMap().get(arenaTeam) - score;
 
-            final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "score:null:" + arenaTeam + ":" + score);
+            final PAGoalScoreEvent gEvent = new PAGoalScoreEvent(arena, this, null, arenaTeam, (long) score);
             Bukkit.getPluginManager().callEvent(gEvent);
 
             if (iLives > 0) {

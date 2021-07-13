@@ -15,7 +15,8 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringUtils;
-import net.slipcor.pvparena.events.PAGoalEvent;
+import net.slipcor.pvparena.events.goal.PAGoalEndEvent;
+import net.slipcor.pvparena.events.goal.PAGoalScoreEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.regions.ArenaRegion;
@@ -200,7 +201,7 @@ public class GoalBlockDestroy extends ArenaGoal {
         }
         debug(this.arena, "[BD]");
 
-        final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "");
+        final PAGoalEndEvent gEvent = new PAGoalEndEvent(this.arena, this);
         Bukkit.getPluginManager().callEvent(gEvent);
         ArenaTeam aTeam = null;
 
@@ -461,10 +462,7 @@ public class GoalBlockDestroy extends ArenaGoal {
                     event.setCancelled(true);
                     break;
                 }
-                PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "trigger:" + player.getName());
-                Bukkit.getPluginManager().callEvent(gEvent);
                 final String sTeam = pTeam.getName();
-
                 try {
                     this.arena.broadcast(Language.parse(MSG.GOAL_BLOCKDESTROY_SCORE,
                             this.arena.getTeam(sTeam).colorizePlayer(player)
@@ -478,9 +476,9 @@ public class GoalBlockDestroy extends ArenaGoal {
                 }
 
 
-                gEvent = new PAGoalEvent(this.arena, this,
-                        "score:" + player.getName() + ':' + arenaPlayer.getArenaTeam().getName() + ":1");
-                Bukkit.getPluginManager().callEvent(gEvent);
+                PAGoalScoreEvent goalScoreEvent = new PAGoalScoreEvent(this.arena, this,
+                        arenaPlayer, arenaPlayer.getArenaTeam(), 1L);
+                Bukkit.getPluginManager().callEvent(goalScoreEvent);
                 class RunLater implements Runnable {
                     final ChatColor localColor;
                     final PABlockLocation localLoc;

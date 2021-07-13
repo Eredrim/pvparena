@@ -9,7 +9,9 @@ import net.slipcor.pvparena.classes.PADeathInfo;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.events.PAGoalEvent;
+
+import net.slipcor.pvparena.events.goal.PAGoalEndEvent;
+import net.slipcor.pvparena.events.goal.PAGoalPlayerDeathEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.ArenaManager;
@@ -84,7 +86,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
             debug(this.arena, "[PDM] already ending");
             return;
         }
-        final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "");
+        final PAGoalEndEvent gEvent = new PAGoalEndEvent(this.arena, this);
         Bukkit.getPluginManager().callEvent(gEvent);
         for (final ArenaTeam team : this.arena.getTeams()) {
             for (final ArenaPlayer ap : team.getTeamMembers()) {
@@ -112,16 +114,17 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
     public void commitPlayerDeath(final Player player, final boolean doesRespawn, PADeathInfo deathInfo) {
 
         Player killer = deathInfo.getKiller();
+        ArenaPlayer arenaPlayer = ArenaPlayer.fromPlayer(player);
 
         if (killer == null || !this.getPlayerLifeMap().containsKey(killer) || player.equals(killer)) {
-            final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "playerKill:" + player.getName() + ':' + player.getName(), "playerDeath:" + player.getName());
+            final PAGoalPlayerDeathEvent gEvent = new PAGoalPlayerDeathEvent(this.arena, this, arenaPlayer, arenaPlayer, false);
             Bukkit.getPluginManager().callEvent(gEvent);
 
             if (this.arena.getConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
                 this.broadcastSimpleDeathMessage(player, deathInfo);
             }
 
-            ArenaPlayer arenaPlayer = ArenaPlayer.fromPlayer(player);
+
             arenaPlayer.setMayDropInventory(true);
             arenaPlayer.setMayRespawn(true);
 
@@ -140,7 +143,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
         }
 
         int iLives = this.getPlayerLifeMap().get(killer);
-        final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "playerKill:" + killer.getName() + ':' + player.getName(), "playerDeath:" + player.getName());
+        final PAGoalPlayerDeathEvent gEvent = new PAGoalPlayerDeathEvent(this.arena, this, arenaPlayer, ArenaPlayer.fromPlayer(killer), false);
         Bukkit.getPluginManager().callEvent(gEvent);
 
         if (this.increaseScore(killer, player, deathInfo)) {
@@ -149,13 +152,12 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 
         if (this.arena.getConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
             if (this.arena.getConfig().getBoolean(CFG.GENERAL_SHOWREMAININGLIVES)) {
-                this.broadcastDeathMessage(MSG.FIGHT_KILLED_BY_REMAINING_FRAGS, player, deathInfo, iLives-1);
+                this.broadcastDeathMessage(MSG.FIGHT_KILLED_BY_REMAINING_FRAGS, player, deathInfo, iLives - 1);
             } else {
                 this.broadcastSimpleDeathMessage(player, deathInfo);
             }
         }
 
-        ArenaPlayer arenaPlayer = ArenaPlayer.fromPlayer(player);
         arenaPlayer.setMayDropInventory(true);
         arenaPlayer.setMayRespawn(true);
     }
@@ -228,7 +230,6 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
     public void initiate(final Player player) {
         this.updateLives(player, this.arena.getConfig().getInt(CFG.GOAL_PDM_LIVES));
     }
-
 
 
     @Override

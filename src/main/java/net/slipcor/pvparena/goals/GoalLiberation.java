@@ -12,7 +12,10 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringUtils;
-import net.slipcor.pvparena.events.PAGoalEvent;
+
+import net.slipcor.pvparena.events.goal.PAGoalEndEvent;
+import net.slipcor.pvparena.events.goal.PAGoalJailReleaseEvent;
+import net.slipcor.pvparena.events.goal.PAGoalPlayerDeathEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.InventoryManager;
@@ -174,7 +177,7 @@ public class GoalLiberation extends ArenaGoal {
                                     playerArenaTeam.getColoredName()
                                             + ChatColor.YELLOW));
 
-                    final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "trigger:" + player.getName());
+                    final PAGoalJailReleaseEvent gEvent = new PAGoalJailReleaseEvent(this.arena, this, arenaPlayer, playerArenaTeam);
                     Bukkit.getPluginManager().callEvent(gEvent);
                 }
 
@@ -249,7 +252,7 @@ public class GoalLiberation extends ArenaGoal {
             return;
         }
 
-        final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "");
+        final PAGoalEndEvent gEvent = new PAGoalEndEvent(this.arena, this);
         Bukkit.getPluginManager().callEvent(gEvent);
         for (final ArenaTeam arenaTeam : this.arena.getTeams()) {
             for (final ArenaPlayer arenaPlayer : arenaTeam.getTeamMembers()) {
@@ -285,7 +288,7 @@ public class GoalLiberation extends ArenaGoal {
             debug(this.arena, player, "cmd: not in life map!");
             return;
         }
-        final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "playerDeath:" + player.getName());
+        final PAGoalPlayerDeathEvent gEvent = new PAGoalPlayerDeathEvent(this.arena, this, arenaPlayer, null, false);
         Bukkit.getPluginManager().callEvent(gEvent);
         int lives = this.getTeamLifeMap().get(arenaTeam);
         debug(this.arena, player, "lives before death: " + lives);

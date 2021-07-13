@@ -8,7 +8,8 @@ import net.slipcor.pvparena.classes.PADeathInfo;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.events.PAGoalEvent;
+
+import net.slipcor.pvparena.events.goal.PAGoalPlayerDeathEvent;
 import net.slipcor.pvparena.managers.WorkflowManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -64,12 +65,8 @@ public class GoalTeamDeathMatch extends AbstractTeamKillGoal {
             if (!this.arena.getConfig().getBoolean(CFG.GOAL_TDM_SUICIDESCORE)) {
                 this.broadcastSimpleDeathMessage(player, deathInfo);
                 this.respawnPlayer(respawnPlayer);
-                final PAGoalEvent gEvent;
-                if (doesRespawn) {
-                    gEvent = new PAGoalEvent(this.arena, this, "doesRespawn", "playerDeath:" + player.getName());
-                } else {
-                    gEvent = new PAGoalEvent(this.arena, this, "playerDeath:" + player.getName());
-                }
+                final PAGoalPlayerDeathEvent gEvent;
+                gEvent = new PAGoalPlayerDeathEvent(this.arena, this, respawnPlayer, null, doesRespawn);
                 Bukkit.getPluginManager().callEvent(gEvent);
                 return;
             }
@@ -77,7 +74,7 @@ public class GoalTeamDeathMatch extends AbstractTeamKillGoal {
         }
 
         final ArenaTeam respawnTeam = respawnPlayer.getArenaTeam();
-        final ArenaTeam killerTeam = ArenaPlayer.fromPlayer(killer.getName()).getArenaTeam();
+        final ArenaTeam killerTeam = ArenaPlayer.fromPlayer(killer).getArenaTeam();
 
         if (killerTeam.equals(respawnTeam)) { // suicide
             for (ArenaTeam newKillerTeam : this.arena.getTeams()) {
@@ -91,8 +88,7 @@ public class GoalTeamDeathMatch extends AbstractTeamKillGoal {
             return;
         }
 
-        final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, String.format("playerDeath:%s", player.getName()),
-                String.format("playerKill:%s:%s", player.getName(), killer.getName()));
+        final PAGoalPlayerDeathEvent gEvent = new PAGoalPlayerDeathEvent(this.arena, this, respawnPlayer, ArenaPlayer.fromPlayer(killer), false);
         Bukkit.getPluginManager().callEvent(gEvent);
 
         if (this.getTeamLifeMap().get(killerTeam) != null) {
@@ -119,10 +115,10 @@ public class GoalTeamDeathMatch extends AbstractTeamKillGoal {
     }
 
     /**
-     * @param arenaTeam  the killing team
+     * @param arenaTeam the killing team
      * @return true if the player should not respawn but be removed
      */
-    private boolean reduceLives(ArenaTeam arenaTeam, Player respawnPlayer,PADeathInfo deathInfo , Player killer) {
+    private boolean reduceLives(ArenaTeam arenaTeam, Player respawnPlayer, PADeathInfo deathInfo, Player killer) {
         final int iLives = this.getTeamLifeMap().get(arenaTeam);
 
         if (iLives <= 1) {

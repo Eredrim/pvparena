@@ -8,7 +8,8 @@ import net.slipcor.pvparena.arena.PlayerStatus;
 import net.slipcor.pvparena.classes.PADeathInfo;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.events.PAGoalEvent;
+
+import net.slipcor.pvparena.events.goal.PAGoalPlayerDeathEvent;
 import net.slipcor.pvparena.managers.WorkflowManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -58,15 +59,11 @@ public class GoalTeamLives extends AbstractTeamKillGoal {
 
     @Override
     public void commitPlayerDeath(final Player respawnPlayer, final boolean doesRespawn, PADeathInfo deathInfo) {
-        final PAGoalEvent gEvent;
-        if (doesRespawn) {
-            gEvent = new PAGoalEvent(this.arena, this, "doesRespawn", "playerDeath:" + respawnPlayer.getName());
-        } else {
-            gEvent = new PAGoalEvent(this.arena, this, "playerDeath:" + respawnPlayer.getName());
-        }
+        final PAGoalPlayerDeathEvent gEvent;
+        ArenaPlayer arenaPlayer = ArenaPlayer.fromPlayer(respawnPlayer);
+        gEvent = new PAGoalPlayerDeathEvent(this.arena, this, arenaPlayer, null, doesRespawn);
         Bukkit.getPluginManager().callEvent(gEvent);
 
-        ArenaPlayer arenaPlayer = ArenaPlayer.fromPlayer(respawnPlayer);
         ArenaTeam respawnTeam = arenaPlayer.getArenaTeam();
         this.reduceLives(this.arena, respawnTeam);
 
