@@ -1,245 +1,237 @@
 name: pvparena
 author: slipcor
-authors: [slipcor, Eredrim]
+authors: [ slipcor, Eredrim ]
 prefix: PVP Arena
 main: net.slipcor.pvparena.PVPArena
 version: ${project.version}${buildVersion}
 api-version: 1.13
-softdepend: [Spout,Multiverse-Core,MultiWorld,WormholeXTreme,Vault,WorldEdit,WorldGuard,LibsDisguises,DisguiseCraft,My Worlds,CrackShot]
+softdepend: [ Vault,WorldEdit,WorldGuard,LibsDisguises,DisguiseCraft,CrackShot ]
 description: create, manage and enhance PvP arenas
-website: http://dev.bukkit.org/server-mods/pvparena
-dev-url: http://dev.bukkit.org/server-mods/pvparena
+website: https://www.spigotmc.org/resources/pvp-arena.16584
+dev-url: https://www.spigotmc.org/resources/pvp-arena.16584
 commands:
-    pvparena:
-        description: Base commands for the PvP arena.
-        permission: pvparena.user
-        aliases: ['pa']
-        usage: |
-            /<command> help
-            /<command> help admin | help administrating
-            /<command> help setup | help setting up
-            /<command> help game | help ingame
-            /<command> help info | help getting information
+  pvparena:
+    description: Base commands for the PvP arena.
+    aliases: [ 'pa' ]
+    usage: |
+      /<command> help
+      /<command> help admin | help administrating
+      /<command> help setup | help setting up
+      /<command> help game | help ingame
+      /<command> help info | help getting information
 permissions:
-    pvparena.*:
-        description: Gives access to everything
-        default: op
-        children:
-            pvparena.admin: true
-            pvparena.override: true
-            pvparena.telepass: true
-            pvparena.user: true
-            pvparena.cmds: true
-    pvparena.admin:
-        description: Allows you to administrate arenas
-        default: op
-        children:
-            pvparena.create: true
-    pvparena.cmds.*:
-        description: Allows you to do all commands
-        default: op
-        children:
-            pvparena.cmds.blacklist: true
-            pvparena.cmds.check: true
-            pvparena.cmds.class: true
-            pvparena.cmds.create: true
-            pvparena.cmds.debug: true
-            pvparena.cmds.disable: true
-            pvparena.cmds.duty: true
-            pvparena.cmds.edit: true
-            pvparena.cmds.enable: true
-            pvparena.cmds.gamemode: true
-            pvparena.cmds.goal: true
-            pvparena.cmds.install: true
-            pvparena.cmds.playerclass: true
-            pvparena.cmds.playerjoin: true
-            pvparena.cmds.protection: true
-            pvparena.cmds.region: true
-            pvparena.cmds.regionflag: true
-            pvparena.cmds.regions: true
-            pvparena.cmds.regiontype: true
-            pvparena.cmds.reload: true
-            pvparena.cmds.remove: true
-            pvparena.cmds.round: true
-            pvparena.cmds.set: true
-            pvparena.cmds.setowner: true
-            pvparena.cmds.setup: true
-            pvparena.cmds.spawn: true
-            pvparena.cmds.start: true
-            pvparena.cmds.stop: true
-            pvparena.cmds.teams: true
-            pvparena.cmds.teleport: true
-            pvparena.cmds.template: true
-            pvparena.cmds.togglemod: true
-            pvparena.cmds.uninstall: true
-            pvparena.cmds.update: true
-            pvparena.cmds.whitelist: true
-            pvparena.cmds.arenaclass: true
-            pvparena.cmds.chat: true
-            pvparena.cmds.join: true
-            pvparena.cmds.leave: true
-            pvparena.cmds.spectate: true
-            pvparena.cmds.arenalist: true
-            pvparena.cmds.help: true
-            pvparena.cmds.info: true
-            pvparena.cmds.list: true
-            pvparena.cmds.ready: true
-            pvparena.cmds.shutup: true
-            pvparena.cmds.stats: true
-            pvparena.cmds.version: true
-    pvparena.create:
-        description: Allows you to create and administrate an arena
-        default: op
-    pvparena.override:
-        description: Allows you to override some checks
-        default: op
-    pvparena.telepass:
-        description: Allows you to teleport while in an arena
-        default: op
-    pvparena.user:
-        description: Allows you to use the arena
-        default: true
-    pvparena.cmds.blacklist:
-        description: Allows you to run /pvparena blacklist
-        default: op
-    pvparena.cmds.check:
-        description: Allows you to run /pvparena check
-        default: op
-    pvparena.cmds.class:
-        description: Allows you to run /pvparena class
-        default: op
-    pvparena.cmds.create:
-        description: Allows you to run /pvparena create
-        default: op
-    pvparena.cmds.debug:
-        description: Allows you to run /pvparena debug
-        default: op
-    pvparena.cmds.disable:
-        description: Allows you to run /pvparena disable
-        default: op
-    pvparena.cmds.duty:
-        description: Allows you to run /pvparena duty
-        default: op
-    pvparena.cmds.edit:
-        description: Allows you to run /pvparena edit
-        default: op
-    pvparena.cmds.enable:
-        description: Allows you to run /pvparena enable
-        default: op
-    pvparena.cmds.gamemode:
-        description: Allows you to run /pvparena gamemode
-        default: op
-    pvparena.cmds.goal:
-        description: Allows you to run /pvparena goal
-        default: op
-    pvparena.cmds.install:
-        description: Allows you to run /pvparena install
-        default: op
-    pvparena.cmds.playerclass:
-        description: Allows you to run /pvparena playerclass
-        default: op
-    pvparena.cmds.playerjoin:
-        description: Allows you to run /pvparena playerjoin
-        default: op
-    pvparena.cmds.protection:
-        description: Allows you to run /pvparena protection
-        default: op
-    pvparena.cmds.region:
-        description: Allows you to run /pvparena region
-        default: op
-    pvparena.cmds.regionflag:
-        description: Allows you to run /pvparena regionflag
-        default: op
-    pvparena.cmds.regions:
-        description: Allows you to run /pvparena regions
-        default: op
-    pvparena.cmds.regiontype:
-        description: Allows you to run /pvparena regiontype
-        default: op
-    pvparena.cmds.reload:
-        description: Allows you to run /pvparena reload
-        default: op
-    pvparena.cmds.remove:
-        description: Allows you to run /pvparena remove
-        default: op
-    pvparena.cmds.round:
-        description: Allows you to run /pvparena round
-        default: op
-    pvparena.cmds.set:
-        description: Allows you to run /pvparena set
-        default: op
-    pvparena.cmds.setowner:
-        description: Allows you to run /pvparena setowner
-        default: op
-    pvparena.cmds.setup:
-        description: Allows you to run /pvparena setup
-        default: op
-    pvparena.cmds.spawn:
-        description: Allows you to run /pvparena spawn
-        default: op
-    pvparena.cmds.start:
-        description: Allows you to run /pvparena start
-        default: op
-    pvparena.cmds.stop:
-        description: Allows you to run /pvparena stop
-        default: op
-    pvparena.cmds.teams:
-        description: Allows you to run /pvparena teams
-        default: op
-    pvparena.cmds.teleport:
-        description: Allows you to run /pvparena teleport
-        default: op
-    pvparena.cmds.template:
-        description: Allows you to run /pvparena template
-        default: op
-    pvparena.cmds.togglemod:
-        description: Allows you to run /pvparena togglemod
-        default: op
-    pvparena.cmds.uninstall:
-        description: Allows you to run /pvparena uninstall
-        default: op
-    pvparena.cmds.update:
-        description: Allows you to run /pvparena update
-        default: op
-    pvparena.cmds.whitelist:
-        description: Allows you to run /pvparena whitelist
-        default: op
-    pvparena.cmds.arenaclass:
-        description: Allows you to run /pvparena arenaclass
-        default: true
-    pvparena.cmds.chat:
-        description: Allows you to run /pvparena chat
-        default: true
-    pvparena.cmds.join:
-        description: Allows you to run /pvparena join
-        default: true
-    pvparena.cmds.leave:
-        description: Allows you to run /pvparena leave
-        default: true
-    pvparena.cmds.spectate:
-        description: Allows you to run /pvparena spectate
-        default: true
-    pvparena.cmds.arenalist:
-        description: Allows you to run /pvparena arenalist
-        default: true
-    pvparena.cmds.help:
-        description: Allows you to run /pvparena help
-        default: true
-    pvparena.cmds.info:
-        description: Allows you to run /pvparena info
-        default: true
-    pvparena.cmds.list:
-        description: Allows you to run /pvparena list
-        default: true
-    pvparena.cmds.ready:
-        description: Allows you to run /pvparena ready
-        default: true
-    pvparena.cmds.shutup:
-        description: Allows you to run /pvparena shutup
-        default: true
-    pvparena.cmds.stats:
-        description: Allows you to run /pvparena stats
-        default: true
-    pvparena.cmds.version:
-        description: Allows you to run /pvparena version
-        default: true
+  pvparena.*:
+    description: Allows all
+    default: false
+    children:
+      pvparena.user: true
+      pvparena.admin: true
+  pvparena.user:
+    description: Allows you to use the arena
+    default: true
+    children:
+      pvparena.cmds.arenaclass: true
+      pvparena.cmds.chat: true
+      pvparena.cmds.join: true
+      pvparena.cmds.leave: true
+      pvparena.cmds.spectate: true
+      pvparena.cmds.arenalist: true
+      pvparena.cmds.help: true
+      pvparena.cmds.ready: true
+      pvparena.cmds.shutup: true
+      pvparena.cmds.stats: true
+  pvparena.admin:
+    description: Allows you to administrate arenas
+    default: op
+    children:
+      pvparena.cmds.*: true
+      pvparena.create: true
+      pvparena.telepass: true
+  pvparena.cmds.*:
+    description: Allows you to do all commands
+    default: false
+    children:
+      pvparena.cmds.blacklist: true
+      pvparena.cmds.check: true
+      pvparena.cmds.class: true
+      pvparena.cmds.create: true
+      pvparena.cmds.debug: true
+      pvparena.cmds.disable: true
+      pvparena.cmds.edit: true
+      pvparena.cmds.enable: true
+      pvparena.cmds.gamemode: true
+      pvparena.cmds.goal: true
+      pvparena.cmds.modules: true
+      pvparena.cmds.playerjoin: true
+      pvparena.cmds.protection: true
+      pvparena.cmds.region: true
+      pvparena.cmds.regionflag: true
+      pvparena.cmds.regions: true
+      pvparena.cmds.regiontype: true
+      pvparena.cmds.reload: true
+      pvparena.cmds.remove: true
+      pvparena.cmds.set: true
+      pvparena.cmds.spawn: true
+      pvparena.cmds.start: true
+      pvparena.cmds.stop: true
+      pvparena.cmds.teams: true
+      pvparena.cmds.teleport: true
+      pvparena.cmds.template: true
+      pvparena.cmds.togglemod: true
+      pvparena.cmds.whitelist: true
+      pvparena.cmds.info: true
+      pvparena.cmds.list: true
+      pvparena.cmds.version: true
+  pvparena.create:
+    description: Allows you to create and administrate an arena
+    default: op
+  pvparena.override:
+    description: Allows you to override some checks
+    default: op
+  pvparena.telepass:
+    description: Allows you to teleport while in an arena
+    default: op
+  pvparena.cmds.blacklist:
+    description: Allows you to run /pvparena blacklist
+    default: op
+  pvparena.cmds.check:
+    description: Allows you to run /pvparena check
+    default: op
+  pvparena.cmds.class:
+    description: Allows you to run /pvparena class
+    default: op
+  pvparena.cmds.create:
+    description: Allows you to run /pvparena create
+    default: op
+  pvparena.cmds.debug:
+    description: Allows you to run /pvparena debug
+    default: op
+  pvparena.cmds.disable:
+    description: Allows you to run /pvparena disable
+    default: op
+  pvparena.cmds.duty:
+    description: Allows you to run /pvparena duty
+    default: op
+  pvparena.cmds.edit:
+    description: Allows you to run /pvparena edit
+    default: op
+  pvparena.cmds.enable:
+    description: Allows you to run /pvparena enable
+    default: op
+  pvparena.cmds.gamemode:
+    description: Allows you to run /pvparena gamemode
+    default: op
+  pvparena.cmds.goal:
+    description: Allows you to run /pvparena goal
+    default: op
+  pvparena.cmds.install:
+    description: Allows you to run /pvparena install
+    default: op
+  pvparena.cmds.playerclass:
+    description: Allows you to run /pvparena playerclass
+    default: op
+  pvparena.cmds.playerjoin:
+    description: Allows you to run /pvparena playerjoin
+    default: op
+  pvparena.cmds.protection:
+    description: Allows you to run /pvparena protection
+    default: op
+  pvparena.cmds.region:
+    description: Allows you to run /pvparena region
+    default: op
+  pvparena.cmds.regionflag:
+    description: Allows you to run /pvparena regionflag
+    default: op
+  pvparena.cmds.regions:
+    description: Allows you to run /pvparena regions
+    default: op
+  pvparena.cmds.regiontype:
+    description: Allows you to run /pvparena regiontype
+    default: op
+  pvparena.cmds.reload:
+    description: Allows you to run /pvparena reload
+    default: op
+  pvparena.cmds.remove:
+    description: Allows you to run /pvparena remove
+    default: op
+  pvparena.cmds.round:
+    description: Allows you to run /pvparena round
+    default: op
+  pvparena.cmds.set:
+    description: Allows you to run /pvparena set
+    default: op
+  pvparena.cmds.setowner:
+    description: Allows you to run /pvparena setowner
+    default: op
+  pvparena.cmds.setup:
+    description: Allows you to run /pvparena setup
+    default: op
+  pvparena.cmds.spawn:
+    description: Allows you to run /pvparena spawn
+    default: op
+  pvparena.cmds.start:
+    description: Allows you to run /pvparena start
+    default: op
+  pvparena.cmds.stop:
+    description: Allows you to run /pvparena stop
+    default: op
+  pvparena.cmds.teams:
+    description: Allows you to run /pvparena teams
+    default: op
+  pvparena.cmds.teleport:
+    description: Allows you to run /pvparena teleport
+    default: op
+  pvparena.cmds.template:
+    description: Allows you to run /pvparena template
+    default: op
+  pvparena.cmds.togglemod:
+    description: Allows you to run /pvparena togglemod
+    default: op
+  pvparena.cmds.uninstall:
+    description: Allows you to run /pvparena uninstall
+    default: op
+  pvparena.cmds.update:
+    description: Allows you to run /pvparena update
+    default: op
+  pvparena.cmds.whitelist:
+    description: Allows you to run /pvparena whitelist
+    default: op
+  pvparena.cmds.arenaclass:
+    description: Allows you to run /pvparena arenaclass
+    default: true
+  pvparena.cmds.chat:
+    description: Allows you to run /pvparena chat
+    default: true
+  pvparena.cmds.join:
+    description: Allows you to run /pvparena join
+    default: true
+  pvparena.cmds.leave:
+    description: Allows you to run /pvparena leave
+    default: true
+  pvparena.cmds.spectate:
+    description: Allows you to run /pvparena spectate
+    default: true
+  pvparena.cmds.arenalist:
+    description: Allows you to run /pvparena arenalist
+    default: true
+  pvparena.cmds.help:
+    description: Allows you to run /pvparena help
+    default: true
+  pvparena.cmds.info:
+    description: Allows you to run /pvparena info
+    default: true
+  pvparena.cmds.list:
+    description: Allows you to run /pvparena list
+    default: true
+  pvparena.cmds.ready:
+    description: Allows you to run /pvparena ready
+    default: true
+  pvparena.cmds.shutup:
+    description: Allows you to run /pvparena shutup
+    default: true
+  pvparena.cmds.stats:
+    description: Allows you to run /pvparena stats
+    default: true
+  pvparena.cmds.version:
+    description: Allows you to run /pvparena version
+    default: true

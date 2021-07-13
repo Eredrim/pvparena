@@ -30,11 +30,12 @@ public interface IArenaCommandHandler {
     CommandTree<String> getSubs(final Arena arena);
 
     /**
-     * Does the sender have the permissions for this command?
+     * Does the sender have one of permissions for this command?
      *
      * @param sender the CommandSender to check
      * @param arena  the arena they are part of
+     * @param silent display messages or not
      * @return true if they have the perms, false otherwise
      */
-    boolean hasPerms(final CommandSender sender, final Arena arena);
+    boolean hasPerms(final CommandSender sender, final Arena arena, final boolean silent);
 }

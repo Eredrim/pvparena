@@ -10,6 +10,7 @@ import net.slipcor.pvparena.commands.CommandTree;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.managers.PermissionManager;
 import net.slipcor.pvparena.ncloader.NCBLoadable;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
@@ -87,11 +88,11 @@ public class ArenaGoal extends NCBLoadable implements IArenaCommandHandler {
     }
 
     @Override
-    public boolean hasPerms(final CommandSender sender, final Arena arena) {
+    public boolean hasPerms(final CommandSender sender, final Arena arena, final boolean silent) {
         if (arena == null) {
-            return PVPArena.hasAdminPerms(sender);
+            return PermissionManager.hasAdminPerms(sender);
         }
-        return PVPArena.hasAdminPerms(sender) || PVPArena.hasCreatePerms(sender, arena);
+        return PermissionManager.hasAdminPerms(sender) || PermissionManager.hasBuilderPermission(sender, arena);
     }
 
     /**
