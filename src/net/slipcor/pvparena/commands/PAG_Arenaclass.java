@@ -85,7 +85,7 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
             return;
         }
 
-        if (PermissionManager.hasExplicitClassPerm(sender, arena, aClass)) {
+        if (!PermissionManager.hasExplicitClassPerm(sender, arena, aClass)) {
             arena.msg(sender,
                     Language.parse(arena, MSG.ERROR_NOPERM_CLASS, aClass.getName()));
             return;
