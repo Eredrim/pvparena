@@ -4,7 +4,7 @@ prefix: PVP Arena
 main: net.slipcor.pvparena.PVPArena
 version: ${project.version}${buildVersion}
 api-version: 1.13
-softdepend:[ Vault,WorldEdit,WorldGuard,LibsDisguises,DisguiseCraft,CrackShot,Multiverse-Core,MultiWorld,MyWorlds ]
+softdepend: [ Vault,WorldEdit,WorldGuard,LibsDisguises,DisguiseCraft,CrackShot,Multiverse-Core,MultiWorld,MyWorlds ]
 description: Create, manage and enhance PvP arenas
 website: https://www.spigotmc.org/resources/pvp-arena.16584
 commands:
