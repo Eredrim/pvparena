@@ -4,7 +4,6 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaTeam;
-import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.commands.PAA_Edit;
 import net.slipcor.pvparena.commands.PAA_Setup;
 import net.slipcor.pvparena.core.Config;
@@ -16,15 +15,12 @@ import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.loadables.ArenaRegion;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.block.Chest;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
-
-import static net.slipcor.pvparena.core.ItemStackUtils.getItemStacksFromConfig;
 
 /**
  * <pre>
@@ -127,7 +123,7 @@ public final class ConfigurationManager {
 
         }
 
-        if (config.get("classitems") == null) {
+        if (config.get("classitems") == null && config.getBoolean("general.useGlobalClasses") == false) {
             if (PVPArena.instance.getConfig().get("classitems") == null) {
                 config.addDefault("classitems", generateDefaultClasses());
             }
@@ -163,47 +159,21 @@ public final class ConfigurationManager {
         cfg.set(CFG.Z, "1.3.3.217");
         cfg.save();
         cfg.load();
-
-        final Map<String, Object> classes = config.getConfigurationSection(
-                "classitems").getValues(false);
+        
         arena.getClasses().clear();
-        arena.getDebugger().i("reading class items");
         ArenaClass.addGlobalClasses(arena);
-        for (final Map.Entry<String, Object> stringObjectEntry1 : classes.entrySet()) {
-            ItemStack[] items;
-            ItemStack offHand;
-            ItemStack[] armors;
 
-            try {
-                items = getItemStacksFromConfig(config.getList("classitems."+stringObjectEntry1.getKey()+".items"));
-                offHand = getItemStacksFromConfig(config.getList("classitems."+stringObjectEntry1.getKey()+".offhand"))[0];
-                armors = getItemStacksFromConfig(config.getList("classitems."+stringObjectEntry1.getKey()+".armor"));
-            } catch (final Exception e) {
-                Bukkit.getLogger().severe(
-                        "[PVP Arena] Error while parsing class, skipping: "
-                                + stringObjectEntry1.getKey());
-                        arena.getDebugger().i(e.getMessage());
-                continue;
-            }
-            try {
-
-                String classChest = (String) config.getConfigurationSection("classchests").get(stringObjectEntry1.getKey());
-                PABlockLocation loc = new PABlockLocation(classChest);
-                Chest c = (Chest) loc.toLocation().getBlock().getState();
-                ItemStack[] contents = c.getInventory().getContents();
-
-                items = Arrays.copyOfRange(contents, 0, contents.length - 5);
-                offHand = contents[contents.length - 5];
-                armors = Arrays.copyOfRange(contents, contents.length - 4, contents.length);
-
-                arena.addClass(stringObjectEntry1.getKey(), items, offHand, armors);
-                arena.getDebugger().i("adding class chest items to class " + stringObjectEntry1.getKey());
-
-            }   catch (Exception e) {
-                arena.addClass(stringObjectEntry1.getKey(), items, offHand, armors);
-                arena.getDebugger().i("adding class items to class " + stringObjectEntry1.getKey());
+        if (config.getConfigurationSection("classitems") != null) {
+            arena.getDebugger().i("reading class items");
+            ConfigurationSection classSection = config.getConfigurationSection("classitems");
+            ConfigurationSection chestSection = config.getConfigurationSection("classchests");
+            Set<ArenaClass> classes = ArenaClass.parseClasses(classSection, chestSection);
+            for(ArenaClass newClass : classes) {
+                arena.addClass(newClass);
+                arena.getDebugger().i("adding class items to class " + newClass.getName());
             }
         }
+
         arena.addClass("custom",
                 new ItemStack[]{new ItemStack(Material.AIR, 1)},
                 new ItemStack(Material.AIR, 1),

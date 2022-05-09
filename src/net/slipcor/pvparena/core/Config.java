@@ -77,6 +77,7 @@ public class Config {
         GENERAL_SMARTSPAWN("general.smartspawn", false, null),
         GENERAL_TIME("general.time", -1, null),
         GENERAL_TYPE("general.type", "none", null),
+        GENERAL_USEGLOBALCLASSES("general.useGlobalClasses", false, null),
         GENERAL_WAND("general.wand", Material.STICK, null),
 
         GOAL_ADDLIVESPERPLAYER("goal.livesPerPlayer", false, null),

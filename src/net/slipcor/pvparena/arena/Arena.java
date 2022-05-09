@@ -138,26 +138,20 @@ public class Arena {
         }
     }
 
-    /**
-     * Backwards compatible offhand-less implementation of the addClass method
-     *
-     * @deprecated use {@link #addClass(String className, ItemStack[] items, ItemStack offHand, ItemStack[] armors)} instead.
-     */
-    @Deprecated
-    public void addClass(final String className, final ItemStack[] items, final ItemStack[] armors) {
-        if (getClass(className) != null) {
-            removeClass(className);
-        }
-
-        classes.add(new ArenaClass(className, items, new ItemStack(Material.AIR, 1), armors));
-    }
-
     public void addClass(String className, ItemStack[] items, ItemStack offHand, ItemStack[] armors) {
         if (getClass(className) != null) {
             removeClass(className);
         }
 
         classes.add(new ArenaClass(className, items, offHand, armors));
+    }
+
+    public void addClass(ArenaClass newClass) {
+        if (getClass(newClass.getName()) != null) {
+            removeClass(newClass.getName());
+        }
+
+        classes.add(newClass);
     }
 
     public boolean addCustomScoreBoardEntry(final ArenaModule module, final String key, final int value) {

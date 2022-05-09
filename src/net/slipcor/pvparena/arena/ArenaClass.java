@@ -51,9 +51,10 @@ public final class ArenaClass {
         final File classFile = new File(PVPArena.instance.getDataFolder(), "classes.yml");
         final YamlConfiguration cfg = YamlConfiguration.loadConfiguration(classFile);
 
-        if(cfg.get("classes") == null) {
-            cfg.addDefault("classes", generateDefaultClasses());
+        if(cfg.get("classitems") == null) {
+            cfg.addDefault("classitems", generateDefaultClasses());
             cfg.options().copyDefaults(true);
+            cfg.options().header("To use classes from this file in an arena, set:\n  general:\n    useGlobalClasses: true\nin arena config\n");
 
             try {
                 cfg.save(classFile);
@@ -63,54 +64,67 @@ public final class ArenaClass {
             }
         }
 
-        ConfigurationSection classesSection = cfg.getConfigurationSection("classes");
+        ConfigurationSection classesSection = cfg.getConfigurationSection("classitems");
+        ConfigurationSection chestSection = cfg.getConfigurationSection("classchests");
         if(classesSection != null) {
-            for (final String className : classesSection.getKeys(false)) {
-                ItemStack[] items;
-                ItemStack offHand;
-                ItemStack[] armors;
-
-                try {
-                    ConfigurationSection classesCfg = classesSection.getConfigurationSection(className);
-                    items = getItemStacksFromConfig(classesCfg.getList("items"));
-                    offHand = getItemStacksFromConfig(classesCfg.getList("items"))[0];
-                    armors = getItemStacksFromConfig(classesCfg.getList("items"));
-                } catch (final Exception e) {
-                    PVPArena.instance.getLogger().severe(
-                            "(classes.yml) Error while parsing class, skipping: " + className);
-                    e.printStackTrace();
-                    continue;
-                }
-
-                final String classChest;
-                if (cfg.contains("classchests." + className)) {
-                    classChest = (String) cfg.getConfigurationSection("classchests").get(className);
-                    try {
-                        PABlockLocation loc = new PABlockLocation(classChest);
-                        Chest c = (Chest) loc.toLocation().getBlock().getState();
-                        ItemStack[] contents = c.getInventory().getContents();
-                        items = Arrays.copyOfRange(contents, 0, contents.length-5);
-                        offHand = contents[contents.length-5];
-                        armors = Arrays.copyOfRange(contents, contents.length-4, contents.length);
-                    } catch (Exception e) {
-                        PVPArena.instance.getLogger().severe(
-                                "(classes.yml) Error while parsing location of classchest, skipping: " + className);
-                        e.printStackTrace();
-                        continue;
-                    }
-                }
-
-                globals.put(className, new ArenaClass(className, items, offHand, armors));
+            Set<ArenaClass> classes = ArenaClass.parseClasses(classesSection, chestSection);
+            for(ArenaClass newClass : classes) {
+                globals.put(newClass.getName(), newClass);
             }
         }
 
     }
 
     public static void addGlobalClasses(final Arena arena) {
-        for (final Map.Entry<String, ArenaClass> stringArenaClassEntry : globals.entrySet()) {
-            arena.addClass(stringArenaClassEntry.getKey(), stringArenaClassEntry.getValue().items, stringArenaClassEntry.getValue().offHand, stringArenaClassEntry.getValue().armors);
+        for (final Map.Entry<String, ArenaClass> globalClass : globals.entrySet()) {
+            arena.addClass(globalClass.getValue());
         }
     }
+
+    public static Set<ArenaClass> parseClasses(final ConfigurationSection classSection, final ConfigurationSection chestSection) {
+        Set<ArenaClass> classes = new HashSet<>();
+
+        for (final String className : classSection.getKeys(false)) {
+            ItemStack[] items;
+            ItemStack offHand;
+            ItemStack[] armors;
+            
+            try {
+                ConfigurationSection classCfg = classSection.getConfigurationSection(className);
+                items = getItemStacksFromConfig(classCfg.getList("items"));
+                offHand = getItemStacksFromConfig(classCfg.getList("offhand"))[0];
+                armors = getItemStacksFromConfig(classCfg.getList("armor"));
+            } catch (final Exception e) {
+                PVPArena.instance.getLogger().severe(
+                        "Error while parsing class, skipping: " + className);
+                e.printStackTrace();
+                continue;
+            }
+
+            if (chestSection != null && chestSection.contains(className)) {
+                PVPArena.instance.getLogger().info(
+                        "class: " + className);
+                final String classChest = (String) chestSection.get(className);
+                try {
+                    PABlockLocation loc = new PABlockLocation(classChest);
+                    Chest c = (Chest) loc.toLocation().getBlock().getState();
+                    ItemStack[] contents = c.getInventory().getContents();
+
+                    items = Arrays.copyOfRange(contents, 0, contents.length-5);
+                    offHand = contents[contents.length-5];
+                    armors = Arrays.copyOfRange(contents, contents.length-4, contents.length);
+                } catch (Exception e) {
+                    PVPArena.instance.getLogger().severe(
+                            "Error while parsing location of classchest, skipping: " + className);
+                    e.printStackTrace();
+                    continue;
+                }
+            }
+            classes.add(new ArenaClass(className, items, offHand, armors));
+        }
+        return classes;
+    }
+
 
     public static void equip(final Player player, final ItemStack[] items) {
         int i = 0;
