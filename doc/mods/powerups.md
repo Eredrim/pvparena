@@ -115,7 +115,7 @@ So the first layer defines the name, the second layer defines item and adds all 
 
 ## Config settings
 
-- dropspawn \- should the powerup spawn require defined spawns? `/pa [arena] spawn powerupX` (where X is an integer)
+- dropspawn \- should the powerup spawn require defined spawns? `/pa [arena] spawn set powerupX` (where X is an integer)
 - usage \- by default it is "off", so please set this to either every X kills ("death:X") or every X seconds ("time:X")
 
 ## Commands
