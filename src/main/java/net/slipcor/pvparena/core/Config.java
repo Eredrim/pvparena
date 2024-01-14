@@ -371,8 +371,8 @@ public class Config {
         MODULES_TITLES_END("modules.titles.end", false, "Titles"),
         MODULES_TITLES_WINNER("modules.titles.winner", true, "Titles"),
         MODULES_TITLES_LOSER("modules.titles.loser", true, "Titles"),
-        MODULES_TITLES_PRIZE("modules.titles.prize", false, "Titles"),
-        MODULES_TITLES_CUSTOM("modules.titles.custom", false, "Titles"),
+        MODULES_TITLES_DEATH("modules.titles.death", true, "Titles"),
+        MODULES_TITLES_LEAVE("modules.titles.leave", true, "Titles"),
         MODULES_TITLES_ADVERT("modules.titles.advert", false, "Titles"),
         MODULES_TITLES_COUNT("modules.titles.count", true, "Titles"),
 
