@@ -330,7 +330,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
     private boolean isPlayerHoldingLighter(ArenaPlayer player) {
         debug(player, "getting held TNT of player {}", player);
         boolean holding = this.getLighterMap().values().stream()
-                .anyMatch(lighterOwner -> lighterOwner.equals(player));
+                .anyMatch(player::equals);
 
         if(holding) {
             debug(player, "team {}'s sabotage is carried by {}s hands", player.getArenaTeam().getName(), player.getName());
