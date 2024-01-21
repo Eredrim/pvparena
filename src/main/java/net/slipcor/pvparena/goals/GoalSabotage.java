@@ -180,6 +180,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 
                     final PAGoalSabotageIgniteEvent gEvent = new PAGoalSabotageIgniteEvent(this.arena, this, ArenaPlayer.fromPlayer(player), team);
                     Bukkit.getPluginManager().callEvent(gEvent);
+                    this.winningTeam = pTeam;
                     this.primeTNT(team, new PABlockLocation(block.getLocation()));
 
                 } else {
@@ -419,7 +420,6 @@ public class GoalSabotage extends ArenaGoal implements Listener {
      * @param paBlockLocation Location of the TNT
      */
     private void primeTNT(ArenaTeam team, PABlockLocation paBlockLocation) {
-        this.winningTeam = team;
         paBlockLocation.toLocation().getBlock().setType(Material.AIR);
         World world = Bukkit.getWorld(paBlockLocation.getWorldName());
         this.explodingTNT = (TNTPrimed) world.spawnEntity(paBlockLocation.toLocation(), EntityType.PRIMED_TNT);
