@@ -16,10 +16,10 @@ configuration file.
 
 ## Setup
 
-Either administrate via commands (recommended) OR complete the `perms` config block inside the arena config, like this:
+Either administrate via commands (recommended) OR complete the `modules.tempperms` config block inside the arena config, like this:
 
 ```yaml
-perms:
+tempperms:
   - default:
     - everyone.has.this
     - -everyone.doesnt.have.this
@@ -34,7 +34,7 @@ perms:
 <br>
 
 > ⚙ **Technical precision:**  
-> * For negative permissions, you can use either `-node` or `^node` syntax, it's the same thing. However when the config
+> * For negative permissions, you can use either `-node` or `^node` syntax, it's the same thing. However, when the config
 > is saved, every negative permissions are rewritten with `-node` syntax.
 > * `default` block contains permissions applied to every player 
 
@@ -50,8 +50,12 @@ perms:
 ## Troubleshooting
 
 If you experience this not working, double check if you GAVE superior permissions or SUB permissions that you didn't 
-take away (explicitly), to be sure, add/remove eventual .* nodes and all subnodes.
+take away (explicitly), to be sure, add/remove eventual .* nodes and all subnodes.  
+If you want to add access to new commands with permissions, keep in mind they have to be added to whitelist in your
+arena config file (`cmds.whitelist` node).
 
-## Dependencies
+<br>
 
-Any superperms compatible permissions plugin (like GroupManager, LuckyPerms, etc)
+> ⚙️ **Technical precision:**  
+> This mod is compatible with native Bukkit permission system and with any superperms compatible permissions plugin 
+> (like GroupManager, LuckPerms, zPermissions, etc)
