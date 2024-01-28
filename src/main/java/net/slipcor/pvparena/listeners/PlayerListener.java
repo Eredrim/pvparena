@@ -699,7 +699,7 @@ public class PlayerListener implements Listener {
         final Player player = event.getPlayer();
         final ArenaPlayer arenaPlayer = ArenaPlayer.fromPlayer(player);
         final Arena arena = arenaPlayer.getArena();
-        if (arena == null) {
+        if (arena == null && arenaPlayer.getQueuedArena() != null) {
             for (ArenaModule mod : arenaPlayer.getQueuedArena().getMods()) {
                 if(mod.handleQueuedLeave(arenaPlayer)) {
                     arenaPlayer.unload();
