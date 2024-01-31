@@ -294,6 +294,8 @@ public final class TabManager {
             } else if ("{EntityType}".equals(definition)) {
                 final EntityType[] entityTypes = EntityType.values();
                 addEnumMatchesToList(result, key, asList(entityTypes));
+            } else if ("{GameMode}".equals(definition)) {
+                addEnumMatchesToList(result, key, asList(GameMode.values()));
             }
         }
         return result;

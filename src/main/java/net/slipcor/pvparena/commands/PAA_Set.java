@@ -7,6 +7,7 @@ import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -18,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static net.slipcor.pvparena.core.Utils.getSerializableItemStacks;
 
@@ -117,6 +119,13 @@ public class PAA_Set extends AbstractArenaCommand {
         } else if (type == ConfigNodeType.STRING) {
             arena.getConfig().setManually(node, String.valueOf(value));
             arena.msg(player, Language.parse(MSG.SET_DONE, node, value));
+        } else if (type == ConfigNodeType.GAMEMODE) {
+            if(Stream.of(GameMode.values()).anyMatch(gm -> gm.name().equalsIgnoreCase(value))) {
+                arena.getConfig().setManually(node, value);
+                arena.msg(player, Language.parse(MSG.SET_DONE, node, value));
+            } else {
+                arena.msg(player, Language.parse(MSG.ERROR_ARGUMENT_TYPE, value, "Gamemode (e.g. SURVIVAL)"));
+            }
         } else if (type == ConfigNodeType.INT) {
             final int iValue;
 
