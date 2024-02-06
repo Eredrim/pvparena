@@ -50,6 +50,7 @@ import java.util.stream.Stream;
 
 import static java.util.Optional.ofNullable;
 import static net.slipcor.pvparena.config.Debugger.debug;
+import static net.slipcor.pvparena.core.VersionUtils.INFINITE_EFFECT_DURATION;
 
 
 public abstract class AbstractFlagGoal extends ArenaGoal {
@@ -220,7 +221,7 @@ public abstract class AbstractFlagGoal extends ArenaGoal {
             return;
         }
 
-        player.addPotionEffect(new PotionEffect(pet, 2147000, amp));
+        player.addPotionEffect(new PotionEffect(pet, INFINITE_EFFECT_DURATION, amp));
     }
 
     @Override

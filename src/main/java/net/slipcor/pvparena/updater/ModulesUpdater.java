@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.util.List;
 
 import static net.slipcor.pvparena.core.Language.MSG;
+import static net.slipcor.pvparena.core.VersionUtils.isSameVersionOrNewer;
 
 /**
  * Manage modules versions and updates
@@ -48,7 +49,7 @@ public class ModulesUpdater extends AbstractUpdater {
 
         if(currentVersion == null) {
             LOG.info("PVP Arena modules are not detected");
-        } else if(isUpToDate(currentVersion, onlineVersion)) {
+        } else if(isSameVersionOrNewer(currentVersion, onlineVersion)) {
             LOG.info("PVP Arena modules are up to date");
         } else {
             String updateInfo = getAnnounceMessage(MSG.UPDATER_MODULES.toString(), onlineVersion, currentVersion);

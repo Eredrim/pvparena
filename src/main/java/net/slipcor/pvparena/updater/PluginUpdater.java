@@ -15,6 +15,7 @@ import java.nio.channels.ReadableByteChannel;
 import java.util.List;
 
 import static net.slipcor.pvparena.core.Language.MSG;
+import static net.slipcor.pvparena.core.VersionUtils.isSameVersionOrNewer;
 
 /**
  * Manage plugin versions and updates
@@ -45,7 +46,7 @@ public class PluginUpdater extends AbstractUpdater {
         JsonObject versionJson = getVersionJson(connection.getInputStream());
         String onlineVersion = getOnlineVersionFromJson(versionJson);
 
-        if(isUpToDate(currentVersion, onlineVersion)) {
+        if(isSameVersionOrNewer(currentVersion, onlineVersion)) {
             LOG.info("PVP Arena is up to date");
         } else {
             String updateInfo = getAnnounceMessage(MSG.UPDATER_PLUGIN.toString(), onlineVersion, currentVersion);
