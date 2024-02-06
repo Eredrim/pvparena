@@ -202,7 +202,6 @@ public final class Language {
         ERROR_NOPERM_C_REGIONTYPE("nulang.nopermto.cmds.regiontype", "use the regiontype command"),
         ERROR_NOPERM_C_RELOAD("nulang.nopermto.cmds.reload", "use the reload command"),
         ERROR_NOPERM_C_REMOVE("nulang.nopermto.cmds.remove", "use the remove command"),
-        ERROR_NOPERM_C_ROUND("nulang.nopermto.cmds.round", "use the round command"),
         ERROR_NOPERM_C_SET("nulang.nopermto.cmds.set", "use the set command"),
         ERROR_NOPERM_C_SETOWNER("nulang.nopermto.cmds.setowner", "use the setowner command"),
         ERROR_NOPERM_C_SETUP("nulang.nopermto.cmds.setup", "use the setup command"),
@@ -416,12 +415,6 @@ public final class Language {
         RELOAD_DONE("nulang.reloaded", "&2Config of %1% reloaded."),
         RELOAD_FAILED("nulang.reloadfail", "&cFail to reload arena %1%.&f Please check the arena config."),
         RELOAD_YMLS_DONE("nulang.ymls.reloaded", "Languages reloaded!"),
-
-        ROUND_DISPLAY("nulang.round.display", "Round #%1%: %2%"),
-        ROUND_ADDED("nulang.round.added", "Added goal to round: &e%1%"),
-        ROUND_REMOVED("nulang.round.removed", "Removed goal from round: &e%1%"),
-        ROUNDS_DISPLAY("nulang.round.roundsdisplay", "Round %1% / %2%"),
-        ROUNDS_DISPLAYSEPARATOR("nulang.round.roundsdisplayseparator", "-----------"),
 
         SET_DONE("nulang.set.done", "&a%1%&r set to &e%2%&r!"),
         ADD_DONE("nulang.add.done", "&e%2%&r added to &a%1%&r!"),

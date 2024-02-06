@@ -253,7 +253,6 @@ nulang:
       regiontype: use the regiontype command
       reload: use the reload command
       remove: use the remove command
-      round: use the round command
       set: use the set command
       setowner: use the setowner command
       setup: use the setup command
@@ -481,12 +480,6 @@ nulang:
     shape: 'Region Shape: &a%1%&r'
     type: 'Region Type: &a%1%&r'
   reloaded: Config reloaded!
-  round:
-    roundsdisplay: Round %1% / %2%
-    roundsdisplayseparator: '-----------'
-    display: 'Round #%1%: %2%'
-    added: 'Added goal to round: &e%1%'
-    removed: 'Removed goal from round: &e%1%'
   set:
     items_not: Please use either hand or inventory to set an item node!
     done: '&a%1%&r set to &e%2%&r!'

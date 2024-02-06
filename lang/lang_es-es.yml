@@ -363,10 +363,6 @@ nulang:
     shape: 'Forma de Región: &a%1%&r'
     type: 'Tipo de Región: &a%1%&r'
   reloaded: ¡Configuración recargada!
-  round:
-    display: 'Ronda #%1%: %2%'
-    added: 'Meta(Goal) añadida para Ronda: &e%1%'
-    removed: 'Meta(Goal) removida para Ronda: &e%1%'
   set:
     done: '&a%1%&r puesto a &e%2%&r!'
     help: use /pa {NombreDeLaArena} set [pagina] para obtener una lista de nodos

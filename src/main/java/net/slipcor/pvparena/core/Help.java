@@ -223,17 +223,6 @@ public final class Help {
                 "shorthand command: !rem",
                 LINE,
                 "/pa [arenaname] remove"}),
-        ROUND("nulang.help.msg.round", new String[]{
-                "Manage arena rounds",
-                LINE,
-                "shorthand command: !rd",
-                LINE,
-                "/pa [arenaname] round",
-                "    - list rounds",
-                "/pa [arenaname] round [number]",
-                "    - list round goals",
-                "/pa [arenaname] round [number] [goal]",
-                "    - toggle round goal"}),
         SET("nulang.help.msg.set", new String[]{
                 "Set an arena config setting",
                 LINE,

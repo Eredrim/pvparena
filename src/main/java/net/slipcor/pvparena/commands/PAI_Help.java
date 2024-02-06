@@ -75,7 +75,6 @@ public class PAI_Help extends AbstractGlobalCommand {
                 Arena.pmsg(sender, "/pa help regionflag");
                 Arena.pmsg(sender, "/pa help regions");
                 Arena.pmsg(sender, "/pa help regiontype");
-                Arena.pmsg(sender, "/pa help round");
                 Arena.pmsg(sender, "/pa help uninstall");
                 Arena.pmsg(sender, "/pa help update");
                 Arena.pmsg(sender, "/pa help whitelist");

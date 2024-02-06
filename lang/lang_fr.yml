@@ -228,7 +228,6 @@ nulang:
       regiontype: d'utiliser la commande regiontype
       reload: d'utiliser la commande reload
       remove: d'utiliser la commande remove
-      round: d'utiliser la commande round
       set: d'utiliser la commande set
       setowner: d'utiliser la commande setowner
       setup: d'utiliser la commande setup
@@ -451,12 +450,6 @@ nulang:
   reloaded: Config actualisée!
   ymls:
     reloaded: Fichiers de langue rechargés !
-  round:
-    display: 'Round #%1%: %2%'
-    added: 'Objectif ajouté au round: &e%1%'
-    removed: 'Objectif supprimé du round: &e%1%'
-    roundsdisplay: Round %1% / %2%
-    roundsdisplayseparator: '-----------'
   set:
     items_not: Veuillez utiliser les mots clés "hand" ou "inventory" pour définir un item dans la configuration.
     done: '&a%1%&r configuré à &e%2%&r!'

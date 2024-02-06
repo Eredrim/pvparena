@@ -163,9 +163,6 @@ permissions:
     pvparena.cmds.remove:
         description: Allows you to run /pvparena remove
         default: op
-    pvparena.cmds.round:
-        description: Allows you to run /pvparena round
-        default: op
     pvparena.cmds.set:
         description: Allows you to run /pvparena set
         default: op
