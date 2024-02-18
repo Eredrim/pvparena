@@ -314,6 +314,8 @@ public class WorkflowManager {
 
         for (ArenaModule mod : aPlayer.getArena().getMods()) {
             if (mod.tryDeathOverride(aPlayer, deathInfo, keptItems)) {
+                // Resetting mayRespawn property
+                aPlayer.setMayRespawn(false);
                 return;
             }
         }
