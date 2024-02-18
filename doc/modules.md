@@ -79,6 +79,7 @@ Factions, FixInventoryLoss, MatchResultsStats, RedstoneTriggers, SinglePlayerSup
 These modules either used discontinued features (like arena rounds) or their features have been integrated in core of
 PVPArena plugin.
 
+<br>
 
 ## Installing modules
 
@@ -107,3 +108,16 @@ Type [`/pa modules install [moduleName]`](commands/modules.md) to install one of
 
 Last step: your module is installed, and you want to use it in some of your arenas. 
 Type [`/pa [arena] !tm [moduleName]`](commands/togglemod.md) to enable it in your arena.
+
+<br>
+
+## Updating modules
+
+### With latest release version
+
+Just run [`/pa modules upgrade`](commands/modules.md). In some cases, a server restart may be needed.
+
+### With a snapshot/dev version
+
+Browse the `plugins/pvparena` directory. Delete the `files` folder and unzip the new modules archive.  
+Then type [`/pa modules update`](commands/modules.md). In some cases, a server restart may be needed.
