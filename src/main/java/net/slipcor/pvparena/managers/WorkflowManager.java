@@ -102,6 +102,10 @@ public class WorkflowManager {
                 .collect(Collectors.toList());
 
         try {
+            if (arena.isLocked() && !PermissionManager.hasAdminPerm(player) && !PermissionManager.hasBuilderPerm(player, arena)) {
+                throw new GameplayException(Language.parse(MSG.ERROR_DISABLED));
+            }
+
             for(ArenaModule mod : sortedModules) {
                 mod.checkJoin(player);
             }
@@ -226,7 +230,7 @@ public class WorkflowManager {
 
         StatisticsManager.kill(arena, killer, player, doesRespawn);
 
-        // Calculating dropped exp. Source: https://minecraft.fandom.com/wiki/Experience
+        // Calculating dropped exp. Source: https://minecraft.wiki/w/Experience
         int droppedExp = Math.max(player.getLevel() * 7, 100);
 
         // Player inventory before death. Will be refilled or not.

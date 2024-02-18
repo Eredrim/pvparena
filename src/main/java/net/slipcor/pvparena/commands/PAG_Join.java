@@ -5,6 +5,7 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.CollectionUtils;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Help.HELP;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.managers.ConfigurationManager;
 import net.slipcor.pvparena.managers.PermissionManager;
@@ -42,6 +43,11 @@ public class PAG_Join extends AbstractArenaCommand {
         if (!(this.hasPerms(sender, arena) && PermissionManager.hasExplicitArenaPerm(sender, arena, JOIN))) {
             debug(sender, "Insufficient perms to join '{}'. Current perms: {}", arena, String.join(", ", this.perms));
             arena.msg(sender, MSG.ERROR_NOPERM_JOIN);
+            return;
+        }
+
+        if (!arena.isValid()) {
+            arena.msg(sender, Language.parse(MSG.ERROR_DISABLED));
             return;
         }
 

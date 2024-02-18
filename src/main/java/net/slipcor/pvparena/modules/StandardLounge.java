@@ -12,7 +12,6 @@ import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.exceptions.GameplayException;
 import net.slipcor.pvparena.loadables.JoinModule;
 import net.slipcor.pvparena.loadables.ModuleType;
-import net.slipcor.pvparena.managers.PermissionManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.TeleportManager;
 import org.bukkit.entity.Player;
@@ -85,10 +84,6 @@ public class StandardLounge extends JoinModule {
 
     @Override
     public boolean handleJoin(Player player) throws GameplayException {
-        if (this.arena.isLocked() && !PermissionManager.hasAdminPerm(player) && !PermissionManager.hasBuilderPerm(player, this.arena)) {
-            throw new GameplayException(Language.parse(MSG.ERROR_DISABLED));
-        }
-
         final ArenaPlayer aPlayer = ArenaPlayer.fromPlayer(player);
 
         if (aPlayer.getArena() != null) {

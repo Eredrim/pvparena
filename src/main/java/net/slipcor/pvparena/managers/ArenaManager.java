@@ -286,9 +286,6 @@ public final class ArenaManager {
             } else {
                 // not valid arena config file
                 Arena.pmsg(Bukkit.getConsoleSender(), MSG.ERROR_ARENACONFIG, arena.getName());
-                // force enabled to false to prevent players using it
-                arena.getConfig().set(CFG.GENERAL_ENABLED, false);
-                arena.getConfig().save();
                 arena.setLocked(true);
             }
 
