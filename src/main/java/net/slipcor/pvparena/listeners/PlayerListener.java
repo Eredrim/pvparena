@@ -231,8 +231,8 @@ public class PlayerListener implements Listener {
 
         for (String s : list) {
             if ("*".equals(s) ||
-                    ((wildcard || s.endsWith(" ")) && event.getMessage().toLowerCase().startsWith('/' + s)) ||
-                    (!wildcard && event.getMessage().toLowerCase().startsWith('/' + s + ' '))) {
+                    (wildcard && event.getMessage().toLowerCase().startsWith('/' + s)) ||
+                    (!wildcard && event.getMessage().trim().toLowerCase().equalsIgnoreCase('/' + s))) {
                 debug(arena, player, "command allowed: " + s);
                 return;
             }
