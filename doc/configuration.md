@@ -35,7 +35,7 @@ general:
   showRemainingLives: true #Brodcast remaining lives in chat after each kill
   smartspawn: true #Spread players on spawn points in a balanced way
   timer:
-    end: 0 #Time limit for the arena, set to 0 to disable it
+    end: 0 #Time limit for the arena (in seconds), set to 0 to disable it
     winner: none #Winner team when time limit is reached
   addLivesPerPlayer: false #Multiply the life number by the number of players in the team (or in the arena for FFA)
   prefix: MyArena #Name of the arena displayed in chat messages
