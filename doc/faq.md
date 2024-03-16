@@ -99,6 +99,21 @@ NB: For the 3rd option, you have to specify a class for each team. There is no d
 
 <br>
 
+## How can I use placeholders in signs/holograms/scoreboard?
+
+PVPArena provides multiple [placeholders](placeholders.md), and they are all based on PlaceholderAPI. So to use them, 
+just find plugins that are compatible with it.
+
+Here is a quick (and non-exhaustive) list of compatible plugins:
+* **Holograms:** [DecentHolograms](https://www.spigotmc.org/resources/decentholograms-1-8-1-20-4-papi-support-no-dependencies.96927/), 
+[FancyHolograms (1.19.4+)](https://www.spigotmc.org/resources/fancy-holograms-text-items-blocks.108694/)
+* **Signs:** [SignLink](https://www.spigotmc.org/resources/signlink.39593/), [YColorfulItems (Paper based / 1.20+)](https://modrinth.com/plugin/ycolorfulitems)
+* **Scoreboards:** [SimpleScore](https://www.spigotmc.org/resources/simplescore-animated-scoreboard.23243/), 
+[RealScoreboard](https://www.spigotmc.org/resources/realscoreboard-1-13-to-1-20-4.22928/), 
+[AnimatedScoreboard](https://www.spigotmc.org/resources/animatedscoreboard.20848/)
+
+<br>
+
 ## Still have questions?
 
 Don't hesitate to [get in touch](../readme.md#support) with us 😉
