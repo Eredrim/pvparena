@@ -1,4 +1,4 @@
-# TeamDeathMatch
+# TeamDeathConfirm
 
 > ℹ This goal is designed to be played in teams
 
