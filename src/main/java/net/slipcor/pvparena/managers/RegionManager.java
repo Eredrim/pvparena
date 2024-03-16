@@ -1,5 +1,6 @@
 package net.slipcor.pvparena.managers;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PABlockLocation;
@@ -11,6 +12,7 @@ import net.slipcor.pvparena.core.Utils;
 import net.slipcor.pvparena.exceptions.GameplayRuntimeException;
 import net.slipcor.pvparena.regions.ArenaRegion;
 import net.slipcor.pvparena.regions.RegionType;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -137,7 +139,9 @@ public final class RegionManager {
                         player.setLastDamageCause(new EntityDamageEvent(player, EntityDamageEvent.DamageCause.CUSTOM, 1004.0));
                         player.damage(1000);
                     } else {
+                        arenaPlayer.setTelePass(true); // Required to rollback player in a region with teleport protection
                         this.tryRollbackPosition(event, null);
+                        Bukkit.getScheduler().runTask(PVPArena.getInstance(), () -> arenaPlayer.setTelePass(false));
                     }
                 } catch (GameplayRuntimeException e) {
                     Arena.pmsg(player, Language.MSG.NOTICE_YOU_ESCAPED);
