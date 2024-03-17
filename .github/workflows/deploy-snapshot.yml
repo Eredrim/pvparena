@@ -48,9 +48,9 @@ jobs:
 
       - name: Post discord notification
         run: |
-          commits=`echo "${{ join(github.event.commits.*.message, '\n - ') }}" | tr '\n' ' '`
+          commits=`echo "${{ join(github.event.commits.*.message, '\n- ') }}" | tr '\n' ' '`
           avatar_url=https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
           bot_username="Build notification"
-          payload_json='{ "username": "'$bot_username'", "avatar_url": "'$avatar_url'", "content": "A new dev build of PVP arena is available! Download it by saving the attached file.", "embeds": [{"description": ":spiral_note_pad: **New commits:**\n\n - '$commits'"}] }'
+          payload_json='{ "username": "'$bot_username'", "avatar_url": "'$avatar_url'", "content": "A new dev build of PVP arena is available! Download it by saving the attached file.", "embeds": [{"description": ":spiral_note_pad: **New commits:**\n\n- '$commits'"}] }'
           curl -X POST ${{ secrets.DISCORD_WEBHOOK_URL }} -F payload_json="${payload_json}"
           curl -X POST ${{ secrets.DISCORD_WEBHOOK_URL }} -F username="${bot_username}" -F avatar_url="${avatar_url}" -F file=@target/pvparena-${{ env.mvn_version }}-b${{ env.build_version }}.jar
