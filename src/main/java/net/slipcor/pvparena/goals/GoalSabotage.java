@@ -275,9 +275,10 @@ public class GoalSabotage extends ArenaGoal implements Listener {
             String winMsg = Language.parse(MSG.TEAM_HAS_WON, this.winningTeam.getColoredName() + ChatColor.YELLOW);
             ArenaModuleManager.announce(this.arena, winMsg, "WINNER");
             this.arena.broadcast(winMsg);
+            this.arena.addWinner(this.winningTeam.getName());
         }
 
-        if (ArenaModuleManager.commitEnd(this.arena, this.winningTeam)) {
+        if (ArenaModuleManager.commitEnd(this.arena, this.winningTeam, null)) {
             return;
         }
 

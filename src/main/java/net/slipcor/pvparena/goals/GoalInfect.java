@@ -36,6 +36,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static net.slipcor.pvparena.config.Debugger.debug;
@@ -319,6 +320,10 @@ public class GoalInfect extends ArenaGoal {
                             Language.parse(MSG.GOAL_INFECTED_WON), "WINNER");
 
                     this.arena.broadcast(Language.parse(MSG.GOAL_INFECTED_WON));
+                    Set<String> winnerNameList = arenaPlayer.getArenaTeam().getTeamMembers().stream()
+                            .map(ArenaPlayer::getName)
+                            .collect(Collectors.toSet());
+                    this.arena.setWinners(winnerNameList);
                     break;
                 } else {
 
@@ -328,11 +333,17 @@ public class GoalInfect extends ArenaGoal {
                             Language.parse(MSG.GOAL_INFECTED_LOST), "LOSER");
 
                     this.arena.broadcast(Language.parse(MSG.GOAL_INFECTED_LOST));
+                    Set<String> winnerNameList = this.arena.getTeams().stream()
+                            .filter(arenaTeam -> !INFECTED.equals(arenaTeam.getName()))
+                            .flatMap(arenaTeam -> arenaTeam.getTeamMembers().stream())
+                            .map(ArenaPlayer::getName)
+                            .collect(Collectors.toSet());
+                    this.arena.setWinners(winnerNameList);
                     break;
                 }
             }
 
-            if (ArenaModuleManager.commitEnd(this.arena, team)) {
+            if (ArenaModuleManager.commitEnd(this.arena, team, null)) {
                 return;
             }
         }

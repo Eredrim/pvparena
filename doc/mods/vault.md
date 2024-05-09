@@ -1,48 +1,60 @@
 # Vault
 
-## Description
+## About
 
-The Vault module adds an economy hook to provide several things. Join fee, money reward, betting, etc...
+The Vault module adds an economy hook to add multiple features like join fee, money rewards and bets.
+
+
+## Requirements
+
+As you can guess it, this module requires the **Vault** plugin (downloadable [here](https://www.spigotmc.org/resources/vault.34315/))
+and an economy plugin which is compatible with it like EssentialX, Ultimate_Economy, iConomy Reloaded, XConomy, etc.
 
 ## Installation
 
 Installation of this module can be done in a normal way. You'll find installation process in [modules page](../modules.md#installing-modules) of the doc.
 
-## Setup
-
-After enabling this module for the first time, the server needs a full restart to activate the Vault hook.
-
 ## Config settings
 
-- betpot \- should bets be added to a pot that will be fully shared among winners? (default: false)
-- bettime \- the maximum time in seconds after a match has started a player can place bets (default: 60)
-- betWinFactor \- the factor a winning bet is multiplied with (default: 1.0)
-- betWinTeamFactor \- the factor a winning bet is multiplied with for each initial team (default: 1.0)
-- betWinPlayerFactor \- the factor a winning bet is multiplied with for each initial player (default: 1.0)
-- entryfee \- the amount players have to pay to join the arena (default: 0)
-- killreward \- amount given for killing a player (default: 0)
-- maxbet \- maximum bet amount (default: 0)
-- minbet \- minimum bet amount (default: 0)
-- minplaytime \- minimum play time to be awarded (in seconds; default: 0)
-- winPot \- should the entry fee be added to a pool that will be split among winners at the end? (default: false)
-- winFactor \- the factor a winning player reward is multiplied with (default: 2)
-- winreward \- the plain reward a winning player gets
-- winrewardPlayerFactor \- the per player factor for rewards
-- reward.playerDeath \- a reward for being killed
-- reward.playerKill \- a reward for killing
-- reward.playerScore \- a reward for scoring (blockdestroy destruct, food deliver, etc)
-- reward.trigger \- a reward for triggering something that might cause the end (claim, flag break)
-- reward.playerWin \- a reward for winning 
+*These settings can be found under `modules.vault` node in your arena config file.*
+
+- **conditions.entryFee** \- fee players will pay to join the arena (default: 0)
+- **conditions.winFeePot** \- if true, all collected fee will be shared between winning players (default: false)
+- **conditions.minPlayTime** \- minimum playing time (in seconds) to get a reward (default: 0)
+- **conditions.minPlayers** \- minimum of players to get a reward - leaving players are not counted (default: 2)
+
+
+- **reward.death** \- reward a player get when they die (default: 0)
+- **reward.kill** \- reward a player get when they kill another player (default: 0)
+- **reward.win** \- reward a player get when they or their team win the game. For [team goals](../goals.md), each player of the winning 
+team earn this amount. (default: 0)
+- **reward.winFactor** \- if `conditions.winFeePot` is enabled, defines how much the won share of the fee pot will be multiplied (default: 1)
+
+
+- **bet.enabled** \- enables betting features (default: false)
+- **bet.time** \- defines during how many seconds players can bet after the beginning of the match (default: 60)
+- **bet.minAmount** \- minimum amount to bet (default: 0)
+- **bet.maxAmount** \- maximum amount to bet (default: 0 - i.e. no maximum)
+- **bet.winFactor** \- how much the bet gain should be multiplied (default: 1)
 
 ## Commands
 
+- `/pa [arena] bet [name] [amount]` \- bet [amount] on team / player. 
 
-- `/pa [arenaname] bet [name] [amount]` \- bet [amount] on team / player 
+**NB:** Betting features are only accessible for players that are not play the match (obviously).
 
-## Warnings
+> 🚩 **Tips:**
+> * This command is only available when `bet.enabled` is set to `true`
+> * Players don't have to specify arena name in the command if they are spectating the arena
+> * Players can change their bet by running the command again (if bet time is not over)
 
-\-
+## Additional information
 
-## Dependencies
+> ⚠️ **Warning:**  
+> Due to their special working way, it's not currently recommended to use win rewards and betting with 
+> [Tank](../goals/tank.md) and [Infect](../goals/infect.md) goals.
 
-Vault
+> ⚙️ **Technical precisions for nerds:**
+> * Calculation of win prize is made with this formula: `(totalPotAmount / winnerNumber * winFactor) + winReward`
+> * Calculation of bet gain is made with this formula: `(betAmount / totalAmountOfWinnersBets) * totalAmountOfGamblersBets * betFactor`
+> * All reward are rounded with a two digits precision. For instance, $9.675 will be rounded to $9.68

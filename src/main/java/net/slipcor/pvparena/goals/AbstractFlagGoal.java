@@ -15,15 +15,14 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringUtils;
-import net.slipcor.pvparena.events.goal.PAGoalEndEvent;
 import net.slipcor.pvparena.exceptions.GameplayException;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.PermissionManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.TeamManager;
+import net.slipcor.pvparena.managers.WorkflowManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -40,6 +39,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -167,7 +167,7 @@ public abstract class AbstractFlagGoal extends ArenaGoal {
         final int count = TeamManager.countActiveTeams(this.arena);
 
         if (count == 1) {
-            return true; // yep. only one team left. go!
+            return true;
         } else if (count == 0) {
             debug(this.arena, "No teams playing!");
         }
@@ -327,47 +327,6 @@ public abstract class AbstractFlagGoal extends ArenaGoal {
 
         this.arena.getConfig().save();
         this.arena.msg(sender, MSG.SET_DONE, this.getFlagEffectCfg().getNode(), value);
-    }
-
-    @Override
-    public void commitEnd(final boolean force) {
-        if (this.arena.realEndRunner != null) {
-            debug(this.arena, "[FLAGS] already ending");
-            return;
-        }
-        debug(this.arena, "[FLAGS]");
-
-        final PAGoalEndEvent gEvent = new PAGoalEndEvent(this.arena, this);
-        Bukkit.getPluginManager().callEvent(gEvent);
-        ArenaTeam aTeam = null;
-
-        for (ArenaTeam team : this.arena.getTeams()) {
-            for (ArenaPlayer ap : team.getTeamMembers()) {
-                if (ap.getStatus() == PlayerStatus.FIGHT) {
-                    aTeam = team;
-                    break;
-                }
-            }
-        }
-
-        if (aTeam != null && !force) {
-            ArenaModuleManager.announce(
-                    this.arena,
-                    Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor()
-                            + aTeam.getName() + ChatColor.YELLOW), "END");
-
-            ArenaModuleManager.announce(
-                    this.arena,
-                    Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor()
-                            + aTeam.getName() + ChatColor.YELLOW), "WINNER");
-            this.arena.broadcast(Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor()
-                    + aTeam.getName() + ChatColor.YELLOW));
-        }
-
-        if (ArenaModuleManager.commitEnd(this.arena, aTeam)) {
-            return;
-        }
-        new EndRunnable(this.arena, this.arena.getConfig().getInt(CFG.TIME_ENDCOUNTDOWN));
     }
 
     @Override
@@ -531,50 +490,47 @@ public abstract class AbstractFlagGoal extends ArenaGoal {
         }
     }
 
-    protected void commit(final Arena arena, final ArenaTeam arenaTeam, final boolean win) {
-        if (arena.realEndRunner == null) {
-            debug(arena, "[CTF] committing end: " + arenaTeam);
-            debug(arena, "win: " + win);
+    @Override
+    public void commitEnd(boolean force) {
+        if (this.arena.realEndRunner == null) {
+            debug(this.arena, "[CTF] committing end");
 
-            ArenaTeam winTeam = null;
-            for (ArenaTeam team : arena.getTeams()) {
-                if (team.equals(arenaTeam) == win) {
-                    continue;
-                }
-                for (ArenaPlayer arenaPlayer : team.getTeamMembers()) {
-                    arenaPlayer.setStatus(PlayerStatus.LOST);
-                }
-            }
-            for (ArenaTeam team : arena.getTeams()) {
-                for (ArenaPlayer arenaPlayer : team.getTeamMembers()) {
-                    if (arenaPlayer.getStatus() != PlayerStatus.FIGHT) {
-                        continue;
-                    }
-                    winTeam = team;
-                    break;
-                }
-            }
+            // We have to handle case of forced stop
+            ArenaTeam winTeam = this.getTeamLifeMap().entrySet().stream()
+                    .filter(entry -> TeamManager.getActiveTeams(this.arena).contains(entry.getKey()))
+                    .max(Comparator.comparingInt(Map.Entry::getValue))
+                    .map(Map.Entry::getKey)
+                    .orElse(null);
+
 
             if (winTeam != null) {
 
-                ArenaModuleManager
-                        .announce(
-                                arena,
-                                Language.parse(MSG.TEAM_HAS_WON,
-                                        winTeam.getColor()
-                                                + winTeam.getName() + ChatColor.YELLOW),
-                                "WINNER");
-                arena.broadcast(Language.parse(MSG.TEAM_HAS_WON,
-                        winTeam.getColor() + winTeam.getName()
-                                + ChatColor.YELLOW));
-            }
+                this.arena.addWinner(winTeam.getName());
+                ArenaModuleManager.announce(this.arena, Language.parse(MSG.TEAM_HAS_WON, winTeam.getColoredName()), "WINNER");
+                this.arena.broadcast(Language.parse(MSG.TEAM_HAS_WON, winTeam.getColoredName()));
 
-            this.getTeamLifeMap().clear();
-            new EndRunnable(arena, arena.getConfig().getInt(CFG.TIME_ENDCOUNTDOWN));
+                this.getTeamLifeMap().clear();
+                ArenaModuleManager.commitEnd(this.arena, winTeam, null);
+                new EndRunnable(this.arena, this.arena.getConfig().getInt(CFG.TIME_ENDCOUNTDOWN));
+            }
         } else {
-            debug(arena, "[CTF] already ending");
+            debug(this.arena, "[CTF] already ending");
+        }
+    }
+
+    protected void commit(final Arena arena, final ArenaTeam arenaTeam) {
+        debug(arena, "[CTF] committing end: " + arenaTeam);
+
+        for (ArenaTeam team : arena.getTeams()) {
+            if (!team.equals(arenaTeam)) {
+                continue;
+            }
+            for (ArenaPlayer arenaPlayer : team.getTeamMembers()) {
+                arenaPlayer.setStatus(PlayerStatus.LOST);
+            }
         }
 
+        WorkflowManager.handleEnd(this.arena, false);
     }
 
     @Override
@@ -635,7 +591,7 @@ public abstract class AbstractFlagGoal extends ArenaGoal {
                 this.getTeamLifeMap().put(team, iLives);
             } else {
                 this.getTeamLifeMap().remove(team);
-                this.commit(arena, team, false);
+                this.commit(arena, team);
             }
         }
     }

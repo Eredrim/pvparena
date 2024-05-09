@@ -215,10 +215,11 @@ public abstract class ArenaModule implements IArenaCommandHandler {
     /**
      * commit the arena end
      *
-     * @param aTeam the arena team triggering the end
+     * @param aTeam       the arena team triggering the end
+     * @param arenaPlayer the arena player triggering the end (FFA only)
      * @return true if the arena has ended
      */
-    public boolean commitEnd(final ArenaTeam aTeam) {
+    public boolean commitEnd(ArenaTeam aTeam, ArenaPlayer arenaPlayer) {
         return false;
     }
 
@@ -285,7 +286,7 @@ public abstract class ArenaModule implements IArenaCommandHandler {
      *
      * @param player the player being given rewards
      */
-    public void giveRewards(final Player player) {
+    public void giveRewards(final ArenaPlayer player) {
     }
 
     /**

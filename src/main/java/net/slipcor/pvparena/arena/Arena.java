@@ -25,6 +25,7 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -56,6 +57,7 @@ public class Arena {
     private final Set<PAClassSign> signs = new HashSet<>();
     private final Set<ArenaTeam> teams = new HashSet<>();
     private final Set<String> playedPlayers = new HashSet<>();
+    private final Set<String> winners = new HashSet<>();
 
     private Set<PABlock> blocks = new HashSet<>();
     private Set<PASpawn> spawns = new HashSet<>();
@@ -79,8 +81,6 @@ public class Arena {
     public BukkitRunnable pvpRunner;
     public BukkitRunnable realEndRunner;
     public BukkitRunnable startRunner;
-
-    private boolean gaveRewards;
 
     private Config config;
     private long startTime;
@@ -341,6 +341,26 @@ public class Arena {
         this.startTime = System.currentTimeMillis();
     }
 
+    public void addWinner(String winner) {
+        this.winners.add(winner);
+    }
+
+    public void setWinners(Collection<String> winners) {
+        this.winners.clear();
+        this.winners.addAll(winners);
+    }
+
+    public Set<String> getWinners() {
+        return this.winners;
+    }
+
+    private boolean isWinner(ArenaPlayer arenaPlayer) {
+        if (this.goal.isFreeForAll()) {
+            return this.winners.contains(arenaPlayer.getName());
+        }
+        return this.winners.contains(arenaPlayer.getArenaTeam().getName());
+    }
+
     public boolean isValid() {
         return this.valid;
     }
@@ -508,26 +528,22 @@ public class Arena {
     /**
      * give customized rewards to players
      *
-     * @param player the player to give the reward
+     * @param arenaPlayer the arenaPlayer to give the reward
      */
-    public void giveRewards(final Player player) {
-        if (this.gaveRewards) {
-            return;
-        }
+    public void giveRewards(final ArenaPlayer arenaPlayer) {
+        debug(arenaPlayer, "giving rewards to " + arenaPlayer.getName());
 
-        debug(this, player, "giving rewards to " + player.getName());
-
-        ArenaModuleManager.giveRewards(this, player);
+        ArenaModuleManager.giveRewards(this, arenaPlayer);
         ItemStack[] items = this.config.getItems(CFG.ITEMS_REWARDS);
 
         final boolean isRandom = this.config.getBoolean(CFG.ITEMS_RANDOMREWARD);
         final Random rRandom = new Random();
 
-        final PAWinEvent dEvent = new PAWinEvent(this, player, items);
+        final PAWinEvent dEvent = new PAWinEvent(this, arenaPlayer.getPlayer(), items);
         Bukkit.getPluginManager().callEvent(dEvent);
         items = dEvent.getItems();
 
-        debug(this, player, "start " + this.startCount + " - minplayers: " + this.config.getInt(CFG.ITEMS_MINPLAYERSFORREWARD));
+        debug(arenaPlayer, "start " + this.startCount + " - minplayers: " + this.config.getInt(CFG.ITEMS_MINPLAYERSFORREWARD));
 
         if (items == null || items.length < 1
                 || this.config.getInt(CFG.ITEMS_MINPLAYERSFORREWARD) > this.startCount) {
@@ -550,10 +566,10 @@ public class Arena {
                 continue;
             }
             try {
-                player.getInventory().setItem(
-                        player.getInventory().firstEmpty(), stack);
+                Inventory playerInv = arenaPlayer.getPlayer().getInventory();
+                playerInv.setItem(playerInv.firstEmpty(), stack);
             } catch (final Exception e) {
-                this.msg(player, MSG.ERROR_INVENTORY_FULL);
+                this.msg(arenaPlayer.getPlayer(), MSG.ERROR_INVENTORY_FULL);
                 return;
             }
         }
@@ -906,37 +922,21 @@ public class Arena {
             }
         }
 
-        // pre-parsing for "whole team winning"
-        for (ArenaPlayer arenaPlayer : players) {
-            if (arenaPlayer.getStatus() != null && arenaPlayer.getStatus() == PlayerStatus.FIGHT) {
-                if (!force && arenaPlayer.getStatus() == PlayerStatus.FIGHT
-                        && this.fightInProgress && !this.gaveRewards && !this.isFreeForAll() && this.config.getBoolean(CFG.USES_TEAMREWARDS)) {
-                    players.removeAll(arenaPlayer.getArenaTeam().getTeamMembers());
-                    this.giveRewardsLater(arenaPlayer.getArenaTeam()); // this removes the players from the arena
-                    break;
-                }
-            }
-        }
-
         for (ArenaPlayer arenaPlayer : players) {
 
             arenaPlayer.debugPrint();
-            if (arenaPlayer.getStatus() != null && arenaPlayer.getStatus() == PlayerStatus.FIGHT) {
+            if (arenaPlayer.getStatus() != null && this.isWinner(arenaPlayer)) {
                 // TODO enhance wannabe-smart exploit fix for people that
                 // spam join and leave the arena to make one of them win
                 final Player player = arenaPlayer.getPlayer();
-                if (!force) {
+                if (!force && this.fightInProgress) {
+                    // if we are remaining, give reward!
                     arenaPlayer.getStats().incWins();
+                    this.giveRewards(arenaPlayer);
                 }
                 this.callExitEvent(player);
-                this.resetPlayer(arenaPlayer, this.config.getString(CFG.TP_WIN, OLD),
-                        false, force);
-                if (!force && arenaPlayer.getStatus() == PlayerStatus.FIGHT && this.fightInProgress && !this.gaveRewards) {
-                    // if we are remaining, give reward!
-                    this.giveRewards(player);
-                }
-            } else if (arenaPlayer.getStatus() == PlayerStatus.DEAD || arenaPlayer.getStatus() == PlayerStatus.LOST) {
-
+                this.resetPlayer(arenaPlayer, this.config.getString(CFG.TP_WIN, OLD), false, force);
+            } else {
                 final PALoseEvent loseEvent = new PALoseEvent(this, arenaPlayer.getPlayer());
                 Bukkit.getPluginManager().callEvent(loseEvent);
 
@@ -945,9 +945,6 @@ public class Arena {
                     arenaPlayer.getStats().incLosses();
                 }
                 this.callExitEvent(player);
-                this.resetPlayer(arenaPlayer, this.config.getString(CFG.TP_LOSE, OLD), false, force);
-            } else {
-                this.callExitEvent(arenaPlayer.getPlayer());
                 this.resetPlayer(arenaPlayer, this.config.getString(CFG.TP_LOSE, OLD), false, force);
             }
 
@@ -962,38 +959,6 @@ public class Arena {
                 player.reset();
             }
         }
-    }
-
-    private void giveRewardsLater(final ArenaTeam arenaTeam) {
-        debug("Giving rewards to the whole team!");
-        if (arenaTeam == null) {
-            debug("team is null");
-            return; // this one failed. try next time...
-        }
-
-        final Set<ArenaPlayer> players = new HashSet<>(arenaTeam.getTeamMembers());
-
-        players.forEach(ap -> {
-            ap.getStats().incWins();
-            this.callExitEvent(ap.getPlayer());
-            this.resetPlayer(ap, this.config.getString(CFG.TP_WIN, OLD), false, false);
-            ap.reset();
-        });
-
-        debug("Giving rewards to team " + arenaTeam.getName() + '!');
-
-        Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), () -> {
-            players.forEach(ap -> {
-                debug("Giving rewards to " + ap.getPlayer().getName() + '!');
-                try {
-                    Arena.this.giveRewards(ap.getPlayer());
-                } catch (final Exception e) {
-                    e.printStackTrace();
-                }
-            });
-            Arena.this.gaveRewards = true;
-        }, 1L);
-
     }
 
     /**
@@ -1116,8 +1081,9 @@ public class Arena {
                 this.getScoreboard().show();
             }
         }
-        this.gaveRewards = false;
         this.startRunner = null;
+        this.winners.clear();
+
         if (this.fightInProgress) {
             debug(this, "already in progress! OUT!");
             return;

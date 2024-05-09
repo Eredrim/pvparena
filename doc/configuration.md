@@ -56,7 +56,6 @@ uses:
   scoreboard: false #Display built-in scoreboard
   showNametags: true #Show nametags of all players. If false, nametags will be hidden of other teams
   suicidepunish: false #Increase other players score if someone commits suicide
-  teamrewards: false #Give reward to the whole winning team
   teleportonkill: false #Respawn KILLER after a kill
   woolHead: false #Use a colored wool block as helmet
 perms:

@@ -3,11 +3,13 @@ package net.slipcor.pvparena.loadables;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaClass;
+import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PABlock;
 import net.slipcor.pvparena.classes.PADeathInfo;
 import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.exceptions.GameplayException;
+import net.slipcor.pvparena.exceptions.GameplayRuntimeException;
 import net.slipcor.pvparena.loader.JarLoader;
 import net.slipcor.pvparena.loader.Loadable;
 import net.slipcor.pvparena.modules.BattlefieldJoin;
@@ -118,9 +120,9 @@ public class ArenaModuleManager {
         return null;
     }
 
-    public static boolean commitEnd(final Arena arena, final ArenaTeam aTeam) {
+    public static boolean commitEnd(Arena arena, ArenaTeam aTeam, ArenaPlayer aPlayer) {
         for (ArenaModule mod : arena.getMods()) {
-            if (mod.commitEnd(aTeam)) {
+            if (mod.commitEnd(aTeam, aPlayer)) {
                 return true;
             }
         }
@@ -133,7 +135,7 @@ public class ArenaModuleManager {
         }
     }
 
-    public static void giveRewards(final Arena arena, final Player player) {
+    public static void giveRewards(final Arena arena, final ArenaPlayer player) {
         for (ArenaModule mod : arena.getMods()) {
             mod.giveRewards(player);
         }
@@ -339,6 +341,8 @@ public class ArenaModuleManager {
         } catch (ReflectiveOperationException e) {
             PVPArena.getInstance().getLogger().severe(String.format("Mod '%s' seems corrupted", name));
             e.printStackTrace();
+        } catch (GameplayRuntimeException e) {
+            PVPArena.getInstance().getLogger().severe(e.getMessage());
         }
         return null;
     }

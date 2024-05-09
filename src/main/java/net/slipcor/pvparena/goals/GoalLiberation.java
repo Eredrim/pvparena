@@ -301,10 +301,11 @@ public class GoalLiberation extends ArenaGoal {
                 );
 
                 this.arena.broadcast(Language.parse(MSG.TEAM_HAS_WON, arenaTeam.getColoredName()));
+                this.arena.addWinner(arenaTeam.getName());
                 break;
             }
 
-            if (ArenaModuleManager.commitEnd(this.arena, arenaTeam)) {
+            if (ArenaModuleManager.commitEnd(this.arena, arenaTeam, null)) {
                 return;
             }
         }

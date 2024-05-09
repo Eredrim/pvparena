@@ -34,7 +34,8 @@ public abstract class AbstractPlayerLivesGoal extends ArenaGoal {
         return pos > 1;
     }
 
-    protected abstract void broadcastEndMessagesIfNeeded(ArenaTeam teamToCheck);
+    protected abstract void setWinnerAndBroadcastEndMessages(ArenaTeam teamToCheck);
+    protected abstract ArenaPlayer getWinningPlayerIfNeeded(ArenaTeam teamToCheck);
 
     @Override
     public void commitEnd(final boolean force) {
@@ -49,9 +50,10 @@ public abstract class AbstractPlayerLivesGoal extends ArenaGoal {
         Bukkit.getPluginManager().callEvent(gEvent);
 
         for (ArenaTeam arenaTeam : this.arena.getNotEmptyTeams()) {
-            this.broadcastEndMessagesIfNeeded(arenaTeam);
+            this.setWinnerAndBroadcastEndMessages(arenaTeam);
+            ArenaPlayer maybeWinningPlayer = this.getWinningPlayerIfNeeded(arenaTeam);
 
-            if (ArenaModuleManager.commitEnd(this.arena, arenaTeam)) {
+            if (ArenaModuleManager.commitEnd(this.arena, arenaTeam, maybeWinningPlayer)) {
                 if (this.arena.realEndRunner == null) {
                     this.endRunner = new EndRunnable(this.arena, this.arena.getConfig().getInt(
                             CFG.TIME_ENDCOUNTDOWN));

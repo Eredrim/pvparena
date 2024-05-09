@@ -57,7 +57,7 @@ public class GoalPlayerLives extends AbstractPlayerLivesGoal {
     }
 
     @Override
-    protected void broadcastEndMessagesIfNeeded(ArenaTeam teamToCheck) {
+    protected void setWinnerAndBroadcastEndMessages(ArenaTeam teamToCheck) {
         for (ArenaPlayer arenaPlayer : teamToCheck.getTeamMembers()) {
             if (arenaPlayer.getStatus() == PlayerStatus.FIGHT) {
                 ArenaModuleManager.announce(this.arena,
@@ -68,8 +68,20 @@ public class GoalPlayerLives extends AbstractPlayerLivesGoal {
                         "WINNER");
 
                 this.arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON, arenaPlayer.getName()));
+                this.arena.addWinner(arenaPlayer.getName());
+                break;
             }
         }
+    }
+
+    @Override
+    protected ArenaPlayer getWinningPlayerIfNeeded(ArenaTeam teamToCheck) {
+        for (ArenaPlayer arenaPlayer : teamToCheck.getTeamMembers()) {
+            if (arenaPlayer.getStatus() == PlayerStatus.FIGHT) {
+                return arenaPlayer;
+            }
+        }
+        return null;
     }
 
     @Override

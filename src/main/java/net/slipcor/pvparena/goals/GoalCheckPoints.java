@@ -190,6 +190,7 @@ public class GoalCheckPoints extends ArenaGoal {
                             "WINNER");
             arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON,
                     winner.getName()));
+            this.arena.addWinner(winner.getName());
         }
 
         this.getPlayerLifeMap().clear();
@@ -270,9 +271,10 @@ public class GoalCheckPoints extends ArenaGoal {
                     this.arena,
                     Language.parse(MSG.PLAYER_HAS_WON, arenaPlayer.getName()), "WINNER");
             this.arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON, arenaPlayer.getName()));
+            this.arena.addWinner(arenaPlayer.getName());
         }
 
-        if (arenaPlayer != null && ArenaModuleManager.commitEnd(this.arena, arenaPlayer.getArenaTeam())) {
+        if (arenaPlayer != null && ArenaModuleManager.commitEnd(this.arena, arenaPlayer.getArenaTeam(), arenaPlayer)) {
             return;
         }
         new EndRunnable(this.arena, this.arena.getConfig().getInt(CFG.TIME_ENDCOUNTDOWN));

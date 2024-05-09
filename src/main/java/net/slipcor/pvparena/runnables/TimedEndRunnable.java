@@ -69,10 +69,11 @@ public class TimedEndRunnable extends ArenaRunnable {
         Map<String, Double> scores = this.arena.getGoal().timedEnd(new HashMap<>());
         debug(this.arena, "scores: " + this.arena.getGoal().getName());
 
-        final Set<String> winners = new HashSet<>();
+        Set<String> computedWinners = new HashSet<>();
+        Set<String> finalWinners = new HashSet<>();
 
         if (this.arena.isFreeForAll() && this.arena.getTeams().size() <= 1) {
-            winners.add("free");
+            computedWinners.add("free");
             debug(this.arena, "adding FREE");
         } else if (this.arena.getConfig().getDefinedString(Config.CFG.GENERAL_TIMER_WINNER) == null) {
             // check all teams
@@ -86,11 +87,11 @@ public class TimedEndRunnable extends ArenaRunnable {
 
                     if (teamScore > maxScore) {
                         maxScore = teamScore;
-                        winners.clear();
-                        winners.add(team);
+                        computedWinners.clear();
+                        computedWinners.add(team);
                         debug(this.arena, "clear and add team " + team);
                     } else if (teamScore == maxScore) {
-                        winners.add(team);
+                        computedWinners.add(team);
                         debug(this.arena, "add team " + team);
                     }
                 } else {
@@ -105,27 +106,27 @@ public class TimedEndRunnable extends ArenaRunnable {
                 neededTeams = 2;
             }
 
-            if (winners.size() >= neededTeams) {
-                debug(this.arena, "team of winners is too big: "+winners.size()+"!");
-                for (String s : winners) {
+            if (computedWinners.size() >= neededTeams) {
+                debug(this.arena, "team of computedWinners is too big: "+computedWinners.size()+"!");
+                for (String s : computedWinners) {
                     debug(this.arena, "- "+s);
                 }
-                debug(this.arena, "clearing winners!");
-                winners.clear(); // noone wins.
+                debug(this.arena, "clearing computedWinners!");
+                computedWinners.clear(); // noone wins.
             }
         } else {
-            winners.add(this.arena.getConfig().getString(Config.CFG.GENERAL_TIMER_WINNER));
+            computedWinners.add(this.arena.getConfig().getString(Config.CFG.GENERAL_TIMER_WINNER));
             debug(this.arena, "added winner!");
         }
 
-        if (winners.size() > 1) {
+        if (computedWinners.size() > 1) {
             debug(this.arena, "more than 1");
             final Set<String> preciseWinners = new HashSet<>();
 
             // several teams have max score!!
             double maxSum = 0;
             for (ArenaTeam team : this.arena.getTeams()) {
-                if (!winners.contains(team.getName())) {
+                if (!computedWinners.contains(team.getName())) {
                     continue;
                 }
 
@@ -149,8 +150,8 @@ public class TimedEndRunnable extends ArenaRunnable {
             }
 
             if (!preciseWinners.isEmpty()) {
-                winners.clear();
-                winners.addAll(preciseWinners);
+                computedWinners.clear();
+                computedWinners.addAll(preciseWinners);
             }
         }
 
@@ -159,7 +160,7 @@ public class TimedEndRunnable extends ArenaRunnable {
             final Set<String> preciseWinners = new HashSet<>();
 
             for (ArenaTeam team : this.arena.getTeams()) {
-                if (!winners.contains(team.getName())) {
+                if (!computedWinners.contains(team.getName())) {
                     continue;
                 }
 
@@ -181,14 +182,12 @@ public class TimedEndRunnable extends ArenaRunnable {
                     }
                 }
             }
-            winners.clear();
+            computedWinners.clear();
 
             if (preciseWinners.size() != this.arena.getPlayedPlayers().size()) {
-                winners.addAll(preciseWinners);
+                computedWinners.addAll(preciseWinners);
             }
         }
-
-        ArenaModuleManager.timedEnd(this.arena, winners);
 
         if (this.arena.isFreeForAll() && this.arena.getTeams().size() <= 1) {
             debug(this.arena, "FFA and <= 1!");
@@ -196,69 +195,43 @@ public class TimedEndRunnable extends ArenaRunnable {
                 final Set<ArenaPlayer> arenaPlayers = new HashSet<>(team.getTeamMembers());
 
                 for (ArenaPlayer arenaPlayer : arenaPlayers) {
-                    if (winners.isEmpty()) {
+                    if (computedWinners.isEmpty()) {
                         this.arena.removePlayer(arenaPlayer, this.arena.getConfig().getString(Config.CFG.TP_LOSE), true, false);
                     } else {
-                        if (winners.contains(arenaPlayer.getName())) {
-
-                            ArenaModuleManager.announce(
-                                    this.arena,
-                                    Language.parse(MSG.PLAYER_HAS_WON, arenaPlayer.getName()), WINNER);
-                            this.arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON,
-                                    arenaPlayer.getName()));
+                        if (computedWinners.contains(arenaPlayer.getName())) {
+                            ArenaModuleManager.announce(this.arena, Language.parse(MSG.PLAYER_HAS_WON, arenaPlayer.getName()), WINNER);
+                            this.arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON, arenaPlayer.getName()));
+                            finalWinners.add(arenaPlayer.getName());
                         } else {
-                            if (arenaPlayer.getStatus() != PlayerStatus.FIGHT) {
-                                continue;
+                            if (arenaPlayer.getStatus() == PlayerStatus.FIGHT || arenaPlayer.getStatus() == PlayerStatus.DEAD) {
+                                arenaPlayer.setStatus(PlayerStatus.LOST);
                             }
-                            arenaPlayer.getStats().incLosses();
-                            arenaPlayer.setStatus(PlayerStatus.LOST);
                         }
                     }
                 }
             }
-            if (winners.isEmpty()) {
+            if (computedWinners.isEmpty()) {
                 ArenaModuleManager.announce(this.arena, Language.parse(MSG.FIGHT_DRAW), WINNER);
                 this.arena.broadcast(Language.parse(MSG.FIGHT_DRAW));
             }
-        } else if (!winners.isEmpty()) {
+        } else if (!computedWinners.isEmpty()) {
 
             boolean hasBroadcasted = false;
             for (ArenaTeam team : this.arena.getTeams()) {
-                if (winners.contains(team.getName())) {
+                if (computedWinners.contains(team.getName())) {
                     if (!hasBroadcasted) {
-                        ArenaModuleManager.announce(
-                                this.arena,
-                                Language.parse(MSG.TEAM_HAS_WON,
-                                        team.getName()), WINNER);
-                        this.arena.broadcast(Language.parse(MSG.TEAM_HAS_WON,
-                                team.getColor() + team.getName()));
+                        ArenaModuleManager.announce(this.arena, Language.parse(MSG.TEAM_HAS_WON, team.getName()), WINNER);
+                        this.arena.broadcast(Language.parse(MSG.TEAM_HAS_WON, team.getColor() + team.getName()));
                         hasBroadcasted = true;
+                        finalWinners.add(team.getName());
                     }
                 } else {
 
                     final Set<ArenaPlayer> apSet = new HashSet<>(team.getTeamMembers());
                     for (ArenaPlayer p : apSet) {
-                        if (p.getStatus() != PlayerStatus.FIGHT) {
+                        if (p.getStatus() != PlayerStatus.FIGHT || p.getStatus() != PlayerStatus.DEAD) {
                             continue;
                         }
-                        p.getStats().incLosses();
-                        if (!hasBroadcasted) {
-                            for (String winTeam : winners) {
-                                ArenaModuleManager.announce(this.arena, Language
-                                        .parse(MSG.TEAM_HAS_WON, winTeam), WINNER);
-
-                                final ArenaTeam winningTeam = this.arena.getTeam(winTeam);
-
-                                if (winningTeam != null) {
-                                    this.arena.broadcast(Language.parse(MSG.TEAM_HAS_WON,
-                                            winningTeam.getColor() + winTeam));
-                                } else {
-                                    PVPArena.getInstance().getLogger().severe("Winning team is NULL: " + winTeam);
-                                }
-                            }
-                            hasBroadcasted = true;
-                        }
-
                         p.setStatus(PlayerStatus.LOST);
                     }
                 }
@@ -267,6 +240,9 @@ public class TimedEndRunnable extends ArenaRunnable {
             ArenaModuleManager.announce(this.arena, Language.parse(MSG.FIGHT_DRAW), WINNER);
             this.arena.broadcast(Language.parse(MSG.FIGHT_DRAW));
         }
+
+        this.arena.setWinners(finalWinners);
+        ArenaModuleManager.timedEnd(this.arena, finalWinners);
 
         debug(this.arena, "resetting arena!");
 

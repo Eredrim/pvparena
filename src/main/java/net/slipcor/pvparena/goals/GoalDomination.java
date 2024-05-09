@@ -456,6 +456,7 @@ public class GoalDomination extends ArenaGoal {
             arena.broadcast(Language.parse(MSG.TEAM_HAS_WON,
                     winteam.getColor() + winteam.getName()
                             + ChatColor.YELLOW));
+            this.arena.addWinner(winteam.getName());
         }
 
         this.getTeamLifeMap().clear();
@@ -531,9 +532,10 @@ public class GoalDomination extends ArenaGoal {
                             + aTeam.getName() + ChatColor.YELLOW), "WINNER");
             this.arena.broadcast(Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor()
                     + aTeam.getName() + ChatColor.YELLOW));
+            this.arena.addWinner(aTeam.getName());
         }
 
-        if (ArenaModuleManager.commitEnd(this.arena, aTeam)) {
+        if (ArenaModuleManager.commitEnd(this.arena, aTeam, null)) {
             return;
         }
         new EndRunnable(this.arena, this.arena.getConfig().getInt(

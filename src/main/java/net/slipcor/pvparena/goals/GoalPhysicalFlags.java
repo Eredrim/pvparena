@@ -192,8 +192,8 @@ public class GoalPhysicalFlags extends AbstractFlagGoal {
     }
 
     @Override
-    protected void commit(final Arena arena, final ArenaTeam arenaTeam, final boolean win) {
-        super.commit(arena, arenaTeam, win);
+    protected void commit(final Arena arena, final ArenaTeam arenaTeam) {
+        super.commit(arena, arenaTeam);
         this.getFlagDataMap().clear();
     }
 

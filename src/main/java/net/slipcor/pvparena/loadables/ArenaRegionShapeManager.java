@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.loadables;
 
 import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.exceptions.GameplayRuntimeException;
 import net.slipcor.pvparena.loader.JarLoader;
 import net.slipcor.pvparena.loader.Loadable;
 import net.slipcor.pvparena.regionshapes.CuboidRegion;
@@ -53,6 +54,8 @@ public class ArenaRegionShapeManager {
 
         } catch (ReflectiveOperationException e) {
             e.printStackTrace();
+        } catch (GameplayRuntimeException e) {
+            PVPArena.getInstance().getLogger().severe(e.getMessage());
         }
         return null;
     }

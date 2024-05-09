@@ -28,6 +28,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static net.slipcor.pvparena.config.Debugger.debug;
 
@@ -116,6 +117,7 @@ public class GoalTank extends ArenaGoal {
                             Language.parse(MSG.GOAL_TANK_TANKWON, ap.getName()), "WINNER");
 
                     this.arena.broadcast(Language.parse(MSG.GOAL_TANK_TANKWON, ap.getName()));
+                    this.arena.addWinner(ap.getName());
                 } else {
 
                     ArenaModuleManager.announce(this.arena,
@@ -124,10 +126,15 @@ public class GoalTank extends ArenaGoal {
                             Language.parse(MSG.GOAL_TANK_TANKDOWN), "LOSER");
 
                     this.arena.broadcast(Language.parse(MSG.GOAL_TANK_TANKDOWN));
+                    Set<String> winnerNameList = this.arena.getFighters().stream()
+                            .map(ArenaPlayer::getName)
+                            .filter(apName -> !this.tank.getName().equals(apName))
+                            .collect(Collectors.toSet());
+                    this.arena.setWinners(winnerNameList);
                 }
             }
 
-            if (ArenaModuleManager.commitEnd(this.arena, team)) {
+            if (ArenaModuleManager.commitEnd(this.arena, team, null)) {
                 return;
             }
         }
