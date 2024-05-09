@@ -54,20 +54,22 @@ public final class SpawnManager {
     private SpawnManager() {
     }
 
+    /**
+     * Method used to spawn a new player during a match or to respawn a player
+     * @param arena The arena which handle the game
+     * @param arenaPlayer The player to spawn
+     */
     public static void distributePlayer(Arena arena, ArenaPlayer arenaPlayer) {
         Set<ArenaRegion> arenaRegions = arena.getRegionsByType(RegionType.SPAWN);
 
         if (!arenaRegions.isEmpty()) {
             placeInsideSpawnRegions(arena, Collections.singleton(arenaPlayer), arenaRegions);
 
-        } else if (arena.getConfig().getBoolean(CFG.GENERAL_QUICK_SPAWN)) {
-            quickSpawn(arena, Collections.singleton(arenaPlayer), arenaPlayer.getArenaTeam());
-
         } else if (arena.getConfig().getBoolean(CFG.GENERAL_SMART_SPAWN)) {
-            distributeSmart(arena, Collections.singleton(arenaPlayer), arenaPlayer.getArenaTeam());
+            spawnPlayerSmartly(arena, arenaPlayer, arenaPlayer.getArenaTeam());
 
         } else {
-            distributeByOrder(arena, Collections.singleton(arenaPlayer), arenaPlayer.getArenaTeam());
+            quickSpawn(arena, Collections.singleton(arenaPlayer), arenaPlayer.getArenaTeam());
         }
     }
 
@@ -175,8 +177,7 @@ public final class SpawnManager {
      * @param arenaPlayers players
      * @param arenaTeam    team
      */
-    public static void distributeSmart(Arena arena,
-                                       Set<ArenaPlayer> arenaPlayers, ArenaTeam arenaTeam) {
+    public static void distributeSmart(Arena arena, Set<ArenaPlayer> arenaPlayers, ArenaTeam arenaTeam) {
         debug(arena, "distributing smart-ish");
         if (CollectionUtils.isEmpty(arenaPlayers)) {
             return;
@@ -235,6 +236,61 @@ public final class SpawnManager {
     }
 
     /**
+     * Spawn a player as far as possible from other players of its team.
+     * For FFA, from other players of the free team (i.e. everyone)
+     * @param arena The applicable arena
+     * @param arenaPlayer The player to (re)spawn
+     * @param arenaTeam The player team to use
+     */
+    public static void spawnPlayerSmartly(Arena arena, ArenaPlayer arenaPlayer, ArenaTeam arenaTeam) {
+        debug(arena, "(re)spawn smart-ish");
+
+        Set<PASpawn> availableSpawns = selectSpawnsForTeam(arena, arenaTeam, FIGHT);
+        List<PALocation> playersLocation = arenaTeam.getTeamMembers().stream()
+                .filter(ap -> !ap.equals(arenaPlayer))
+                .filter(ap -> ap.getStatus() == PlayerStatus.FIGHT)
+                .map(ArenaPlayer::getLocation)
+                .collect(Collectors.toList());
+
+
+        double xSum = 0;
+        double ySum = 0;
+        double zSum = 0;
+        int posNumber = playersLocation.size();
+
+        for(PALocation loc : playersLocation) {
+            xSum += loc.getX();
+            ySum += loc.getY();
+            zSum += loc.getZ();
+        }
+
+        PALocation otherPlayersCentroid = new PALocation(new Location(arena.getWorld(), xSum / posNumber, ySum / posNumber, zSum / posNumber));
+
+        PASpawn fartherSpawn = availableSpawns.stream()
+                .max(Comparator.comparingDouble(paSpawn -> paSpawn.getPALocation().getDistanceSquared(otherPlayersCentroid)))
+                .get();
+
+        class TeleportLater extends BukkitRunnable {
+            private final PASpawn spawn;
+            private final ArenaPlayer arenaPlayer;
+
+            TeleportLater(ArenaPlayer arenaPlayer, PASpawn spawn) {
+                this.arenaPlayer = arenaPlayer;
+                this.spawn = spawn;
+            }
+
+            @Override
+            public void run() {
+                this.arenaPlayer.setStatus(PlayerStatus.FIGHT);
+                TeleportManager.teleportPlayerToSpawn(arena, this.arenaPlayer, this.spawn);
+            }
+
+        }
+
+        new TeleportLater(arenaPlayer, fartherSpawn).runTaskLater(PVPArena.getInstance(), 1L);
+    }
+
+    /**
      * Get spawn as far as possible of others spawns already taken
      *
      * @param takenSpawns     spawn already taken
@@ -259,8 +315,7 @@ public final class SpawnManager {
             for (int index = 0; index < takenSpawns.length && takenSpawns[index] != null; index++) {
                 for (PASpawn totalSpawn : totalSpawns) {
                     for (PASpawn availableSpawn : availableSpawns) {
-                        if (totalSpawn.equals(takenSpawns[index])
-                                && availableSpawn.equals(spawn)) {
+                        if (totalSpawn.equals(takenSpawns[index]) && availableSpawn.equals(spawn)) {
                             tempDiff += totalSpawn.getPALocation().getDistanceSquared(availableSpawn.getPALocation());
                             trace(">> tempDiff: {}", tempDiff);
                         }

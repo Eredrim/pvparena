@@ -33,7 +33,7 @@ general:
   regionclearexceptions: [] #List of regions where entities are not cleared after the match
   quickspawn: true #Spawn all players at the same time (tick). If false, spawn player one by one.
   showRemainingLives: true #Brodcast remaining lives in chat after each kill
-  smartspawn: true #Spread players on spawn points in a balanced way
+  smartspawn: true #Spread players on spawn points in a balanced way, i.e. as far apart from each other as possible
   timer:
     end: 0 #Time limit for the arena (in seconds), set to 0 to disable it
     winner: none #Winner team when time limit is reached
