@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static java.util.stream.Collectors.toList;
@@ -261,6 +262,7 @@ public final class ConfigurationManager {
      * @param cfg   config
      */
     private static void createNewConfig(Arena arena, Config cfg) {
+        cfg.set(Config.CFG.ID, UUID.randomUUID().toString());
         cfg.set(Config.CFG.GENERAL_PREFIX, arena.getName());
         List<String> modules = arena.getMods().stream()
                 .map(ArenaModule::getName)
