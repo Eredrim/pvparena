@@ -24,10 +24,11 @@ Installation of this module can be done in a normal way. You'll find installatio
 - **conditions.minPlayers** \- minimum of players to get a reward - leaving players are not counted (default: 2)
 
 
-- **reward.death** \- reward a player get when they die (default: 0)
-- **reward.kill** \- reward a player get when they kill another player (default: 0)
-- **reward.win** \- reward a player get when they or their team win the game. For [team goals](../goals.md), each player of the winning 
-team earn this amount. (default: 0)
+- **reward.death** \- reward a player when they die (default: 0)
+- **reward.kill** \- reward a player when they kill another player (default: 0)
+- **reward.win** \- reward a player when they or their team win the game. For [team goals](../goals.md), each player of the winning 
+  team earn this amount. (default: 0)
+- **reward.score** \- reward a player when they or their make actions to score points/lives/kills for the goal. (default: 0 - 🚧 incomplete feature)
 - **reward.winFactor** \- if `conditions.winFeePot` is enabled, defines how much the won share of the fee pot will be multiplied (default: 1)
 
 
@@ -41,7 +42,7 @@ team earn this amount. (default: 0)
 
 - `/pa [arena] bet [name] [amount]` \- bet [amount] on team / player. 
 
-**NB:** Betting features are only accessible for players that are not play the match (obviously).
+**NB:** Betting features are only accessible for players that are not playing the match (obviously).
 
 > 🚩 **Tips:**
 > * This command is only available when `bet.enabled` is set to `true`
