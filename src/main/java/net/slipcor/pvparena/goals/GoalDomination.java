@@ -640,6 +640,7 @@ public class GoalDomination extends ArenaGoal {
             final int score = arena.getConfig().getInt(CFG.GOAL_DOM_TICKREWARD);
             final int iLives = this.getTeamLifeMap().get(arenaTeam) - score;
 
+            // TODO: improve to handle player(s) in the radius of the newly claimed flag
             final PAGoalScoreEvent gEvent = new PAGoalScoreEvent(arena, this, null, arenaTeam, (long) score);
             Bukkit.getPluginManager().callEvent(gEvent);
 
