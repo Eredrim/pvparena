@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static net.slipcor.pvparena.config.Debugger.debug;
+import static net.slipcor.pvparena.core.Config.CFG;
 
 public class GoalTeamPlayerLives extends AbstractPlayerLivesGoal {
 
@@ -61,6 +62,11 @@ public class GoalTeamPlayerLives extends AbstractPlayerLivesGoal {
     @Override
     protected ArenaPlayer getWinningPlayerIfNeeded(ArenaTeam teamToCheck) {
         return null;
+    }
+
+    @Override
+    protected int getLivesConfigValue() {
+        return this.arena.getConfig().getInt(CFG.GOAL_TPLIVES_LIVES);
     }
 
     @Override

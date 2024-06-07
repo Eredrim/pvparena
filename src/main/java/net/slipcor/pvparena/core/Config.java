@@ -241,6 +241,7 @@ public class Config {
         GOAL_PFLAGS_FLAGEFFECT("goal.physicalflags.effect", "none", "PhysicalFlags"),
 
         GOAL_PLIVES_LIVES("goal.playerlives.plives", 3, "PlayerLives"),
+        GOAL_TPLIVES_LIVES("goal.teamplayerlives.plives", 3, "TeamPlayerLives"),
         GOAL_TANK_LIVES("goal.tank.tlives", 1, "Tank"),
         GOAL_TDC_LIVES("goal.teamdc.tdclives", 10, "TeamDeathConfirm"),
         GOAL_TDC_ITEM("goal.teamdc.tdcitem", Material.WHITE_WOOL, "TeamDeathConfirm"),

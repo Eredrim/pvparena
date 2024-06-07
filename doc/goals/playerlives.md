@@ -16,4 +16,4 @@ There is no special setup.
 
 ## Config settings
 
-- `plives` \- the amount of lives a player has before being removed out of the arena (default: 3)
+- `playerlives.plives` \- the amount of lives a player has before being removed out of the arena (default: 3)

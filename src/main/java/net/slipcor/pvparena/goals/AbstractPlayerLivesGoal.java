@@ -6,7 +6,6 @@ import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PADeathInfo;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language.MSG;
-
 import net.slipcor.pvparena.events.goal.PAGoalEndEvent;
 import net.slipcor.pvparena.events.goal.PAGoalPlayerDeathEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
@@ -36,6 +35,7 @@ public abstract class AbstractPlayerLivesGoal extends ArenaGoal {
 
     protected abstract void setWinnerAndBroadcastEndMessages(ArenaTeam teamToCheck);
     protected abstract ArenaPlayer getWinningPlayerIfNeeded(ArenaTeam teamToCheck);
+    protected abstract int getLivesConfigValue();
 
     @Override
     public void commitEnd(final boolean force) {
@@ -104,12 +104,12 @@ public abstract class AbstractPlayerLivesGoal extends ArenaGoal {
 
     @Override
     public void displayInfo(final CommandSender sender) {
-        sender.sendMessage("lives: " + this.arena.getConfig().getInt(CFG.GOAL_PLIVES_LIVES));
+        sender.sendMessage("lives: " + this.getLivesConfigValue());
     }
 
     @Override
     public void initiate(final ArenaPlayer arenaPlayer) {
-        this.updateLives(arenaPlayer, this.arena.getConfig().getInt(CFG.GOAL_PLIVES_LIVES));
+        this.updateLives(arenaPlayer, this.getLivesConfigValue());
     }
 
     @Override
@@ -125,7 +125,7 @@ public abstract class AbstractPlayerLivesGoal extends ArenaGoal {
     public void parseStart() {
         for (ArenaTeam team : this.arena.getTeams()) {
             for (ArenaPlayer ap : team.getTeamMembers()) {
-                this.updateLives(ap, this.arena.getConfig().getInt(CFG.GOAL_PLIVES_LIVES));
+                this.updateLives(ap, this.getLivesConfigValue());
             }
         }
     }

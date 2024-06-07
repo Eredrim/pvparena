@@ -5,6 +5,7 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.arena.PlayerStatus;
 import net.slipcor.pvparena.classes.PASpawn;
+import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
@@ -82,6 +83,11 @@ public class GoalPlayerLives extends AbstractPlayerLivesGoal {
             }
         }
         return null;
+    }
+
+    @Override
+    protected int getLivesConfigValue() {
+        return this.arena.getConfig().getInt(Config.CFG.GOAL_PLIVES_LIVES);
     }
 
     @Override
