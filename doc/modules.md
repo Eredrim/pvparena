@@ -53,7 +53,7 @@ Hook into many different aspects of the game!
 | [Vault](mods/vault.md)                             | add economy, money rewards and bet features                                                             |          | ✔️️    |
 | [Walls](mods/walls.md)                             | define wall regions to simulate "The Walls"                                                             |          | ⚠️     |
 | [WarmupJoin](mods/warmupjoin.md)                   | ???                                                                                                     | JOIN     | ⚠️     |
-| [WorldEdit](mods/worldedit.md)                     | backup/restore regions                                                                                  |          | ☑️     |
+| [WorldEdit](mods/worldedit.md)                     | backup/restore regions                                                                                  |          | ✔️️    |
 | [WorldGuard](mods/worldguard.md)                   | import region definitions from WorldGuard                                                               |          | ⚠️     |
 
 **Key :** ✔️️ Adapted and fully tested for 2.0 | ☑️ Fully works with previous PVPArena version, but not tested with 2.0 | ⚠️ Legacy modules, not tested for a while | ❌ Temporarily unavailable

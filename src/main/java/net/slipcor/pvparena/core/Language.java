@@ -724,9 +724,10 @@ public final class Language {
         MODULE_WALLS_SEPARATOR("nulang.mod.walls.separator", "--------------------"),
 
         MODULE_WORLDEDIT_CREATED("nulang.mod.worldedit.created", "Region created: &e%1%"),
-        MODULE_WORLDEDIT_LIST_ADDED("nulang.mod.worldedit.list_added", "Region &e%1%&f will now be specifically saved."),
-        MODULE_WORLDEDIT_LIST_REMOVED("nulang.mod.worldedit.list_removed", "Region &e%1%&f will no longer be specifically saved."),
-        MODULE_WORLDEDIT_LIST_SHOW("nulang.mod.worldedit.list_show", "These regions will be saved specifically: &e%1%&f"),
+        MODULE_WORLDEDIT_LIST_ADDED("nulang.mod.worldedit.list.added", "&e%1%&f has been added to region list."),
+        MODULE_WORLDEDIT_LIST_REMOVED("nulang.mod.worldedit.list.removed", "&e%1%&f has been removed from region list."),
+        MODULE_WORLDEDIT_LIST_SHOW("nulang.mod.worldedit.list.show", "These regions will be automatically saved or loaded (depending of autosave/autoload config): &e%1%&f"),
+        MODULE_WORLDEDIT_LIST_EMPTY("nulang.mod.worldedit.list.empty", "No region has been added to the list. So, all BATTLE regions will be saved or loaded instead (depending of autosave/autoload config)."),
         MODULE_WORLDEDIT_LOADED("nulang.mod.worldedit.loaded", "Region loaded: &e%1%"),
         MODULE_WORLDEDIT_SAVED("nulang.mod.worldedit.saved", "Region saved: &e%1%"),
 

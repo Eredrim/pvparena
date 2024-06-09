@@ -95,8 +95,7 @@ public class BlockListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockBreak(final BlockBreakEvent event) {
         debug(event.getPlayer(), "onBlockBreak");
-        if (this.willBeSkipped(event, event.getBlock().getLocation(),
-                RegionProtection.BREAK)) {
+        if (this.willBeSkipped(event, event.getBlock().getLocation(), RegionProtection.BREAK)) {
             debug(event.getPlayer(), "willbeskipped. GFYS!!!!");
             return;
         }
@@ -455,8 +454,7 @@ public class BlockListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockBreak(final HangingBreakEvent event) {
-        if (this.willBeSkipped(event, event.getEntity().getLocation(),
-                RegionProtection.PAINTING)) {
+        if (this.willBeSkipped(event, event.getEntity().getLocation(), RegionProtection.PAINTING)) {
             return;
         }
 

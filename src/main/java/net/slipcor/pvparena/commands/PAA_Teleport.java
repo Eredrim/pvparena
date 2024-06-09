@@ -16,6 +16,8 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * <pre>PVP Arena TELEPORT Command class</pre>
@@ -54,7 +56,10 @@ public class PAA_Teleport extends AbstractArenaCommand {
             PALocation loc = SpawnManager.getSpawnByExactName(arena, parsedSpawnName[0], parsedSpawnName[1], parsedSpawnName[2]);
 
             if(loc == null) {
-                throw new GameplayException(Language.parse(MSG.ERROR_SPAWN_UNKNOWN, String.join(" ", parsedSpawnName)));
+                String spawnNameForError = Arrays.stream(parsedSpawnName)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.joining(", "));
+                throw new GameplayException(Language.parse(MSG.ERROR_SPAWN_UNKNOWN, String.join(" ", spawnNameForError)));
             }
 
             ((Player) sender).teleport(loc.toLocation(), TeleportCause.PLUGIN);
