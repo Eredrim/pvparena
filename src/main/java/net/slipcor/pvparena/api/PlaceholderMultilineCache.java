@@ -81,8 +81,8 @@ public class PlaceholderMultilineCache {
      * @return list of interpreted placeholders
      */
     public List<String> getFreeForAllScore(PlaceholderArgs phArgs) {
-        String commonId = phArgs.getIdentifierUntil(2);
-        String accessKey = phArgs.getIdentifierUntil(3);
+        String commonId = phArgs.getIdentifierUntil(1);
+        String accessKey = phArgs.getIdentifierUntil(2);
         return ofNullable(this.cacheMap.get(accessKey))
                 .orElseGet(() -> {
                     Map<String, String> sortableMap = new HashMap<>();
@@ -117,8 +117,8 @@ public class PlaceholderMultilineCache {
      * @return list of interpreted placeholders
      */
     public List<String> getTeamsScore(PlaceholderArgs phArgs) {
-        String commonId = phArgs.getIdentifierUntil(2);
-        String accessKey = phArgs.getIdentifierUntil(3);
+        String commonId = phArgs.getIdentifierUntil(1);
+        String accessKey = phArgs.getIdentifierUntil(2);
         return ofNullable(this.cacheMap.get(accessKey))
                 .orElseGet(() -> {
                     Map<String, String> sortableMap = new HashMap<>();
@@ -135,7 +135,7 @@ public class PlaceholderMultilineCache {
                     sortableMap.entrySet().stream()
                             .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
                             .forEach(entry -> {
-                                scoreListCache.add(entry.getKey());
+                                teamListCache.add(entry.getKey());
                                 scoreListCache.add(entry.getValue());
                             });
                     this.cacheMap.put(scoreKey, scoreListCache);

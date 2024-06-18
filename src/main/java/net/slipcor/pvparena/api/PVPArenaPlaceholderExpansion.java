@@ -167,7 +167,7 @@ public class PVPArenaPlaceholderExpansion extends PlaceholderExpansion {
 
     private String getScorePlaceholder(PlaceholderArgs phArgs) {
         try {
-            int rowIndex = Integer.parseInt(phArgs.getArg(4));
+            int rowIndex = Integer.parseInt(phArgs.getArg(3));
             if(phArgs.getArena().getGoal().isFreeForAll()) {
                 return this.cache.getFreeForAllScore(phArgs).get(rowIndex);
             } else {
