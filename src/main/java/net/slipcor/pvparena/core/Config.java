@@ -185,6 +185,7 @@ public class Config {
 
         USES_CLASSSIGNSDISPLAY("uses.classSignsDisplay", false, null),
         USES_DEATHMESSAGES("uses.deathMessages", true, null),
+        USES_DEATH_EVENTS("uses.deathEvents", false, null),
         USES_EVENTEAMS("uses.evenTeams", false, null),
         USES_INGAMECLASSSWITCH("uses.ingameClassSwitch", false, null),
         USES_INVISIBILITYFIX("uses.invisibilityfix", false, null),

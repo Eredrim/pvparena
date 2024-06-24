@@ -26,6 +26,7 @@ import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -275,6 +276,11 @@ public class WorkflowManager {
             }
 
             handleRespawn(arenaPlayer, deathInfo, droppedInv);
+        }
+
+        if (arena.getConfig().getBoolean(CFG.USES_DEATH_EVENTS)) {
+            PlayerDeathEvent playerDeathEvent = new PlayerDeathEvent(player, droppedInv, droppedExp, null);
+            Bukkit.getPluginManager().callEvent(playerDeathEvent);
         }
 
         debug(arena, player, "parsing death: " + goal.getName());

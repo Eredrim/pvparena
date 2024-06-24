@@ -47,6 +47,7 @@ goal:
 uses:
   classSignsDisplay: false #Display player names on class signs
   deathMessages: true #Show messages on death (from language file)
+  deathEvents: false #Send a Bukkit death event when a player dies. May be useful to get custom death messages from other plugins.
   evenTeams: false #If true, requires the same number of players in each team
   ingameClassSwitch: false #Allow players to switch class during a game
   invisibilityfix: false #Force player to be visible
