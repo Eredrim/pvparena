@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static java.util.Arrays.asList;
 import static net.slipcor.pvparena.core.Utils.getSerializableItemStacks;
 
 /**
@@ -148,6 +149,17 @@ public class PAA_Set extends AbstractArenaCommand {
             }
             arena.getConfig().setManually(node, dValue);
             arena.msg(player, Language.parse(MSG.SET_DONE, node, dValue));
+        } else if (type == ConfigNodeType.STR_LIST) {
+            final String[] aValue;
+
+            try {
+                aValue = value.split(";");
+            } catch (final Exception e) {
+                arena.msg(player, Language.parse(MSG.ERROR_ARGUMENT_TYPE, value, "strings separated with ';' (e.g. fred;vera;daphne;sammy;scooby)"));
+                return;
+            }
+            arena.getConfig().setManually(node, asList(aValue));
+            arena.msg(player, Language.parse(MSG.SET_DONE, node, value));
         } else if (type == ConfigNodeType.MATERIAL) {
             if ("hand".equalsIgnoreCase(value)) {
                 if (player instanceof Player) {

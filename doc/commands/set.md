@@ -32,6 +32,7 @@ There are severals categories of types and here is how to set them :
 holding in your hand.
 - **items:** A list of items is expected (for instance to give rewards). Type `inventory` to convert all your current
 inventory to a list of items (metadata will be saved) or use `hand` get only get the item you're holding.
+- **string list:** A list of strings is expected, just use semicolon (`;`) as a separator. Spaces are not accepted.
 
 > 🚩 **NB:** 
 > * If you want to define items or material nodes directly in your config file, please check 
