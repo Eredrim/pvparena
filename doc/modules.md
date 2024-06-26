@@ -74,7 +74,7 @@ The modules have been renamed to SpawnCollections and ItemSpawners respectively.
 ### What happened to other missing modules?
 
 As you maybe saw it, several modules has been removed. They are ArenaBoards, AutoSneak, AutoVote, BattlefieldGuard, 
-Factions, FixInventoryLoss, MatchResultsStats, RedstoneTriggers, SinglePlayerSupport and SpecialJoin.
+Factions, FixInventoryLoss, MatchResultsStats, RedstoneTriggers, SinglePlayerSupport, SpecialJoin and WorldGuard.
 
 These modules either used discontinued features (like arena rounds) or their features have been integrated in core of
 PVPArena plugin.
