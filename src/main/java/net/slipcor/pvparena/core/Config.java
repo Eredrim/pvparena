@@ -361,8 +361,7 @@ public class Config {
 
         MODULES_SKINS_VANILLA("modules.skins.vanilla", false, "Skins"),
 
-        MODULES_SQUADS_AUTOSQUAD("modules.squads.autoSquad", "none", "Squads"),
-        MODULES_SQUADS_INGAMESWITCH("modules.squads.ingameSquadSwitch", true, "Squads"),
+        MODULES_SQUADS_INGAMESWITCH("modules.squads.ingameSquadSwitch", false, "Squads"),
 
         MODULES_STARTFREEZE_TIMER("modules.startfreeze.freezetimer", 5, "StartFreeze"),
 

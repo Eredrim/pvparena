@@ -689,6 +689,8 @@ public final class Language {
         MODULE_SQUADS_SET("nulang.mod.squads.set", "Squad %1% has been set"),
         MODULE_SQUADS_REMOVED("nulang.mod.squads.removed", "Squad %1% has been removed"),
         MODULE_SQUADS_NOTEXIST("nulang.mod.squads.notexist", "Squad %1% doesn't exist!"),
+        MODULE_SQUADS_JOIN("nulang.mod.squads.join", "You have joined the squad &b%1%&r!"),
+        MODULE_SQUADS_LEAVE("nulang.mod.squads.leave", "You left the squad &b%1%&r!"),
         MODULE_SQUADS_ERROR("nulang.mod.squads.error", "Error while editing squads, syntax is not correct!"),
         MODULE_SQUADS_FULL("nulang.mod.squads.full", "This squad is full!"),
         MODULE_SQUADS_HELP("nulang.mod.squads.help", "/pa !sq | show the arena squads\n/pa !sq add [name] [limit] | add squad with player limit (set to 0 for no limit)\n/pa !sq set [name] [limit] | set player limit for squad\n/pa !sq remove [name] | remove squad [name]"),

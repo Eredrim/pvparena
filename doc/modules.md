@@ -13,48 +13,47 @@ more information.
 
 Hook into many different aspects of the game!
 
-| Mod                                                | Description                                                                                             | Type     | Status |
-|----------------------------------------------------|---------------------------------------------------------------------------------------------------------|----------|--------|
-| [AfterMatch](mods/aftermatch.md)                   | could also be called "Sudden Death"                                                                     |          | ✔️️    |
-| [Announcements](mods/announcements.md)             | announce events happening                                                                               |          | ✔️️    |
-| [ArenaMaps](mods/arenamaps.md)                     | a live refreshed map to never lose yourself ever again!                                                 |          | ✔️️    |
-| [BanKick](mods/bankick.md)                         | ban or kick a player of an arena                                                                        |          | ✔️️    |
-| [BattlefieldJoin](mods/battlefieldjoin.md)         | join directly your battlefield without using the lounge                                                 | JOIN     | ✔️️    |
-| [BetterClasses](mods/betterclasses.md)             | add potion effects and more to specific classes                                                         |          | ✔️️    |
-| [BetterGears](mods/bettergears.md)                 | automatically colorize classes armors to suit team color                                                |          | ✔️️    |
-| [BetterFight](mods/betterfight.md)                 | pack of fun features : one-shot items, kill sounds and explosions on death                              |          | ✔️️    |
-| [BetterKillstreaks](mods/betterkillstreaks.md)     | reward kill streaks with items or potion effects                                                        |          | ✔️️    |
-| [BlockDissolve](mods/blockdissolve.md)             | dissolve blocks under fighting players                                                                  |          | ✔️️    |
-| [BlockRestore](mods/blockrestore.md)               | restore the battlefield                                                                                 |          | ✔️️    |
-| [ChestFiller](mods/chestfiller.md)                 | fill battlefield containers with random and customizable content!                                       |          | ✔️️    |
-| [Duel](mods/duel.md)                               | duel someone!                                                                                           |          | ⚠️️    |
-| [EventActions](mods/eventactions.md)               | trigger actions at different moments of the arena lifecycle                                             |          | ✔️️    |
-| [FlySpectate](mods/flyspectate.md)                 | have players spectating a fight in fly mode                                                             | SPECTATE | ✔️️    |
-| [ItemSpawners](mods/itemspawners.md)               | spawn (random) items on different points                                                                |          | ✔️️    |
-| [LateLounge](mods/latelounge.md)                   | keep playing until enough players joined the arena                                                      |          | ✔️️    |
-| [PlayerFinder](mods/playerfinder.md)               | allow players to find others with a compass                                                             |          | ✔️️    |
-| [Points](mods/points.md)                           | allow to restrict certain classes to require players to fight for better classes                        |          | ⚠️     |
-| [PowerUps](mods/powerups.md)                       | spawn items giving special powers                                                                       |          | ☑️️    |
-| [Projectiles](mods/projectiles.md)                 | add knockback to throwable items (snowballs, eggs, etc)                                                 |          | ✔️️    |
-| [QuickLounge](mods/quicklounge.md)                 | join a lounge which starts the game automatically                                                       | JOIN     | ✔️️    |
-| [RealSpectate](mods/realspectate.md)               | spectate the game, CounterStrike style!                                                                 | SPECTATE | ✔️️    |
-| [RespawnRelay](mods/respawnrelay.md)               | add a relay for respawning players                                                                      |          | ✔️️    |
-| [Skins](mods/skins.md)                             | add custom skins to teams/classes                                                                       |          | ❌      |
-| [SpawnCollections](mods/spawncollections.md)       | save different spawn configurations of the battlefield and switch between them                          |          | ✔️️    |
-| [Spectate](mods/spectate.md)                       | use the new 1.8 SPECTATOR mode to allow flying and POV spectating                                       | SPECTATE | ✔️️    |
-| StandardLounge                                     | Default lounge module                                                                                   | JOIN     | ✔️️    |
-| StandardSpectate                                   | Default spectate module (survival mode)                                                                 | SPECTATE | ✔️️    |
-| [Squads](mods/squads.md)                           | add squads to the game, basically only showing players belonging together apart from teams and classes. |          | ☑️️    |
-| [StartFreeze](mods/startfreeze.md)                 | freeze players at start                                                                                 |          | ✔️️    |
-| [TeamSizeRestrict](mods/teamsizerestrict.md)       | a small mod to restrict the size of specific teams                                                      |          | ✔️️    |
-| [TempPerms](mods/tempperms.md)                     | add temporary perms                                                                                     |          | ✔️️    |
-| [Titles](mods/titles.md)                           | send messages to players as the "title" command would do                                                |          | ✔️️    |
-| [Turrets](mods/turrets.md)                         | add turrets where players fire projectiles                                                              |          | ⚠️     |
-| [Vault](mods/vault.md)                             | add economy, money rewards and bet features                                                             |          | ✔️️    |
-| [Walls](mods/walls.md)                             | define wall regions to simulate "The Walls"                                                             |          | ⚠️     |
-| [WarmupJoin](mods/warmupjoin.md)                   | ???                                                                                                     | JOIN     | ⚠️     |
-| [WorldEdit](mods/worldedit.md)                     | backup/restore regions                                                                                  |          | ✔️️    |
-| [WorldGuard](mods/worldguard.md)                   | import region definitions from WorldGuard                                                               |          | ⚠️     |
+| Mod                                            | Description                                                                      | Type     | Status |
+|------------------------------------------------|----------------------------------------------------------------------------------|----------|--------|
+| [AfterMatch](mods/aftermatch.md)               | could also be called "Sudden Death"                                              |          | ✔️️    |
+| [Announcements](mods/announcements.md)         | announce events happening                                                        |          | ✔️️    |
+| [ArenaMaps](mods/arenamaps.md)                 | a live refreshed map to never lose yourself ever again!                          |          | ✔️️    |
+| [BanKick](mods/bankick.md)                     | ban or kick a player of an arena                                                 |          | ✔️️    |
+| [BattlefieldJoin](mods/battlefieldjoin.md)     | join directly your battlefield without using the lounge                          | JOIN     | ✔️️    |
+| [BetterClasses](mods/betterclasses.md)         | add potion effects and more to specific classes                                  |          | ✔️️    |
+| [BetterGears](mods/bettergears.md)             | automatically colorize classes armors to suit team color                         |          | ✔️️    |
+| [BetterFight](mods/betterfight.md)             | pack of fun features : one-shot items, kill sounds and explosions on death       |          | ✔️️    |
+| [BetterKillstreaks](mods/betterkillstreaks.md) | reward kill streaks with items or potion effects                                 |          | ✔️️    |
+| [BlockDissolve](mods/blockdissolve.md)         | dissolve blocks under fighting players                                           |          | ✔️️    |
+| [BlockRestore](mods/blockrestore.md)           | restore the battlefield                                                          |          | ✔️️    |
+| [ChestFiller](mods/chestfiller.md)             | fill battlefield containers with random and customizable content!                |          | ✔️️    |
+| [Duel](mods/duel.md)                           | duel someone!                                                                    |          | ⚠️️    |
+| [EventActions](mods/eventactions.md)           | trigger actions at different moments of the arena lifecycle                      |          | ✔️️    |
+| [FlySpectate](mods/flyspectate.md)             | have players spectating a fight in fly mode                                      | SPECTATE | ✔️️    |
+| [ItemSpawners](mods/itemspawners.md)           | spawn (random) items on different points                                         |          | ✔️️    |
+| [LateLounge](mods/latelounge.md)               | keep playing until enough players joined the arena                               |          | ✔️️    |
+| [PlayerFinder](mods/playerfinder.md)           | allow players to find others with a compass                                      |          | ✔️️    |
+| [Points](mods/points.md)                       | allow to restrict certain classes to require players to fight for better classes |          | ⚠️     |
+| [PowerUps](mods/powerups.md)                   | spawn items giving special powers                                                |          | ☑️️    |
+| [Projectiles](mods/projectiles.md)             | add knockback to throwable items (snowballs, eggs, etc)                          |          | ✔️️    |
+| [QuickLounge](mods/quicklounge.md)             | join a lounge which starts the game automatically                                | JOIN     | ✔️️    |
+| [RealSpectate](mods/realspectate.md)           | spectate the game, CounterStrike style!                                          | SPECTATE | ✔️️    |
+| [RespawnRelay](mods/respawnrelay.md)           | add a relay for respawning players                                               |          | ✔️️    |
+| [Skins](mods/skins.md)                         | add custom skins to teams/classes                                                |          | ❌      |
+| [SpawnCollections](mods/spawncollections.md)   | save different spawn configurations of the battlefield and switch between them   |          | ✔️️    |
+| [Spectate](mods/spectate.md)                   | use the new 1.8 SPECTATOR mode to allow flying and POV spectating                | SPECTATE | ✔️️    |
+| StandardLounge                                 | Default lounge module                                                            | JOIN     | ✔️️    |
+| StandardSpectate                               | Default spectate module (survival mode)                                          | SPECTATE | ✔️️    |
+| [Squads](mods/squads.md)                       | add squads to the game, create group of players respawning together              |          | ✔️️    |
+| [StartFreeze](mods/startfreeze.md)             | freeze players at start                                                          |          | ✔️️    |
+| [TeamSizeRestrict](mods/teamsizerestrict.md)   | a small mod to restrict the size of specific teams                               |          | ✔️️    |
+| [TempPerms](mods/tempperms.md)                 | add temporary perms                                                              |          | ✔️️    |
+| [Titles](mods/titles.md)                       | send messages to players as the "title" command would do                         |          | ✔️️    |
+| [Turrets](mods/turrets.md)                     | add turrets where players fire projectiles                                       |          | ⚠️     |
+| [Vault](mods/vault.md)                         | add economy, money rewards and bet features                                      |          | ✔️️    |
+| [Walls](mods/walls.md)                         | define wall regions to simulate "The Walls"                                      |          | ⚠️     |
+| [WarmupJoin](mods/warmupjoin.md)               | ???                                                                              | JOIN     | ⚠️     |
+| [WorldEdit](mods/worldedit.md)                 | backup/restore regions                                                           |          | ✔️️    |
 
 **Key :** ✔️️ Adapted and fully tested for 2.0 | ☑️ Fully works with previous PVPArena version, but not tested with 2.0 | ⚠️ Legacy modules, not tested for a while | ❌ Temporarily unavailable
 
