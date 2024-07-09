@@ -3,9 +3,7 @@ package net.slipcor.pvparena.commands;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Help.HELP;
-import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaGoalManager;
 import net.slipcor.pvparena.loader.Loadable;
@@ -36,7 +34,7 @@ public class PAA_Goal extends AbstractArenaCommand {
             return;
         }
 
-        if (!argCountValid(sender, arena, args, new Integer[]{1, 2})) {
+        if (!argCountValid(sender, arena, args, new Integer[]{1})) {
             return;
         }
 
@@ -50,19 +48,10 @@ public class PAA_Goal extends AbstractArenaCommand {
             return;
         }
 
-        if (args.length < 2) {
-            // toggle
-            ArenaGoal goal = goalManager.getNewInstance(loadableGoal.getName());
-            arena.setGoal(goal, true);
-            arena.msg(sender, MSG.GOAL_SET, args[0]);
-            return;
-        }
-
-        // usage: /pa {arenaname} loadableGoal [loadableGoal] {value}
-
-        arena.msg(sender, MSG.ERROR_INVALID_VALUE, args[1]);
-        arena.msg(sender, MSG.ERROR_POSITIVES, StringParser.joinSet(StringParser.positive, " | "));
-        arena.msg(sender, MSG.ERROR_NEGATIVES, StringParser.joinSet(StringParser.negative, " | "));
+        // toggle
+        ArenaGoal goal = goalManager.getNewInstance(loadableGoal.getName());
+        arena.setGoal(goal, true);
+        arena.msg(sender, MSG.GOAL_SET, args[0]);
     }
 
     @Override
