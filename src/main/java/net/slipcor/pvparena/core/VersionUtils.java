@@ -17,7 +17,7 @@ public class VersionUtils {
         int currentVerVal = 0;
         int newVerVal = 0;
 
-        final int versionLen = 3;
+        final int versionLen = currentVerArr.length;
         for(int i = 0; i < versionLen; i++) {
             int weight = (versionLen - i) * 2;
             long currentVerChunk = Long.parseLong(currentVerArr[i]);
