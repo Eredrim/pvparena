@@ -307,6 +307,12 @@ public class PlayerListener implements Listener {
             event.setCancelled(true);
             arena.msg(player, Language.parse(arena, MSG.NOTICE_NO_DROP_ITEM));
             return;
+        } else if (aPlayer.getStatus() == Status.FIGHT){
+            if (arena.getArenaConfig().getBoolean(CFG.ITEMS_PREVENTDROP)){
+                event.setCancelled(true);
+                arena.msg(player, Language.parse(arena, MSG.NOTICE_NO_DROP_ITEM));
+                return;
+            }
         }
 
         PACheck res = ArenaGoalManager.checkDrop(arena, event);
