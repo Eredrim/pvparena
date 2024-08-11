@@ -3,6 +3,7 @@ package net.slipcor.pvparena.config;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.loadables.ArenaModule;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -53,13 +54,19 @@ public class Debugger {
 
     public static void debug(Arena arena, String string) {
         if (active) {
-            formatAndPrint(arena, null, FINE, string);
+            formatAndPrint(arena, null, null, FINE, string);
+        }
+    }
+
+    public static void debug(Arena arena, ArenaModule module, String string) {
+        if (active) {
+            formatAndPrint(arena, module, null, FINE, string);
         }
     }
 
     public static void debug(Arena arena, Supplier<String> stringSupplier) {
         if (active) {
-            formatAndPrint(arena, null, FINE, stringSupplier.get());
+            formatAndPrint(arena, null, null, FINE, stringSupplier.get());
         }
     }
 
@@ -83,9 +90,19 @@ public class Debugger {
     public static void debug(ArenaPlayer aPlayer, String string) {
         if (active) {
             if (aPlayer.getArena() != null) {
-                formatAndPrint(aPlayer.getArena(), aPlayer.getPlayer(), FINE, string);
+                formatAndPrint(aPlayer.getArena(), null, aPlayer.getPlayer(), FINE, string);
             } else {
-                formatAndPrint(null, aPlayer.getPlayer(), FINE, string);
+                formatAndPrint(null, null, aPlayer.getPlayer(), FINE, string);
+            }
+        }
+    }
+
+    public static void debug(ArenaPlayer aPlayer, ArenaModule module, String string) {
+        if (active) {
+            if (aPlayer.getArena() != null) {
+                formatAndPrint(aPlayer.getArena(), module, aPlayer.getPlayer(), FINE, string);
+            } else {
+                formatAndPrint(null, module, aPlayer.getPlayer(), FINE, string);
             }
         }
     }
@@ -98,19 +115,37 @@ public class Debugger {
 
     public static void debug(Arena arena, CommandSender commandSender, Object object) {
         if (active) {
-            formatAndPrint(arena, commandSender, FINE, String.valueOf(object));
+            formatAndPrint(arena, null, commandSender, FINE, String.valueOf(object));
+        }
+    }
+
+    public static void debug(Arena arena, ArenaModule module,  CommandSender commandSender, Object object) {
+        if (active) {
+            formatAndPrint(arena, module, commandSender, FINE, String.valueOf(object));
         }
     }
 
     public static void debug(Arena arena, CommandSender commandSender, String string) {
         if (active) {
-            formatAndPrint(arena, commandSender, FINE, string);
+            formatAndPrint(arena, null, commandSender, FINE, string);
+        }
+    }
+
+    public static void debug(Arena arena, ArenaModule module, CommandSender commandSender, String string) {
+        if (active) {
+            formatAndPrint(arena, module, commandSender, FINE, string);
         }
     }
 
     public static void debug(Arena arena, String template, Object... args) {
         if (active) {
-            formatAndPrint(arena, null, FINE, getTemplatedLine(template, args));
+            formatAndPrint(arena, null, null, FINE, getTemplatedLine(template, args));
+        }
+    }
+
+    public static void debug(Arena arena, ArenaModule module, String template, Object... args) {
+        if (active) {
+            formatAndPrint(arena, module, null, FINE, getTemplatedLine(template, args));
         }
     }
 
@@ -128,13 +163,19 @@ public class Debugger {
 
     public static void trace(Arena arena, String template, Object... args) {
         if (active && FINER.equals(level)) {
-            formatAndPrint(arena, null, FINER, getTemplatedLine(template, args));
+            formatAndPrint(arena, null, null, FINER, getTemplatedLine(template, args));
+        }
+    }
+
+    public static void trace(Arena arena, ArenaModule module, String template, Object... args) {
+        if (active && FINER.equals(level)) {
+            formatAndPrint(arena, module, null, FINER, getTemplatedLine(template, args));
         }
     }
 
     public static void trace(CommandSender sender, String template, Object... args) {
         if (active && FINER.equals(level)) {
-            formatAndPrint(null, sender, FINER, getTemplatedLine(template, args));
+            formatAndPrint(null, null, sender, FINER, getTemplatedLine(template, args));
         }
     }
 
@@ -234,10 +275,14 @@ public class Debugger {
         return logger;
     }
 
-    private static void formatAndPrint(Arena arena, CommandSender commandSender, Level level, String string) {
+    private static void formatAndPrint(Arena arena, ArenaModule module, CommandSender commandSender, Level level, String string) {
         StringBuilder strBuilder = new StringBuilder();
         if (arena != null) {
             strBuilder.append(String.format("[%s] ", arena.getName()));
+        }
+
+        if (module != null) {
+            strBuilder.append(String.format("[%s] ", module.getName()));
         }
 
         if (commandSender instanceof Player) {
