@@ -640,7 +640,7 @@ public class Arena {
         helpMsg.get().forEach(helpLine -> pmsg(sender, StringParser.colorize(helpLine)));
     }
 
-    public void msg(final CommandSender sender, final MSG msg, String... args) {
+    public void msg(final CommandSender sender, final MSG msg, Object... args) {
         this.msg(sender, Language.parse(msg, args));
     }
 
