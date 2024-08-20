@@ -1,20 +1,41 @@
 package net.slipcor.pvparena.arena;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.classes.*;
-import net.slipcor.pvparena.core.*;
+import net.slipcor.pvparena.classes.PABlock;
+import net.slipcor.pvparena.classes.PABlockLocation;
+import net.slipcor.pvparena.classes.PAClassSign;
+import net.slipcor.pvparena.classes.PASpawn;
+import net.slipcor.pvparena.core.ArrowHack;
+import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
+import net.slipcor.pvparena.core.Help;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.events.*;
+import net.slipcor.pvparena.core.StringParser;
+import net.slipcor.pvparena.core.StringUtils;
+import net.slipcor.pvparena.events.PAEndEvent;
+import net.slipcor.pvparena.events.PAExitEvent;
+import net.slipcor.pvparena.events.PALeaveEvent;
+import net.slipcor.pvparena.events.PALoseEvent;
+import net.slipcor.pvparena.events.PAWinEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
-import net.slipcor.pvparena.managers.*;
+import net.slipcor.pvparena.managers.ArenaManager;
+import net.slipcor.pvparena.managers.InventoryManager;
+import net.slipcor.pvparena.managers.SpawnManager;
+import net.slipcor.pvparena.managers.TeamManager;
+import net.slipcor.pvparena.managers.TeleportManager;
+import net.slipcor.pvparena.managers.WorkflowManager;
 import net.slipcor.pvparena.regions.ArenaRegion;
 import net.slipcor.pvparena.regions.RegionProtection;
 import net.slipcor.pvparena.regions.RegionType;
 import net.slipcor.pvparena.runnables.StartRunnable;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
@@ -31,11 +52,22 @@ import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static java.util.Optional.ofNullable;
-import static net.slipcor.pvparena.classes.PASpawn.*;
+import static net.slipcor.pvparena.classes.PASpawn.FIGHT;
+import static net.slipcor.pvparena.classes.PASpawn.OLD;
 import static net.slipcor.pvparena.config.Debugger.debug;
 
 /**
@@ -534,45 +566,37 @@ public class Arena {
         debug(arenaPlayer, "giving rewards to " + arenaPlayer.getName());
 
         ArenaModuleManager.giveRewards(this, arenaPlayer);
-        ItemStack[] items = this.config.getItems(CFG.ITEMS_REWARDS);
+        final ItemStack[] items = this.config.getItems(CFG.ITEMS_REWARDS);
 
-        final boolean isRandom = this.config.getBoolean(CFG.ITEMS_RANDOMREWARD);
-        final Random rRandom = new Random();
+        boolean isRandom = this.config.getBoolean(CFG.ITEMS_RANDOMREWARD);
+        Random rRandom = new Random();
 
-        final PAWinEvent dEvent = new PAWinEvent(this, arenaPlayer.getPlayer(), items);
+        PAWinEvent dEvent = new PAWinEvent(this, arenaPlayer.getPlayer(), items);
         Bukkit.getPluginManager().callEvent(dEvent);
-        items = dEvent.getItems();
 
         debug(arenaPlayer, "start " + this.startCount + " - minplayers: " + this.config.getInt(CFG.ITEMS_MINPLAYERSFORREWARD));
 
-        if (items == null || items.length < 1
-                || this.config.getInt(CFG.ITEMS_MINPLAYERSFORREWARD) > this.startCount) {
+        if (items == null || items.length < 1 || this.config.getInt(CFG.ITEMS_MINPLAYERSFORREWARD) > this.startCount) {
             return;
         }
 
-        final int randomItem = rRandom.nextInt(items.length);
+        int randomItemIdx = rRandom.nextInt(items.length);
+        List<ItemStack> rewardItems = isRandom ? List.of(items[randomItemIdx]) : List.of(items);
+        Player player = arenaPlayer.getPlayer();
 
-        for (int i = 0; i < items.length; ++i) {
-            if (items[i] == null) {
-                continue;
-            }
-            final ItemStack stack = items[i];
-            if (stack == null) {
-                PVPArena.getInstance().getLogger().warning(
-                        "unrecognized item: " + items[i]);
-                continue;
-            }
-            if (isRandom && i != randomItem) {
-                continue;
-            }
+        Bukkit.getScheduler().runTask(PVPArena.getInstance(), () -> {
             try {
-                Inventory playerInv = arenaPlayer.getPlayer().getInventory();
-                playerInv.setItem(playerInv.firstEmpty(), stack);
+                rewardItems.stream()
+                        .filter(Objects::nonNull)
+                        .forEach(item -> {
+                            Inventory playerInv = player.getInventory();
+                            playerInv.setItem(playerInv.firstEmpty(), item);
+                        });
             } catch (final Exception e) {
-                this.msg(arenaPlayer.getPlayer(), MSG.ERROR_INVENTORY_FULL);
-                return;
+                this.msg(player, MSG.ERROR_INVENTORY_FULL);
             }
-        }
+        });
+
     }
 
     public boolean hasEntity(final Entity entity) {
