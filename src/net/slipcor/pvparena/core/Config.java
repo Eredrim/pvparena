@@ -212,8 +212,9 @@ public class Config {
         GOAL_FOOD_FPLAYERITEMS("goal.food.fplayeritems", 10, "Food"),
         GOAL_FOOD_FTEAMITEMS("goal.food.fteamitems", 100, "Food"),
 
-        GOAL_INFECTED_ILIVES("goal.infected.iilives", 1, "Infect"),
-        GOAL_INFECTED_NLIVES("goal.infected.inlives", 1, "Infect"),
+        GOAL_INFECTED_STARTING_INFECTED_LIVES("goal.infected.iilives", 1, "Infect"),
+        GOAL_INFECTED_NORMAL_INFECTED_LIVES("goal.infected.wheninfectedlives", 1, "Infect"),
+        GOAL_INFECTED_NORMAL_LIVES("goal.infected.inlives", 1, "Infect"),
         GOAL_INFECTED_PPROTECTS("goal.infected.iplayerprotect", 0, "Infect"),
 
         GOAL_LIBERATION_JAILEDSCOREBOARD("goal.liberation.jailedscoreboard", false, "Liberation"),
