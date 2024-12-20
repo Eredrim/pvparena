@@ -57,6 +57,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.plugin.IllegalPluginAccessException;
@@ -81,8 +82,11 @@ import static net.slipcor.pvparena.config.Debugger.debug;
 
 public class PlayerListener implements Listener {
 
-    private boolean checkAndCommitCancel(final Arena arena, final Player player,
-                                         final Cancellable event) {
+    /**
+     * Check the event and cancel it if necessary
+     * @return True if the event has been canceled, false otherwise
+     */
+    private boolean checkAndCancelInteraction(final Arena arena, final Player player, final Cancellable event) {
 
         if (willBeCancelled(player, event)) {
             return true;
@@ -101,7 +105,7 @@ public class PlayerListener implements Listener {
             return false;
         }
 
-        debug(player, "checkAndCommitCancel");
+        debug(player, "checkAndCancelInteraction");
         if (arena == null || PermissionManager.hasAdminPerm(player)) {
             debug(player, "no arena or admin");
             debug(player, "> false");
@@ -384,33 +388,30 @@ public class PlayerListener implements Listener {
 
         Arena arena = null;
 
-        if (event.hasBlock()) {
+        if (event.hasBlock() && asList(Action.RIGHT_CLICK_BLOCK, Action.RIGHT_CLICK_BLOCK).contains(event.getAction())) {
             debug(player, "block: " + event.getClickedBlock().getType().name());
 
-            arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(
-                    event.getClickedBlock().getLocation()));
-            if (this.checkAndCommitCancel(arena, event.getPlayer(), event)) {
-                if (arena != null) {
-                    WorkflowManager.handleInteract(arena, player, event);
-                    ArenaModuleManager.onPlayerInteract(arena, event);
-                }
+            arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(event.getClickedBlock().getLocation()));
+            if (this.checkAndCancelInteraction(arena, event.getPlayer(), event)) {
                 return;
             }
         }
 
-        if (arena != null && ArenaModuleManager.onPlayerInteract(arena, event)) {
-            debug(player, "returning: #1");
-            return;
-        }
-
+        // Admin is setting a block
         if (WorkflowManager.handleSetBlock(player, event.getClickedBlock())) {
-            debug(player, "returning: #2");
+            debug(player, "returning: #1");
             event.setCancelled(true);
             return;
         }
 
+        // Admin is setting a region
         if (ArenaRegion.checkRegionSetPosition(event, player)) {
-            debug(player, "returning: #3");
+            debug(player, "returning: #1");
+            return;
+        }
+
+        if (arena != null && ArenaModuleManager.onPlayerInteract(arena, event)) {
+            debug(player, "returning: #1");
             return;
         }
 
@@ -461,8 +462,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        if (event.getAction() == Action.LEFT_CLICK_BLOCK ||
-                event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+        if (event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             final Block block = event.getClickedBlock();
             debug(arena, player, "player team: " + team.getName());
             if (block.getState() instanceof Sign) {
@@ -758,13 +758,16 @@ public class PlayerListener implements Listener {
                 debug(player, "onPlayerPickupItem cancelled by goal: " + arena.getGoal().getName());
                 return;
             }
-        }
 
-        if (arena == null || !BlockListener.isProtected(arena, player.getLocation(), event, RegionProtection.PICKUP)) {
-            return; // no fighting player or no powerups => OUT
+            // Call goal and mod hooks. They should cancel the event if they catch it.
+            arena.getGoal().onPlayerPickUp(event);
+            ArenaModuleManager.onPlayerPickupItem(arena, event);
+
+            if(!event.isCancelled() && BlockListener.isProtected(arena, player.getLocation(), event, RegionProtection.PICKUP)) {
+                // If event has not been caught by goals and mods and if a region prevents pickup => cancel
+                event.setCancelled(true);
+            }
         }
-        arena.getGoal().onPlayerPickUp(event);
-        ArenaModuleManager.onPlayerPickupItem(arena, event);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -894,8 +897,19 @@ public class PlayerListener implements Listener {
         ArenaModuleManager.onPlayerVelocity(arena, event);
     }
 
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPlayerToggleSprint(final PlayerToggleSprintEvent event) {
+        final Player player = event.getPlayer();
+
+        final Arena arena = ArenaPlayer.fromPlayer(player).getArena();
+        if (arena == null) {
+            return; // no fighting player or no powerups => OUT
+        }
+        ArenaModuleManager.onPlayerToggleSprint(arena, event);
+    }
+
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void onPlayerVelocity(final ProjectileLaunchEvent event) {
+    public void onPlayerProjectileLaunch(final ProjectileLaunchEvent event) {
         if (event.getEntity().getShooter() instanceof Player) {
             final Player player = (Player) event.getEntity().getShooter();
             final ArenaPlayer aPlayer = ArenaPlayer.fromPlayer(player);

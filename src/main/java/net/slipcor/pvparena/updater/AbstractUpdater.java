@@ -112,7 +112,7 @@ public abstract class AbstractUpdater implements Runnable {
      * @param args Args for stringFormatter
      * @return Announce message
      */
-    protected static String getAnnounceMessage(String... args) {
+    protected static String getAnnounceMessage(Object... args) {
         return Language.parse(MSG.UPDATER_ANNOUNCE, args);
     }
 
@@ -121,7 +121,7 @@ public abstract class AbstractUpdater implements Runnable {
      * @param args Args for stringFormatter
      * @return success message
      */
-    protected static String getSuccessMessage(String... args) {
+    protected static String getSuccessMessage(Object... args) {
         return Language.parse(MSG.UPDATER_SUCCESS, args);
     }
 }

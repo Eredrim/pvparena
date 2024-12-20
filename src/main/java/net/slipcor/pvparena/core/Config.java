@@ -352,7 +352,8 @@ public class Config {
         MODULES_POINTS_REWARD_WIN("modules.points.reward.PplayerWin", 0.0d, "Points"),
 
         MODULES_POWERUPS_DROPSPAWN("modules.powerups.dropspawn", false, "Powerups"),
-        MODULES_POWERUPS_USAGE("modules.powerups.usage", "off", "Powerups"),
+        MODULES_POWERUPS_USAGE_TRIGGER("modules.powerups.usage.trigger", "TIME", "Powerups"),
+        MODULES_POWERUPS_USAGE_FREQ("modules.powerups.usage.frequency", 0, "Powerups"),
 
         MODULES_PROJECTILES_SNOWBALL("modules.projectiles.snowball", true, "Projectiles"),
         MODULES_PROJECTILES_EGG("modules.projectiles.egg", true, "Projectiles"),

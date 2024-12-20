@@ -81,9 +81,26 @@ public class Debugger {
         }
     }
 
+    public static void debug(CommandSender sender, ArenaModule module, String string) {
+        if (active) {
+            if (sender instanceof Player) {
+                ArenaPlayer ap = ArenaPlayer.fromPlayer((Player) sender);
+                debug(ap, module, string);
+            } else {
+                print(FINE, string);
+            }
+        }
+    }
+
     public static void debug(ArenaPlayer aPlayer, String template, Object... args) {
         if (active) {
             debug(aPlayer, getTemplatedLine(template, args));
+        }
+    }
+
+    public static void debug(ArenaPlayer aPlayer, ArenaModule module, String template, Object... args) {
+        if (active) {
+            debug(aPlayer, module, getTemplatedLine(template, args));
         }
     }
 
@@ -112,6 +129,13 @@ public class Debugger {
             debug(sender, getTemplatedLine(template, args));
         }
     }
+
+    public static void debug(CommandSender sender, ArenaModule module, String template, Object... args) {
+        if (active) {
+            debug(sender, module, getTemplatedLine(template, args));
+        }
+    }
+
 
     public static void debug(Arena arena, CommandSender commandSender, Object object) {
         if (active) {
@@ -176,6 +200,24 @@ public class Debugger {
     public static void trace(CommandSender sender, String template, Object... args) {
         if (active && FINER.equals(level)) {
             formatAndPrint(null, null, sender, FINER, getTemplatedLine(template, args));
+        }
+    }
+
+    public static void trace(CommandSender sender, ArenaModule module, String template, Object... args) {
+        if (active && FINER.equals(level)) {
+            formatAndPrint(null, module, sender, FINER, getTemplatedLine(template, args));
+        }
+    }
+
+    public static void trace(ArenaPlayer aPlayer, String template, Object... args) {
+        if (active && FINER.equals(level)) {
+            formatAndPrint(aPlayer.getArena(), null, aPlayer.getPlayer(), FINER, getTemplatedLine(template, args));
+        }
+    }
+
+    public static void trace(ArenaPlayer aPlayer, ArenaModule module, String template, Object... args) {
+        if (active && FINER.equals(level)) {
+            formatAndPrint(aPlayer.getArena(), module, aPlayer.getPlayer(), FINER, getTemplatedLine(template, args));
         }
     }
 

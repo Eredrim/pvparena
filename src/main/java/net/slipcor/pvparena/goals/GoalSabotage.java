@@ -11,6 +11,7 @@ import net.slipcor.pvparena.classes.PADeathInfo;
 import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.commands.CommandTree;
 import net.slipcor.pvparena.commands.PAA_Region;
+import net.slipcor.pvparena.compatibility.ParticleAdapter;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
@@ -28,7 +29,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -229,7 +229,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
                             .filter(block -> teamName.equalsIgnoreCase(block.getTeamName()) && block.getName().equalsIgnoreCase(TNT))
                             .findAny();
 
-                    if (!paBlock.isPresent()) {
+                    if (paBlock.isEmpty()) {
                         this.arena.msg(sender, MSG.GOAL_SABOTAGE_TNT_NOTFOUND, teamName);
                         return;
                     }
@@ -448,7 +448,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
             World world = event.getEntity().getLocation().getWorld();
             Location location = event.getEntity().getLocation();
             tnt.remove();
-            world.spawnParticle(Particle.EXPLOSION_LARGE, location.getX(), location.getY() + 1, location.getZ(), 25);
+            world.spawnParticle(ParticleAdapter.EXPLOSION_LARGE.getValue(), location.getX(), location.getY() + 1, location.getZ(), 25);
             world.playSound(location, Sound.ENTITY_GENERIC_EXPLODE, 20, 2);
             this.explodingTNT = null;
         }

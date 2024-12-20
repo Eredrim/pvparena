@@ -1236,7 +1236,7 @@ public class Arena {
         );
     }
 
-    public static void pmsg(final CommandSender sender, MSG msg, String... args) {
+    public static void pmsg(final CommandSender sender, MSG msg, Object... args) {
         pmsg(sender, Language.parse(msg, args));
     }
 

@@ -448,8 +448,7 @@ public class BlockListener implements Listener {
             return;
         }
 
-        ArenaModuleManager.onBlockPlace(arena, event.getBlock(), event
-                .getBlock().getType());
+        ArenaModuleManager.onBlockPlace(arena, event.getBlock(), event.getBlock().getType());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

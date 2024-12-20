@@ -204,16 +204,7 @@ public abstract class AbstractFlagGoal extends ArenaGoal {
             }
         }
 
-        PotionEffectType pet = null;
-        for (PotionEffectType x : PotionEffectType.values()) {
-            if (x == null) {
-                continue;
-            }
-            if (x.getName().equalsIgnoreCase(split[0])) {
-                pet = x;
-                break;
-            }
-        }
+        PotionEffectType pet = PotionEffectType.getByName(split[0]);
 
         if (pet == null) {
             PVPArena.getInstance().getLogger().warning(
@@ -453,19 +444,8 @@ public abstract class AbstractFlagGoal extends ArenaGoal {
             return;
         }
 
-        PotionEffectType pet = null;
-
         final String[] split = value.split("x");
-
-        for (PotionEffectType x : PotionEffectType.values()) {
-            if (x == null) {
-                continue;
-            }
-            if (x.getName().equalsIgnoreCase(split[0])) {
-                pet = x;
-                break;
-            }
-        }
+        PotionEffectType pet = PotionEffectType.getByName(split[0]);
 
         if (pet == null) {
             PVPArena.getInstance().getLogger().warning("Invalid Potion Effect Definition: " + value);

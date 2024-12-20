@@ -6,6 +6,7 @@ import net.slipcor.pvparena.core.Config.CFG;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -86,7 +87,7 @@ public final class InventoryManager {
 
         for (ItemStack dropped : player.getInventory().getContents()) {
 
-            if (dropped == null || dropped.getType() == Material.AIR) {
+            if (dropped == null || dropped.getType() == Material.AIR || dropped.containsEnchantment(Enchantment.VANISHING_CURSE)) {
                 continue;
             }
 

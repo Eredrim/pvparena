@@ -1,0 +1,100 @@
+package net.slipcor.pvparena.compatibility;
+
+import org.bukkit.Particle;
+
+import static net.slipcor.pvparena.core.VersionUtils.getApiVersion;
+import static net.slipcor.pvparena.core.VersionUtils.isSameVersionOrNewer;
+
+/**
+ * Compatibility class to make PVPArena compatible with Bukkit 1.16.5 - 1.20.4
+ */
+public enum ParticleAdapter {
+    EXPLOSION_NORMAL("POOF"),
+    EXPLOSION_LARGE("EXPLOSION"),
+    EXPLOSION_HUGE("EXPLOSION_EMITTER"),
+    FIREWORKS_SPARK("FIREWORK"),
+    WATER_BUBBLE("BUBBLE"),
+    WATER_SPLASH("SPLASH"),
+    WATER_WAKE("FISHING"),
+    SUSPENDED("UNDERWATER"),
+    SUSPENDED_DEPTH("UNDERWATER"),
+    CRIT("CRIT"),
+    CRIT_MAGIC("ENCHANTED_HIT"),
+    SMOKE_NORMAL("SMOKE"),
+    SMOKE_LARGE("LARGE_SMOKE"),
+    SPELL("EFFECT"),
+    SPELL_INSTANT("INSTANT_EFFECT"),
+    SPELL_MOB("ENTITY_EFFECT"),
+    SPELL_WITCH("WITCH"),
+    DRIP_WATER("DRIPPING_WATER"),
+    DRIP_LAVA("DRIPPING_LAVA"),
+    VILLAGER_ANGRY("ANGRY_VILLAGER"),
+    VILLAGER_HAPPY("HAPPY_VILLAGER"),
+    TOWN_AURA("MYCELIUM"),
+    NOTE("NOTE"),
+    PORTAL("PORTAL"),
+    ENCHANTMENT_TABLE("ENCHANT"),
+    FLAME("FLAME"),
+    LAVA("LAVA"),
+    CLOUD("CLOUD"),
+    REDSTONE("DUST"),
+    SNOWBALL("ITEM_SNOWBALL"),
+    SNOW_SHOVEL("ITEM_SNOWBALL"),
+    SLIME("ITEM_SLIME"),
+    HEART("HEART"),
+    ITEM_CRACK("ITEM"),
+    BLOCK_CRACK("BLOCK"),
+    BLOCK_DUST("BLOCK"),
+    WATER_DROP("RAIN"),
+    MOB_APPEARANCE("ELDER_GUARDIAN"),
+    DRAGON_BREATH("DRAGON_BREATH"),
+    END_ROD("END_ROD"),
+    DAMAGE_INDICATOR("DAMAGE_INDICATOR"),
+    SWEEP_ATTACK("SWEEP_ATTACK"),
+    FALLING_DUST("FALLING_DUST"),
+    TOTEM("TOTEM_OF_UNDYING"),
+    SPIT("SPIT"),
+    SQUID_INK("SQUID_INK"),
+    BUBBLE_POP("BUBBLE_POP"),
+    CURRENT_DOWN("CURRENT_DOWN"),
+    BUBBLE_COLUMN_UP("BUBBLE_COLUMN_UP"),
+    NAUTILUS("NAUTILUS"),
+    DOLPHIN("DOLPHIN"),
+    SNEEZE("SNEEZE"),
+    CAMPFIRE_COSY_SMOKE("CAMPFIRE_COSY_SMOKE"),
+    CAMPFIRE_SIGNAL_SMOKE("CAMPFIRE_SIGNAL_SMOKE"),
+    COMPOSTER("COMPOSTER"),
+    FLASH("FLASH"),
+    FALLING_LAVA("FALLING_LAVA"),
+    LANDING_LAVA("LANDING_LAVA"),
+    FALLING_WATER("FALLING_WATER"),
+    DRIPPING_HONEY("DRIPPING_HONEY"),
+    FALLING_HONEY("FALLING_HONEY"),
+    LANDING_HONEY("LANDING_HONEY"),
+    FALLING_NECTAR("FALLING_NECTAR"),
+    SOUL_FIRE_FLAME("SOUL_FIRE_FLAME"),
+    ASH("ASH"),
+    CRIMSON_SPORE("CRIMSON_SPORE"),
+    WARPED_SPORE("WARPED_SPORE"),
+    SOUL("SOUL"),
+    DRIPPING_OBSIDIAN_TEAR("DRIPPING_OBSIDIAN_TEAR"),
+    FALLING_OBSIDIAN_TEAR("FALLING_OBSIDIAN_TEAR"),
+    LANDING_OBSIDIAN_TEAR("LANDING_OBSIDIAN_TEAR"),
+    REVERSE_PORTAL("REVERSE_PORTAL"),
+    WHITE_ASH("WHITE_ASH");
+
+    private static final boolean USE_120_VERSION = isSameVersionOrNewer(getApiVersion(), "1.20.5");
+
+    private final String nameFor120;
+
+    ParticleAdapter(String nameFor120) {
+        this.nameFor120 = nameFor120;
+    }
+
+    public Particle getValue() {
+        if(USE_120_VERSION) {
+            return Particle.valueOf(this.nameFor120);
+        }
+        return Particle.valueOf(this.name());
+    }
+}

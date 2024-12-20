@@ -32,6 +32,7 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 
 import java.io.File;
@@ -228,6 +229,12 @@ public class ArenaModuleManager {
     public static void onPlayerVelocity(final Arena arena, final PlayerVelocityEvent event) {
         for (ArenaModule mod : arena.getMods()) {
             mod.onPlayerVelocity(event);
+        }
+    }
+
+    public static void onPlayerToggleSprint(Arena arena, PlayerToggleSprintEvent event) {
+        for (ArenaModule mod : arena.getMods()) {
+            mod.onPlayerToggleSprint(event);
         }
     }
 

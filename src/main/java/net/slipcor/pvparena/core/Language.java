@@ -663,6 +663,12 @@ public final class Language {
         MODULE_POWERUPS_INVALIDPUEFF("nulang.mod.powerups.invalidpowerupeffect", "Invalid PowerupEffect: %1%"),
         MODULE_POWERUPS_PLAYER("nulang.mod.powerups.puplayer", "%1% has collected PowerUp: %2%"),
         MODULE_POWERUPS_SERVER("nulang.mod.powerups.puserver", "PowerUp deployed!"),
+        MODULE_POWERUPS_ADD_LIVES_PLAYER("nulang.mod.powerups.livesplayer", "Thanks to a PowerUp, %1% has got %2% lives/points!"),
+        MODULE_POWERUPS_ADD_LIVES_TEAM("nulang.mod.powerups.livesteams", "Thanks to a PowerUp, %1% team has got %2% lives/points!"),
+        MODULE_POWERUPS_REM_LIVES_PLAYER("nulang.mod.powerups.livesplayer", "Due to a PowerUp, %1% has lost %2% lives/points!"),
+        MODULE_POWERUPS_REM_LIVES_TEAM("nulang.mod.powerups.livesteams", "Due to a PowerUp, %1% team has lost %2% lives/points!"),
+        MODULE_POWERUPS_FROZEN("nulang.mod.powerups.frozen", "You are frozen for the next %1% seconds!"),
+
         MODULE_REALSPECTATE_INFO("nulang.mod.realspectate.info", "You're spectating in immersive view! Sneak to switch to next fighter and press \"throw item\" key to switch back to previous one."),
 
         MODULE_RESPAWNRELAY_RESPAWNING("nulang.mod.respawnrelay.respawning", "Respawning in %1%!"),

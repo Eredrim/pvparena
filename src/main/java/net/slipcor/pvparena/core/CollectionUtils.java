@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.core;
 
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * Utility class for collections
@@ -24,5 +25,9 @@ public class CollectionUtils {
 
     public static boolean containsIgnoreCase(Collection<String> collection, String value) {
         return isNotEmpty(collection) && collection.stream().anyMatch(e -> e.equalsIgnoreCase(value));
+    }
+
+    public static <C extends Collection<?>> Optional<C> ofEmpty(C collection) {
+        return collection.isEmpty() ? Optional.empty() : Optional.of(collection);
     }
 }

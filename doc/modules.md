@@ -34,7 +34,7 @@ Hook into many different aspects of the game!
 | [LateLounge](mods/latelounge.md)               | keep playing until enough players joined the arena                               |          | ✔️️    |
 | [PlayerFinder](mods/playerfinder.md)           | allow players to find others with a compass                                      |          | ✔️️    |
 | [Points](mods/points.md)                       | allow to restrict certain classes to require players to fight for better classes |          | ⚠️     |
-| [PowerUps](mods/powerups.md)                   | spawn items giving special powers                                                |          | ☑️️    |
+| [PowerUps](mods/powerups.md)                   | spawn items giving special powers                                                |          | ✔️️    |
 | [Projectiles](mods/projectiles.md)             | add knockback to throwable items (snowballs, eggs, etc)                          |          | ✔️️    |
 | [QuickLounge](mods/quicklounge.md)             | join a lounge which starts the game automatically                                | JOIN     | ✔️️    |
 | [RealSpectate](mods/realspectate.md)           | spectate the game, CounterStrike style!                                          | SPECTATE | ✔️️    |

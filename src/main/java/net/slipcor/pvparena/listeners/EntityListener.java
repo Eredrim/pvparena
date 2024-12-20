@@ -3,35 +3,55 @@ package net.slipcor.pvparena.listeners;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
-import net.slipcor.pvparena.arena.PlayerStatus;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.arena.PlayerStatus;
 import net.slipcor.pvparena.classes.PABlockLocation;
+import net.slipcor.pvparena.compatibility.EffectTypeAdapter;
+import net.slipcor.pvparena.compatibility.ParticleAdapter;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.exceptions.GameplayException;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
+import net.slipcor.pvparena.managers.ArenaManager;
+import net.slipcor.pvparena.managers.SpawnManager;
+import net.slipcor.pvparena.managers.StatisticsManager;
 import net.slipcor.pvparena.managers.WorkflowManager;
 import net.slipcor.pvparena.regions.ArenaRegion;
 import net.slipcor.pvparena.regions.RegionFlag;
 import net.slipcor.pvparena.regions.RegionProtection;
-import net.slipcor.pvparena.managers.ArenaManager;
-import net.slipcor.pvparena.managers.SpawnManager;
-import net.slipcor.pvparena.managers.StatisticsManager;
 import net.slipcor.pvparena.runnables.DamageResetRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Snowball;
+import org.bukkit.entity.Tameable;
+import org.bukkit.entity.Wolf;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.*;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
+import org.bukkit.event.entity.EntityTeleportEvent;
+import org.bukkit.event.entity.PotionSplashEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import static net.slipcor.pvparena.config.Debugger.debug;
 
@@ -48,23 +68,23 @@ public class EntityListener implements Listener {
     private static final Map<PotionEffectType, Boolean> TEAMEFFECT = new HashMap<>();
 
     static {
-        TEAMEFFECT.put(PotionEffectType.BLINDNESS, false);
-        TEAMEFFECT.put(PotionEffectType.CONFUSION, false);
-        TEAMEFFECT.put(PotionEffectType.DAMAGE_RESISTANCE, true);
-        TEAMEFFECT.put(PotionEffectType.FAST_DIGGING, true);
-        TEAMEFFECT.put(PotionEffectType.FIRE_RESISTANCE, true);
-        TEAMEFFECT.put(PotionEffectType.HARM, false);
-        TEAMEFFECT.put(PotionEffectType.HEAL, true);
-        TEAMEFFECT.put(PotionEffectType.HUNGER, false);
-        TEAMEFFECT.put(PotionEffectType.INCREASE_DAMAGE, true);
-        TEAMEFFECT.put(PotionEffectType.JUMP, true);
-        TEAMEFFECT.put(PotionEffectType.POISON, false);
-        TEAMEFFECT.put(PotionEffectType.REGENERATION, true);
-        TEAMEFFECT.put(PotionEffectType.SLOW, false);
-        TEAMEFFECT.put(PotionEffectType.SLOW_DIGGING, false);
-        TEAMEFFECT.put(PotionEffectType.SPEED, true);
-        TEAMEFFECT.put(PotionEffectType.WATER_BREATHING, true);
-        TEAMEFFECT.put(PotionEffectType.WEAKNESS, false);
+        TEAMEFFECT.put(EffectTypeAdapter.BLINDNESS, false);
+        TEAMEFFECT.put(EffectTypeAdapter.NAUSEA, false);
+        TEAMEFFECT.put(EffectTypeAdapter.RESISTANCE, true);
+        TEAMEFFECT.put(EffectTypeAdapter.HASTE, true);
+        TEAMEFFECT.put(EffectTypeAdapter.FIRE_RESISTANCE, true);
+        TEAMEFFECT.put(EffectTypeAdapter.INSTANT_DAMAGE, false);
+        TEAMEFFECT.put(EffectTypeAdapter.INSTANT_HEALTH, true);
+        TEAMEFFECT.put(EffectTypeAdapter.HUNGER, false);
+        TEAMEFFECT.put(EffectTypeAdapter.STRENGTH, true);
+        TEAMEFFECT.put(EffectTypeAdapter.JUMP_BOOST, true);
+        TEAMEFFECT.put(EffectTypeAdapter.POISON, false);
+        TEAMEFFECT.put(EffectTypeAdapter.REGENERATION, true);
+        TEAMEFFECT.put(EffectTypeAdapter.SLOWNESS, false);
+        TEAMEFFECT.put(EffectTypeAdapter.MINING_FATIGUE, false);
+        TEAMEFFECT.put(EffectTypeAdapter.SPEED, true);
+        TEAMEFFECT.put(EffectTypeAdapter.WATER_BREATHING, true);
+        TEAMEFFECT.put(EffectTypeAdapter.WEAKNESS, false);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -165,14 +185,12 @@ public class EntityListener implements Listener {
      *
      * @param event the triggering event
      */
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public static void onEntityDamageByEntity(final EntityDamageByEntityEvent event) {
         Entity eDamager = event.getDamager();
         final Entity eDamagee = event.getEntity();
 
-        debug("onEntityDamageByEntity: cause: {}", event.getCause().name()
-                + " : " + event.getDamager().toString() + " => "
-                + event.getEntity().toString());
+        debug("onEntityDamageByEntity: cause: {} : {} => {}", event.getCause().name(), event.getDamager(), event.getEntity());
         debug("damage: {}", event.getDamage());
 
         if (eDamager instanceof Projectile) {
@@ -311,8 +329,7 @@ public class EntityListener implements Listener {
         debug(arena, attacker, "processing damage!");
         debug(arena, defender, "processing damage!");
 
-        ArenaModuleManager.onEntityDamageByEntity(arena, attacker, defender,
-                event);
+        ArenaModuleManager.onEntityDamageByEntity(arena, attacker, defender, event);
 
         StatisticsManager.damage(arena, attacker, defender, event.getDamage());
 
@@ -347,7 +364,7 @@ public class EntityListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public static void onEntityDamage(final EntityDamageEvent event) {
         final Entity entity = event.getEntity();
 
@@ -413,7 +430,7 @@ public class EntityListener implements Listener {
         final double xzOffset = 0.3;
         final double yOffset = 0.6;
         final double speed = 0.02;
-        player.getWorld().spawnParticle(Particle.CLOUD, particlesSpawnLoc, count, xzOffset, yOffset, xzOffset, speed);
+        player.getWorld().spawnParticle(ParticleAdapter.CLOUD.getValue(), particlesSpawnLoc, count, xzOffset, yOffset, xzOffset, speed);
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
@@ -464,7 +481,7 @@ public class EntityListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public static void onPotionSplash(final PotionSplashEvent event) {
 
         debug("onPotionSplash");

@@ -30,6 +30,7 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -442,6 +443,14 @@ public abstract class ArenaModule implements IArenaCommandHandler {
      * @param event the velocity event
      */
     public void onPlayerVelocity(final PlayerVelocityEvent event) {
+    }
+
+    /**
+     * hook into a player toggling sprint state
+     *
+     * @param event the toggle sprint event
+     */
+    public void onPlayerToggleSprint(PlayerToggleSprintEvent event) {
     }
 
     /**
