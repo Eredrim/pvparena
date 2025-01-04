@@ -300,7 +300,7 @@ public class Arena {
 
     public Material getReadyBlock() {
         try {
-            return this.config.getMaterial(CFG.READY_BLOCK, Material.STICK);
+            return this.config.getMaterial(CFG.READY_BLOCK, Material.IRON_BLOCK);
         } catch (final Exception e) {
             Language.logWarn(MSG.ERROR_MAT_NOT_FOUND, "ready block");
         }
@@ -1167,6 +1167,7 @@ public class Arena {
         arenaPlayer.setStatus(PlayerStatus.FIGHT);
         this.getGoal().initiate(arenaPlayer);
         this.getScoreboard().setupPlayer(arenaPlayer);
+        ArenaModuleManager.lateJoin(arenaPlayer.getArena(), arenaPlayer.getPlayer());
         SpawnManager.distributePlayer(this, arenaPlayer);
         this.msg(arenaPlayer.getPlayer(), MSG.FIGHT_BEGINS);
     }

@@ -108,16 +108,11 @@ public class ArenaRegion {
      * @param player the player interacting
      * @return true if the position is being saved, false otherwise
      */
-    public static boolean checkRegionSetPosition(final PlayerInteractEvent event,
-                                                 final Player player) {
-        if (!PAA_Region.activeSelections.containsKey(player.getName())) {
-            return false;
-        }
+    public static boolean handleSetRegionPosition(final PlayerInteractEvent event, final Player player) {
         final Arena arena = PAA_Region.activeSelections.get(player.getName());
         if (arena != null
                 && (PermissionManager.hasAdminPerm(player) || PermissionManager.hasBuilderPerm(player, arena))
-                && player.getEquipment() != null
-                && player.getEquipment().getItemInMainHand().getType().equals(PVPArena.getInstance().getWandItem())) {
+                && player.getInventory().getItemInMainHand().getType().equals(PVPArena.getInstance().getWandItem())) {
             // - modify mode is active
             // - player has admin perms
             // - player has wand in hand
@@ -126,7 +121,6 @@ public class ArenaRegion {
             if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
                 aPlayer.setSelection(event.getClickedBlock().getLocation(), false);
                 arena.msg(player, MSG.REGION_POS1);
-                event.setCancelled(true); // no destruction in creative mode :)
                 return true; // left click => pos1
             }
 
@@ -172,7 +166,6 @@ public class ArenaRegion {
     public boolean containsLocation(PALocation location) {
         PABlockLocation paBlockLocation = new PABlockLocation(location.toLocation());
         return this.getShape().contains(paBlockLocation);
-
     }
 
     /**

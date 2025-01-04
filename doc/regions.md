@@ -35,8 +35,8 @@ The following Region Types exist:
 - BATTLE => the most important type. It adds battlefield reservation (for overlapping arenas, only caring about that actually battle region), region protection, restoring and check if fighters are in the right place.
 - JOIN => the region where players should be when joining, see Configuration page, enforcement is disabled by default
 - SPAWN => a spawn region where players are randomly placed in when spawning or respawning 
-- BL_INV => block chest access to any team which name is included in the region name, same for classes
-- WL_INV => restrict chest access to each team which name is included in the region name, same for classes
+- BL_INV => block container access to any team which name is included in the region name, same for classes
+- WL_INV => restrict container access to each team which name is included in the region name, same for classes
 
 #### Usage of BL_INV and WL_INV
 

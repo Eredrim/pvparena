@@ -83,7 +83,7 @@ public class PAI_Ready extends AbstractArenaCommand {
         }
     }
 
-    private static void checkReadyRequirementsBeforeFight(Arena arena, ArenaPlayer aPlayer) throws GameplayException {
+    public static void checkReadyRequirementsBeforeFight(Arena arena, ArenaPlayer aPlayer) throws GameplayException {
         if (aPlayer.getStatus() != PlayerStatus.LOUNGE) {
             return;
         }

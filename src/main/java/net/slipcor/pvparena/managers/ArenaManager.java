@@ -3,29 +3,20 @@ package net.slipcor.pvparena.managers;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PABlockLocation;
-import net.slipcor.pvparena.commands.AbstractArenaCommand;
-import net.slipcor.pvparena.commands.PAG_Join;
 import net.slipcor.pvparena.core.CollectionUtils;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
-import net.slipcor.pvparena.core.StringUtils;
 import net.slipcor.pvparena.regions.ArenaRegion;
 import net.slipcor.pvparena.regions.RegionProtection;
 import net.slipcor.pvparena.regions.RegionType;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.block.Block;
-import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -313,41 +304,6 @@ public final class ArenaManager {
         for (Arena arena : ARENAS.values()) {
             debug("resetting arena {}", arena);
             arena.reset(force);
-        }
-    }
-
-    /**
-     * try to join an arena via sign click
-     *
-     * @param event  the PlayerInteractEvent
-     * @param player the player trying to join
-     */
-    public static void trySignJoin(final PlayerInteractEvent event, final Player player) {
-        debug(player, "onInteract: sign check");
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            final Block block = event.getClickedBlock();
-            if (block.getState() instanceof Sign) {
-                String[] lines = ((Sign) block.getState()).getLines();
-                List<String> signHeaders = PVPArena.getInstance().getConfig().getStringList("signHeaders");
-                if (CollectionUtils.containsIgnoreCase(signHeaders, ChatColor.stripColor(lines[0]))) {
-                    final String sName = ChatColor.stripColor(lines[1]).toLowerCase();
-                    String[] newArgs = new String[0];
-                    final Arena arena = ARENAS.get(sName);
-
-                    if (arena == null) {
-                        Arena.pmsg(player, MSG.ERROR_ARENA_NOTFOUND, sName);
-                        return;
-                    }
-
-                    String secondLine = ChatColor.stripColor(lines[2]);
-                    if (StringUtils.notBlank(secondLine) && arena.getTeam(secondLine) != null) {
-                        newArgs = new String[]{secondLine};
-                    }
-
-                    final AbstractArenaCommand command = new PAG_Join();
-                    command.commit(arena, player, newArgs);
-                }
-            }
         }
     }
 
