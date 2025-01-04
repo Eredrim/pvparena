@@ -1,9 +1,14 @@
 package net.slipcor.pvparena.managers;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.arena.*;
+import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.arena.PlayerState;
+import net.slipcor.pvparena.arena.PlayerStatus;
 import net.slipcor.pvparena.classes.PADeathInfo;
 import net.slipcor.pvparena.commands.PAA_Region;
+import net.slipcor.pvparena.compatibility.AttributeAdapter;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
@@ -21,7 +26,6 @@ import net.slipcor.pvparena.runnables.PVPActivateRunnable;
 import net.slipcor.pvparena.runnables.SpawnCampRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -291,7 +295,7 @@ public class WorkflowManager {
     private static void applyKillerModifiers(Arena arena, Player killer) {
         killer.setFoodLevel(killer.getFoodLevel() + arena.getConfig().getInt(CFG.PLAYER_FEEDFORKILL));
         if (arena.getConfig().getBoolean(CFG.PLAYER_HEALFORKILL)) {
-            PlayerState.playersetHealth(killer, (int) killer.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+            PlayerState.playersetHealth(killer, (int) killer.getAttribute(AttributeAdapter.MAX_HEALTH.getValue()).getValue());
         }
         if (arena.getConfig().getBoolean(CFG.PLAYER_REFILLFORKILL)) {
             InventoryManager.clearInventory(killer);

@@ -37,8 +37,7 @@ public class VersionUtils {
         return Bukkit.getBukkitVersion().split("-")[0];
     }
 
-    /* Version compatibility hooks below */
-
-    public static int INFINITE_EFFECT_DURATION =
-            isSameVersionOrNewer(getApiVersion(), "1.19.0") ? -1 : Integer.MAX_VALUE;
+    public static boolean isApiVersionNewerThan(String versionNumber) {
+        return isSameVersionOrNewer(getApiVersion(), versionNumber);
+    }
 }

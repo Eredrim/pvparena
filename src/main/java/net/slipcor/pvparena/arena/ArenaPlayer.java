@@ -5,6 +5,7 @@ import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PADeathInfo;
 import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.commands.PAG_Leave;
+import net.slipcor.pvparena.compatibility.AttributeAdapter;
 import net.slipcor.pvparena.core.ColorUtils;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
@@ -25,7 +26,6 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -288,7 +288,7 @@ public class ArenaPlayer {
         double iHealth = config.getInt(CFG.PLAYER_HEALTH, -1);
 
         if (iHealth < 1) {
-            iHealth = this.player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
+            iHealth = this.player.getAttribute(AttributeAdapter.MAX_HEALTH.getValue()).getBaseValue();
         }
 
         PlayerState.playersetHealth(this.player, iHealth);

@@ -50,7 +50,7 @@ import java.util.stream.Stream;
 
 import static java.util.Optional.ofNullable;
 import static net.slipcor.pvparena.config.Debugger.debug;
-import static net.slipcor.pvparena.core.VersionUtils.INFINITE_EFFECT_DURATION;
+import static net.slipcor.pvparena.compatibility.Constants.INFINITE_EFFECT_DURATION;
 
 
 public abstract class AbstractFlagGoal extends ArenaGoal {

@@ -1,12 +1,13 @@
 package net.slipcor.pvparena.arena;
 
 import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.compatibility.AttributeAdapter;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
-import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
@@ -57,7 +58,7 @@ public final class PlayerState {
         this.foodlevel = player.getFoodLevel();
         this.gamemode = player.getGameMode();
         this.health = player.getHealth();
-        this.maxhealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
+        this.maxhealth = player.getAttribute(AttributeAdapter.MAX_HEALTH.getValue()).getBaseValue();
 
         this.exhaustion = player.getExhaustion();
         this.experience = player.getExp();
@@ -109,16 +110,17 @@ public final class PlayerState {
     public static void fullReset(final Arena arena, final Player player) {
         int iHealth = arena.getConfig().getInt(CFG.PLAYER_HEALTH);
 
+        AttributeInstance playerMaxHealth = player.getAttribute(AttributeAdapter.MAX_HEALTH.getValue());
         if (iHealth < 1) {
-            iHealth = (int) player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
+            iHealth = (int) playerMaxHealth.getBaseValue();
         }
 
         if (arena.getConfig().getInt(CFG.PLAYER_MAXHEALTH) > 0) {
-             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(arena.getConfig().getInt(CFG.PLAYER_MAXHEALTH));
+             playerMaxHealth.setBaseValue(arena.getConfig().getInt(CFG.PLAYER_MAXHEALTH));
         }
 
-        if (iHealth > player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()) {
-            player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
+        if (iHealth > playerMaxHealth.getBaseValue()) {
+            player.setHealth(playerMaxHealth.getBaseValue());
         } else {
             playersetHealth(player, iHealth);
         }
@@ -177,16 +179,17 @@ public final class PlayerState {
             player.setGameMode(this.gamemode);
         }
 
+        AttributeInstance playerMaxHealth = player.getAttribute(AttributeAdapter.MAX_HEALTH.getValue());
         if (aPlayer.getArena().getConfig().getInt(CFG.PLAYER_MAXHEALTH) > 0) {
-            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(this.maxhealth);
+            playerMaxHealth.setBaseValue(this.maxhealth);
         }
 
-        if (player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() == this.maxhealth) {
+        if (playerMaxHealth.getBaseValue() == this.maxhealth) {
             player.setHealth(Math.min(this.health, this.maxhealth));
         } else {
-            final double newHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() * this.health / this.maxhealth;
-            if (newHealth > player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()) {
-                player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
+            final double newHealth = playerMaxHealth.getBaseValue() * this.health / this.maxhealth;
+            if (newHealth > playerMaxHealth.getBaseValue()) {
+                player.setHealth(playerMaxHealth.getBaseValue());
             } else {
                 player.setHealth(newHealth);
             }

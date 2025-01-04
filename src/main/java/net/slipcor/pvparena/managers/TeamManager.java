@@ -110,7 +110,7 @@ public final class TeamManager {
             counts.put(team.getName(), team.getTeamMembers().size());
         }
 
-        if (counts.size() < 1) {
+        if (counts.isEmpty()) {
             debug(arena, "noone in there");
             return false; // noone there => not even
         }

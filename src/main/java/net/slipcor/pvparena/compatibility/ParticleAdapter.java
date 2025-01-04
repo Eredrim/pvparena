@@ -2,8 +2,7 @@ package net.slipcor.pvparena.compatibility;
 
 import org.bukkit.Particle;
 
-import static net.slipcor.pvparena.core.VersionUtils.getApiVersion;
-import static net.slipcor.pvparena.core.VersionUtils.isSameVersionOrNewer;
+import static net.slipcor.pvparena.core.VersionUtils.isApiVersionNewerThan;
 
 /**
  * Compatibility class to make PVPArena compatible with Bukkit 1.16.5 - 1.20.4
@@ -83,7 +82,7 @@ public enum ParticleAdapter {
     REVERSE_PORTAL("REVERSE_PORTAL"),
     WHITE_ASH("WHITE_ASH");
 
-    private static final boolean USE_120_VERSION = isSameVersionOrNewer(getApiVersion(), "1.20.5");
+    private static final boolean USE_120_VERSION = isApiVersionNewerThan("1.20.5");
 
     private final String nameFor120;
 
