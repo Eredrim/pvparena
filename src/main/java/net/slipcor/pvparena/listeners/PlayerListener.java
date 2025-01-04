@@ -361,7 +361,7 @@ public class PlayerListener implements Listener {
             } else {
                 if (arenaPlayer.getStatus() != WATCH || !arena.getConfig().getBoolean(CFG.PERMS_SPECINTERACT)) {
                     // disable all event in arena for player without team or special spectate setting
-                    debug(arenaPlayer, "[Cancel #7] player without team who is not a spectator with allowed interactions");
+                    debug(arenaPlayer, "[Cancel #9] player without team who is not a spectator with allowed interactions");
                     event.setCancelled(true);
                 } else {
                     debug(arenaPlayer, "allowing spectator interaction due to config setting!");
