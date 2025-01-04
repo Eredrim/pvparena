@@ -96,7 +96,9 @@ public class ArenaScoreboard {
                         public void run() {
                             Scoreboard backupScoreboard = ap.getBackupScoreboard();
                             if (ap.getBackupScoreboardTeam() != null && !force) {
-                                backupScoreboard.getTeam(ap.getBackupScoreboardTeam()).addEntry(ap.getName());
+                                Team original = ofNullable(backupScoreboard.getTeam(ap.getBackupScoreboardTeam()))
+                                        .orElseGet(() -> backupScoreboard.registerNewTeam(ap.getBackupScoreboardTeam()));
+                                original.addEntry(ap.getName());
                             }
                             player.setScoreboard(backupScoreboard);
                             ap.setBackupScoreboardTeam(null);
@@ -132,7 +134,9 @@ public class ArenaScoreboard {
                     Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), () -> {
                         Scoreboard backupScoreboard = ap.getBackupScoreboard();
                         if (ap.getBackupScoreboardTeam() != null) {
-                            backupScoreboard.getTeam(ap.getBackupScoreboardTeam()).addEntry(ap.getName());
+                            Team original = ofNullable(backupScoreboard.getTeam(ap.getBackupScoreboardTeam()))
+                                    .orElseGet(() -> backupScoreboard.registerNewTeam(ap.getBackupScoreboardTeam()));
+                            original.addEntry(ap.getName());
                         }
                         player.setScoreboard(backupScoreboard);
                         ap.setBackupScoreboardTeam(null);
