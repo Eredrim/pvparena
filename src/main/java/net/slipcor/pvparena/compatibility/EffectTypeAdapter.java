@@ -2,7 +2,7 @@ package net.slipcor.pvparena.compatibility;
 
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.Objects;
+import static java.util.Optional.ofNullable;
 
 /**
  * Compatibility class to make PVPArena compatible with Bukkit 1.16.5 - 1.20.4
@@ -10,16 +10,16 @@ import java.util.Objects;
 public abstract class EffectTypeAdapter {
 
     public static final PotionEffectType SPEED = PotionEffectType.SPEED;
-    public static final PotionEffectType SLOWNESS = Objects.requireNonNull(PotionEffectType.getByName("slowness"));
-    public static final PotionEffectType HASTE = Objects.requireNonNull(PotionEffectType.getByName("haste"));
-    public static final PotionEffectType MINING_FATIGUE = Objects.requireNonNull(PotionEffectType.getByName("mining_fatigue"));
-    public static final PotionEffectType STRENGTH = Objects.requireNonNull(PotionEffectType.getByName("strength"));
-    public static final PotionEffectType INSTANT_HEALTH = Objects.requireNonNull(PotionEffectType.getByName("instant_health"));
-    public static final PotionEffectType INSTANT_DAMAGE = Objects.requireNonNull(PotionEffectType.getByName("instant_damage"));
-    public static final PotionEffectType JUMP_BOOST = Objects.requireNonNull(PotionEffectType.getByName("jump_boost"));
-    public static final PotionEffectType NAUSEA = Objects.requireNonNull(PotionEffectType.getByName("nausea"));
+    public static final PotionEffectType SLOWNESS = ofNullable(PotionEffectType.getByName("slowness")).orElse(PotionEffectType.SLOW);
+    public static final PotionEffectType HASTE = ofNullable(PotionEffectType.getByName("haste")).orElse(PotionEffectType.FAST_DIGGING);
+    public static final PotionEffectType MINING_FATIGUE = ofNullable(PotionEffectType.getByName("mining_fatigue")).orElse(PotionEffectType.SLOW_DIGGING);
+    public static final PotionEffectType STRENGTH = ofNullable(PotionEffectType.getByName("strength")).orElse(PotionEffectType.INCREASE_DAMAGE);
+    public static final PotionEffectType INSTANT_HEALTH = ofNullable(PotionEffectType.getByName("instant_health")).orElse(PotionEffectType.HEAL);
+    public static final PotionEffectType INSTANT_DAMAGE = ofNullable(PotionEffectType.getByName("instant_damage")).orElse(PotionEffectType.HARM);
+    public static final PotionEffectType JUMP_BOOST = ofNullable(PotionEffectType.getByName("jump_boost")).orElse(PotionEffectType.JUMP);
+    public static final PotionEffectType NAUSEA = ofNullable(PotionEffectType.getByName("nausea")).orElse(PotionEffectType.CONFUSION);
     public static final PotionEffectType REGENERATION = PotionEffectType.REGENERATION;
-    public static final PotionEffectType RESISTANCE = Objects.requireNonNull(PotionEffectType.getByName("resistance"));
+    public static final PotionEffectType RESISTANCE = ofNullable(PotionEffectType.getByName("resistance")).orElse(PotionEffectType.DAMAGE_RESISTANCE);
     public static final PotionEffectType FIRE_RESISTANCE = PotionEffectType.FIRE_RESISTANCE;
     public static final PotionEffectType WATER_BREATHING = PotionEffectType.WATER_BREATHING;
     public static final PotionEffectType INVISIBILITY = PotionEffectType.INVISIBILITY;
