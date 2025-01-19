@@ -16,7 +16,7 @@ Scores are, for instance, claiming a flag in CTF or Domination, bringing a hosta
 
 ## Config settings
 
-- modules.points.classes.[classname] \- the required points (in decimals) to choose this class
+- modules.points.classes.\<classname\> \- the required points (in decimals) to choose this class
 - modules.points.reward.PplayerDeath \- how many points should be granted / reduced for a player's death?
 - modules.points.reward.PplayerKill \- how many points should be granted / reduced for a kill?
 - modules.points.reward.PplayerScore \- how many points should be granted / reduced for player scoring?

@@ -9,11 +9,11 @@ some actions to arena players.
 
 Command |  Definition
 ------------- | -------------
-/pa [arena] blacklist clear             | clear the general blacklist
-/pa [arena] blacklist [break/place] clear       | clear the BREAK or the PLACE blacklist
-/pa [arena] blacklist [break/place] show       | show a blacklist content
-/pa [arena] blacklist [break/place] add [block]    | add a block to a blacklist
-/pa [arena] blacklist [break/place] remove [block]    | remove a block from a blacklist
+/pa \<arena\> blacklist clear             | clear the general blacklist
+/pa \<arena\> blacklist \<break/place\> clear       | clear the BREAK or the PLACE blacklist
+/pa \<arena\> blacklist \<break/place\> show       | show a blacklist content
+/pa \<arena\> blacklist \<break/place\> add \<block\>    | add a block to a blacklist
+/pa \<arena\> blacklist \<break/place\> remove \<block\>    | remove a block from a blacklist
 
 Example: `/pa ctf blacklist break add SNOW` - add SNOW block to the BREAK blacklist
 

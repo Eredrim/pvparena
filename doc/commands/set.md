@@ -12,8 +12,8 @@ So only use this if you know what you're doing.
 
 | Command                              | Definition                                         |
 |--------------------------------------|----------------------------------------------------|
-| /pa [arena] set [pageNumber]         | show a list of editable config nodes of your arena |
-| /pa [arena] set [configNode] [value] | edit the value of an arena config node             |
+| /pa \<arena\> set \<pageNumber\>         | show a list of editable config nodes of your arena |
+| /pa \<arena\> set \<configNode\> \<value\> | edit the value of an arena config node             |
 
 Examples :
 - `/pa test set 0` - get the first page of editable nodes of the arena "test" configuration
@@ -21,7 +21,7 @@ Examples :
 
 ## Details
 
-The value of a configuration node depends on its type. These types are show when you use `/pa [arena] set [pageNumber]`.
+The value of a configuration node depends on its type. These types are show when you use `/pa <arena> set <pageNumber>`.
 However, it's quite simple to guess a node type.
 There are severals categories of types and here is how to set them :
 - **boolean:** Quite simple, just type `true` or `false`

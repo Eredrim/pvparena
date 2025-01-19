@@ -9,6 +9,6 @@ any arena command without precising arena name.
 
 Command |  Definition
 ------------- | -------------
-/pa [arena] edit | toggle the edit mode of an arena
+/pa \<arena\> edit | toggle the edit mode of an arena
 
 Example: `/pa ctf edit` - enable or disable edit mode for "ctf" arena

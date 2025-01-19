@@ -10,7 +10,7 @@ its team is eliminated.
 ## Setup
 
 Firstly, you have to register destroyable blocks in your arena config.
-In order to do that, use `/pa [arenaname] block set [teamName]`. This will enable the selection mode. 
+In order to do that, use `/pa <arenaname> block set <teamName>`. This will enable the selection mode. 
 Then left-click of the chosen block (that has to be of the defined block type).
 
 ## Config settings

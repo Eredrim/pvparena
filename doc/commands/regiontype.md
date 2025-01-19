@@ -8,7 +8,7 @@ This command sets the [region](../regions.md) type which is essential for its fu
 
 Command |  Definition
 ------------- | -------------
-/pa [arena] regiontype [region] [type]   | change the type of an arena regions
+/pa \<arena\> regiontype \<region\> \<type\>   | change the type of an arena regions
 
 Example: `/pa ctf !rt battlefield BATTLE` - set the "ctf" region "battlefield" to BATTLE
 

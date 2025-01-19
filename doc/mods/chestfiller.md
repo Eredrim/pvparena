@@ -13,7 +13,7 @@ Installation of this module can be done in a normal way. You'll find installatio
 Firstly, you need to have a BATTLE region. It's a requirement.
 
 Then, you have to set what you want to put inside the chests of the battlefield. Either you can create a source chest
-with `sourceChest` subcommand (see below) or you can save your own inventory as source using `/pa [arena] set 
+with `sourceChest` subcommand (see below) or you can save your own inventory as source using `/pa <arena> set 
 modules.chestfiller.cfitems inventory`.
 
 Finally, you can specifically define which containers will receive the stuff. If so, use the `addContainer` subcommand
@@ -33,10 +33,10 @@ of a game will be set as a container to fill.
 
 ## Commands
 
-- `/pa [arena] !cf sourceLocation` \- set the container that you're looking as source to get the inventory from 
+- `/pa <arena> !cf sourceLocation` \- set the container that you're looking as source to get the inventory from 
 (overrides `modules.chestfiller.items`). Works with double chests.
-- `/pa [arena] !cf addContainer` \- add the container that you're looking to the list of chests to be filled
-- `/pa [arena] !cf clear` \- clear the list of chests to be filled
+- `/pa <arena> !cf addContainer` \- add the container that you're looking to the list of chests to be filled
+- `/pa <arena> !cf clear` \- clear the list of chests to be filled
 
 <br>
 

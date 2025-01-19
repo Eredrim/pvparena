@@ -25,7 +25,7 @@ of the following material (color prefix doesn't matter):
 
 <br>
 
-To set a flag, use `/pa [arenaname] flag set [teamname]`. It enables block selection.
+To set a flag, use `/pa <arenaname> flag set <teamname>`. It enables block selection.
 Just left click on your flag block. Clicked block must have same type as defined in your config. However nothing will
 happen.
 

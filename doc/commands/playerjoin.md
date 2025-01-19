@@ -8,7 +8,7 @@ This command forces an online player to join an arena. You can specify an arena 
 
 Command |  Definition
 ------------- | -------------
-/pa [arena] playerjoin [player] (team)    | force a player to join an arena
+/pa \<arena\> playerjoin \<player\> (team)    | force a player to join an arena
 
 Example: `/pa ctf !pj valera blue` - make valera join the CTF arena, team blue
 

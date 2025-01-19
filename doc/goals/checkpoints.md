@@ -12,7 +12,7 @@ Players have to take a path composed by checkpoints. The first one every checkpo
 
 ## Setup
 
-Spawns have to be added. In order to do that, use `/pa [arenaname] checkpoint [number]`. This sets checkpoint number [number].
+Spawns have to be added. In order to do that, use `/pa <arenaname> checkpoint <number>`. This sets checkpoint number \<number\>.
 Make sure you start with 1 and don't forget to add every single number, or else it will not be possible to win 😋
 
 ## Config settings  

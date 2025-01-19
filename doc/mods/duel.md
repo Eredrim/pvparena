@@ -18,9 +18,9 @@ Installation of this module can be done in a normal way. You'll find installatio
 
 ## Commands
 
-- `/pa [arena] duel [player]` \- invite a player to a duel
-- `/pa [arena] accept` \- accept the duel
-- `/pa [arena] decline` \- decline the invitation
+- `/pa <arena> duel <player>` \- invite a player to a duel
+- `/pa <arena> accept` \- accept the duel
+- `/pa <arena> decline` \- decline the invitation
 
 ## Warnings
 

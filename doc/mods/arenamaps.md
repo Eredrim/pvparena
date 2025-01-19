@@ -25,11 +25,11 @@ Values of 3 latter settings can be:
 
 ## Commands
 
-- `/pa [arena] !map align` \- toggle the alignToPlayer setting
-- `/pa [arena] !map score` \- toggle the showScore setting
-- `/pa [arena] !map players [value]` \- set the showPlayers setting
-- `/pa [arena] !map blocks [value]` \- set the showBlocks setting
-- `/pa [arena] !map spawns [value]` \- set the showSpawns setting
+- `/pa <arena> !map align` \- toggle the alignToPlayer setting
+- `/pa <arena> !map score` \- toggle the showScore setting
+- `/pa <arena> !map players <value>` \- set the showPlayers setting
+- `/pa <arena> !map blocks <value>` \- set the showBlocks setting
+- `/pa <arena> !map spawns <value>` \- set the showSpawns setting
 
 > ⚙ **Technical precisions:**  
 > * Score displaying takes a lot of space at the top of the map. It's recommended to disable it for 3 teams or more.

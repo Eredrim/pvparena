@@ -26,4 +26,4 @@ Installation of this module can be done in a normal way. You'll find installatio
 >- If you want to create a TNT Run arena, set ticks parameter to **8**
 >- You can edit settings in-game using [`/pa set` command](../commands/set.md). Therefore, materials can be set by 
 > filling your inventory with all types of block to dissolve and by using the command
-> `/pa [arena] set modules.blockdissolve.materials inventory`.
+> `/pa <arena> set modules.blockdissolve.materials inventory`.

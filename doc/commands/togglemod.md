@@ -8,7 +8,7 @@ Toggles a module on or off.
 
 Command |  Definition
 ------------- | -------------
-/pa [arena] togglemod [module] | Toggles a mod for an arena
+/pa \<arena\> togglemod \<module\> | Toggles a mod for an arena
 
 Example:
 - `/pa ctf !tm WorldEdit` - Toggles mod "WorldEdit" in "ctf" arena

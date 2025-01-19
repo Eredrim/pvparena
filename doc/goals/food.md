@@ -24,14 +24,14 @@ Each team will get a random food type among the following ones:
 You have to prepare chests.
 Those chests will be checked for incoming and outgoing food items (of the team type).
 
-To register them, use `/pa [arenaname] foodchest add [teamname]`, this enables 
+To register them, use `/pa <arenaname> foodchest add <teamname>`, this enables 
 a selection mode. Click on the chests that should be the team's chests. Then, type the command again to
 close selection mode.  
 Repeat the operation for all teams.
 
  You can optionally prepare furnaces so that a team can ONLY use this furnace. 
 
-Set this by `/pa [arenaname] foodfurnace add [teamname]` and hit the furnace. The selection mode works exactly like
+Set this by `/pa <arenaname> foodfurnace add <teamname>` and hit the furnace. The selection mode works exactly like
 the one for food chests.
 
 > 🚩 **Notes:**  

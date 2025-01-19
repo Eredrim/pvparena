@@ -11,7 +11,7 @@ Command |  Definition
 ------------- | -------------
 /pa reload | reload everything or the arena you're part of
 /pa reload ymls | reload main config, language and help ymls 
-/pa [arena] reload | reload a specific arena
+/pa \<arena\> reload | reload a specific arena
 
 Example: `/pa ctf reload` - reload the arena called CTF
 

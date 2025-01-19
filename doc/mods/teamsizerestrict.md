@@ -15,7 +15,7 @@ Installation of this module can be done in a normal way. You'll find installatio
 
 ## Commands
 
-- `/pa [arena] !tsr [team] [maxNumber]` \- set the maximum of allowed players for a team. Set to `0` to disable.
+- `/pa <arena> !tsr <team> <maxNumber>` \- set the maximum of allowed players for a team. Set to `0` to disable.
 
 ## Config settings
 

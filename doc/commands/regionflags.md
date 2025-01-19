@@ -8,7 +8,7 @@ This command manages the [regions](../regions.md) behaviour by enabling/disablin
 
 Command |  Definition
 ------------- | -------------
-/pa [arena] regionflag [region] [flag] (true/false) | toggle regionflag for an arena region
+/pa \<arena\> regionflag \<region\> \<flag\> (true/false) | toggle regionflag for an arena region
 
 Example: `/pa ctf !rf win2 WIN true` - enable the WIN regionflag for the region "win2" of the arena "ctf"
 

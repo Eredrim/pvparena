@@ -9,7 +9,7 @@ Either the tank wins by killing everyone else, or the rest wins by killing the t
 
 ## Setup
 
-A special "tank" spawn has to be set. Just type [`/pa [arena] spawn tank`](../commands/spawn.md).
+A special "tank" spawn has to be set. Just type [`/pa <arena> spawn tank`](../commands/spawn.md).
 
 Optionally, you can give a special gear to the tank by [setting the class](../commands/class.md) `%tank%`.
 

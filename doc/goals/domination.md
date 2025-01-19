@@ -19,7 +19,7 @@ points wins.
 
 ## Setup
 
-Flags have to be added. In order to do that, use `/pa [arenaname] flag add`. This toggles edit mode. 
+Flags have to be added. In order to do that, use `/pa <arenaname> flag add`. This toggles edit mode. 
 In toggle mode you can register as many flags as you want by clicking on them.  
 Don't forget to type command again in order to exit edit mode after setting the flags.
 

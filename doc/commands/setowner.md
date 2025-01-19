@@ -9,7 +9,7 @@ NOT checked, but you can verify it with [`/pa info`](../commands.md#arena-standa
 
 Command |  Definition
 ------------- | -------------
-/pa [arena] setowner [player] | give player ownership of an arena
+/pa \<arena\> setowner \<player\> | give player ownership of an arena
 
 
 Example: `/pa global setowner %server%` - set the server as owner of the "global" arena

@@ -20,7 +20,7 @@ By default, there are 5 default kill gears:
 
 You can alter them or set new ones by doing that:
 - Equip your own inventory with wanted gears (place armor and off-hand in good slots)
-- Type `/pa [arenaname] !kr [remainingKillNumber]`
+- Type `/pa <arenaname> !kr <remainingKillNumber>`
 
 ## Config settings
 

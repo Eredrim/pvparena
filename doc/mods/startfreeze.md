@@ -14,4 +14,4 @@ Installation of this module can be done in a normal way. You'll find installatio
 
 ## Commands
 
-- `/pa [arena] !sf [number]` \- set the seconds to freeze to that value
+- `/pa <arena> !sf <number>` \- set the seconds to freeze to that value

@@ -10,7 +10,7 @@ Installation of this module can be done in a normal way. You'll find installatio
 
 ## Setup
 
-You need to set a spawn called "relay" -> `/pa [arena] spawn set relay`
+You need to set a spawn called "relay" -> `/pa <arena> spawn set relay`
 
 ## Config settings
 

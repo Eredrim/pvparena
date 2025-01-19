@@ -9,7 +9,7 @@ not during game.
 
 | Command                           | Definition                            |
 |-----------------------------------|---------------------------------------|
-| /pa [arena] teleport [spawnPoint] | teleport to a spawn point of an arena |
+| /pa \<arena\> teleport \<spawnPoint\> | teleport to a spawn point of an arena |
 
 Examples:
 - `/pa free teleport fight` - teleport to a random fight spawn of arena "free"

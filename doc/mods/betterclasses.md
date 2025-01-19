@@ -8,7 +8,7 @@ This mod adds more to your classes, POTION effects and maximum player count!
 
 Installation of this module can be done in a normal way. You'll find installation process in [modules page](../modules.md#installing-modules) of the doc.
 
-Reload your arena (with `/pa [arena] reload`) after installation to generate a default config.
+Reload your arena (with `/pa <arena> reload`) after installation to generate a default config.
 
 ## Config settings
 
@@ -40,12 +40,12 @@ player name.
 
 ## Commands
 
-- `/pa [arena] !bc [className]` \- show info about that class
-- `/pa [arena] !bc [className] add [effectType] (amplifier)` \- add a potion effect to a class (e.g. "add SLOW 2")
-- `/pa [arena] !bc [className] remove [effectType]` \- remove all potion effects of type `[effectType]` to a class
-- `/pa [arena] !bc [className] clear` \- remove all potion effects from that class
-- `/pa [arena] !bc [classname] set [maxTeamPlayers/maxGlobalPlayers/neededEXPLevel] [value]` \- change value of one setting of a class
-- `/pa [arena] !bc [className] respawncommand (command)` \- set a class respawn command (empty to remove)
+- `/pa <arena> !bc <className>` \- show info about that class
+- `/pa <arena> !bc <className> add <effectType> (amplifier)` \- add a potion effect to a class (e.g. "add SLOW 2")
+- `/pa <arena> !bc <className> remove <effectType>` \- remove all potion effects of type `<effectType>` to a class
+- `/pa <arena> !bc <className> clear` \- remove all potion effects from that class
+- `/pa <arena> !bc <classname> set <maxTeamPlayers/maxGlobalPlayers/neededEXPLevel> <value>` \- change value of one setting of a class
+- `/pa <arena> !bc <className> respawncommand (command)` \- set a class respawn command (empty to remove)
 
 ## Potion Effect Types
 

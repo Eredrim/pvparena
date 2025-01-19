@@ -8,7 +8,7 @@ This command does only one thing: Remove the arena.
 
 Command |  Definition
 ------------- | -------------
-/pa [arena] remove | remove an arena
+/pa \<arena\> remove | remove an arena
 
 
 Example: `/pa test remove` - remove the "test" arena

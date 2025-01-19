@@ -3,7 +3,7 @@
 <br>
 
 > **🚩 Syntax tip:**  
-> [required] indicates a required parameter  
+> \<required> indicates a required parameter  
 > (optional) indicates an optional parameter
 > 
 
@@ -33,12 +33,12 @@ Each goal has its own setup, so take the time to read [documentation](goals.md) 
 
 Just type this command to create your arena:
 
-`/pa create [newArenaName] (goal)`
+`/pa create <newArenaName> (goal)`
 
 By default, your arena will use [TeamLives](goals/teamlives.md), a goal with a teams gamemode.
 
 You can change arena goal with the command:
-`/pa [arenaName] goal [goalName]`
+`/pa <arenaName> goal <goalName>`
 
 You will find more information about this command [on this link](commands/goal.md).
 
@@ -47,7 +47,7 @@ You will find more information about this command [on this link](commands/goal.m
 ## 3. Set spawn points
 
 Now you have to create game spawn points by using this command:  
-`/pa [arenaName] spawn set [spawnType] (teamName)`
+`/pa <arenaName> spawn set <spawnType> (teamName)`
 
 Spawn types are: `fight`, `lounge`, `spectator`, `exit`. 
 Number of spawns you have to create depends on the gamemode of your goal (free or teams).
@@ -74,17 +74,17 @@ Just put a spawn number after spawn type to create multiple spawns. E.g. `/pa sp
 
 Now create the battle region with this command:
 
-`/pa [arenaName] region`
+`/pa <arenaName> region`
 
 It enables selection mode. Equip your hand with a **stick** and set your region with left and right click. 
 
 Then type :
 
-`/pa [arenaName] region [yourNewRegionName]`
+`/pa <arenaName> region <yourNewRegionName>`
 
 Finally, specify your region type :
 
-`/pa [arenaName] regionType [regionName] BATTLE`
+`/pa <arenaName> regionType <regionName> BATTLE`
 
 > **🚩 Tips:**
 > - By default, your region is protected from block destruction and placing
@@ -105,7 +105,7 @@ when all players
 are ready.
 
 > **🚩 Tips:**
-> - Players can choose their class with `/pa arenaclass [className]` command
+> - Players can choose their class with `/pa arenaclass <className>` command
 > - You can set a default class using the config parameter `autoClass`
 > - Players can also be ready typing `/pa ready`, that's why ready block is not mandatory
 
@@ -115,10 +115,10 @@ are ready.
 
 Your first arena was created! Join the game with:
 
-`/pa [arenaName] (join) (teamName)`
+`/pa <arenaName> (join) (teamName)`
 
 > **🚩 Tip:**  
-> If you just type `/pa [arenaName]` your team will be randomly selected.
+> If you just type `/pa <arenaName>` your team will be randomly selected.
 
 <br>
 

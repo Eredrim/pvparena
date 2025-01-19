@@ -8,7 +8,7 @@ This command forces an online player to leave its arena, just like if they typed
 
 | Command                          | Definition                       |
 |----------------------------------|----------------------------------|
-| /pa [arena] playerleave [player] | force a player to leave an arena |
+| /pa \<arena\> playerleave \<player\> | force a player to leave an arena |
 
 Example: `/pa ctf !pl valera` - make valera leave the arena
 

@@ -10,10 +10,10 @@ Installation of this module can be done in a normal way. You'll find installatio
 
 ## Setup
 
-Firstly, create as many item spawning places as you want with command: `/pa [arena] spawn itemX` (X is a number). Items
+Firstly, create as many item spawning places as you want with command: `/pa <arena> spawn itemX` (X is a number). Items
 will be dropped on those places during the match.
 
-Then create the sets of items to drop on each spawn point. To do that, type `/pa [arena] !is setItems itemX inventory`,
+Then create the sets of items to drop on each spawn point. To do that, type `/pa <arena> !is setItems itemX inventory`,
 where `itemX` is the name of a previously defined spawn point. The command uses all your current inventory to create
 the item set of the spawner. You can also use `hand` instead of inventory `inventory`, to only use the item you're 
 holding in your (right) hand.
@@ -25,7 +25,7 @@ holding in your (right) hand.
 
 ## Commands
 
-- `/pa [arena] !is setItems [itemX] [inventory/hand]` \- create or replace the item set for a spawn point using either
+- `/pa <arena> !is setItems <itemX> <inventory/hand>` \- create or replace the item set for a spawn point using either
 inventory of current player or item in hand of current player.
 
 

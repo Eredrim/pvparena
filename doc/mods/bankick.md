@@ -14,13 +14,13 @@ Installation of this module can be done in a normal way. You'll find installatio
 
 ## Commands
 
-- `/pa [arena] ban [player]` \- ban player from arena
-- `/pa [arena] kick [player]` \- kick player from arena
-- `/pa [arena] tempban [player] [time]` \- ban player for [time] from arena
-- `/pa [arena] unban [player]` \- unban player from arena
-- `/pa [arena] tempunban [player] [time]` \- unban player for [time] from arena 
+- `/pa <arena> ban <player>` \- ban player from arena
+- `/pa <arena> kick <player>` \- kick player from arena
+- `/pa <arena> tempban <player> <time>` \- ban player for \<time\> from arena
+- `/pa <arena> unban <player>` \- unban player from arena
+- `/pa <arena> tempunban <player> <time>` \- unban player for \<time\> from arena 
 
-[time] is e.g. "12m" or "10s" or "20d", if there is no letter, it will be parsed as seconds.  
+\<time\> is e.g. "12m" or "10s" or "20d", if there is no letter, it will be parsed as seconds.  
 Use "s" for seconds, "m" for minutes and "d" for days.
 
 

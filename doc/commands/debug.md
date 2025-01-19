@@ -9,7 +9,7 @@ The debug command is used to spam the log file with a hell lot more of informati
 Command |  Definition
 ------------- | -------------
 /pa debug all | debug ALL classes
-/pa debug [value] | debug class or arena where name equals to `value`
+/pa debug \<value\> | debug class or arena where name equals to `value`
 /pa debug none | disable debugging
 
 Example: `/pa debug 4,7` - debug class 4 and 7

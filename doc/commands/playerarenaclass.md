@@ -8,7 +8,7 @@ This command forces an online player to switch their class, just like if they ty
 
 | Command                                  | Definition                     |
 |------------------------------------------|--------------------------------|
-| /pa [arena] playerleave [player] [class] | force a player to switch class |
+| /pa \<arena\> playerleave \<player\> \<class\> | force a player to switch class |
 
 Example: `/pa ctf !pac valera pyro` - make valera switch to "pyro" class
 

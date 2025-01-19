@@ -40,7 +40,7 @@ Installation of this module can be done in a normal way. You'll find installatio
 
 ## Commands
 
-- `/pa [arena] bet [name] [amount]` \- bet [amount] on team / player. 
+- `/pa <arena> bet <name> <amount>` \- bet \<amount\> on team / player. 
 
 **NB:** Betting features are only accessible for players that are not playing the match (obviously).
 
@@ -58,4 +58,4 @@ Installation of this module can be done in a normal way. You'll find installatio
 > ⚙️ **Technical precisions for nerds:**
 > * Calculation of win prize is made with this formula: `(totalPotAmount / winnerNumber * winFactor) + winReward`
 > * Calculation of bet gain is made with this formula: `(betAmount / totalAmountOfWinnersBets) * totalAmountOfGamblersBets * betFactor`
-> * All reward are rounded with a two digits precision. For instance, $9.675 will be rounded to $9.68
+> * All reward are rounded with a two digits precision. For instance, \$9.675 will be rounded to \$9.68

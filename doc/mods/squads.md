@@ -17,7 +17,7 @@ This mod works signs to join and leave squads. So, you have to create them.
 If you want players can switch between squads during a game (c.f. config settings), you should place squads signs in
 the battlefield, in the spawn areas. Otherwise, you should place them directly in the lounges.
 
-1. Create a squad using the `/pa [arena] !sq add [squadName] [playerLimit]` command.
+1. Create a squad using the `/pa <arena> !sq add <squadName> <playerLimit>` command.
 
 
 2. Then create the join sign using the following template:
@@ -54,7 +54,6 @@ the battlefield, in the spawn areas. Otherwise, you should place them directly i
 
 ## Commands
 
-- `/pa [arena] !sq` \- show the arena squads
-- `/pa [arena] !sq add [squadName] [playerLimit]` \- add squad with player limit (set to 0 to remove limit)
-- `/pa [arena] !sq remove [squadName]` \- remove squad [name]
-- `/pa [arena] !sq set [squadName] [playerLimit]` \- set player limit for squad
+- `/pa <arena> !sq` \- show the arena squads
+- `/pa <arena> !sq add <squadName> <playerLimit>` \- add squad with player limit (set to 0 to remove limit)
+- `/pa <arena> !sq remove <squadName>` \- remove squad <name> - `/pa <arena> !sq set <squadName> <playerLimit>` \- set player limit for squad

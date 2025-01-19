@@ -8,7 +8,7 @@ This command re-enables an arena after disabling it.
 
 Command |  Definition
 ------------- | -------------
-/pa [arena] enable | disable an arena
+/pa \<arena\> enable | disable an arena
 
 Example: `/pa test enable` - enable the "test" arena
 

@@ -1,8 +1,8 @@
 ## PVP Arena Goals
 
-Goals are ways to win the game or lose the game! You can see active goals of your arena with `/pa [arena] info`.
+Goals are ways to win the game or lose the game! You can see active goals of your arena with `/pa <arena> info`.
 
-To manage arena goals, use the [`/pa [arena] goal`](commands/goal.md) command.
+To manage arena goals, use the [`/pa <arena> goal`](commands/goal.md) command.
 
 | Goal                                          | Description                                   | Game mode | Join during match |
 |-----------------------------------------------|-----------------------------------------------|-----------|-------------------|

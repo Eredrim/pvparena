@@ -21,13 +21,13 @@ Installation of this module can be done in a normal way. You'll find installatio
 
 ## Commands
 
-- `/pa [arena] !br hard` \- toggle the hard setting
-- `/pa [arena] !br restoreblocks` \- toggle the restoreblocks setting
-- `/pa [arena] !br restorecontainers` \- toggle the restorecontainers setting
-- `/pa [arena] !br restoreinteractions` \- toggle the restoreinteractions setting
-- `/pa [arena] !br addinv` \- add a new saved container location (uses the container you're looking)
-- `/pa [arena] !br clearinv` \- clear saved containers locations
-- `/pa [arena] !br offset X` \- set the restore offset in TICKS! 
+- `/pa <arena> !br hard` \- toggle the hard setting
+- `/pa <arena> !br restoreblocks` \- toggle the restoreblocks setting
+- `/pa <arena> !br restorecontainers` \- toggle the restorecontainers setting
+- `/pa <arena> !br restoreinteractions` \- toggle the restoreinteractions setting
+- `/pa <arena> !br addinv` \- add a new saved container location (uses the container you're looking)
+- `/pa <arena> !br clearinv` \- clear saved containers locations
+- `/pa <arena> !br offset X` \- set the restore offset in TICKS! 
 
 <br>
 
@@ -35,7 +35,7 @@ Installation of this module can be done in a normal way. You'll find installatio
 > - There's no need to manually add containers location to config. By default, all containers of your BATTLE region will
 >   be registered on the first startup.
 > - If you physically add new chests to your map, don't forget to register them. Even manually with 
->   `/pa [arena] !br addinv`, or by forcing a new complete registration with `/pa [arena] !br clearinv`.
+>   `/pa <arena> !br addinv`, or by forcing a new complete registration with `/pa <arena> !br clearinv`.
 > - BlockRestore is designed for block destruction, chest and block usage only. If you need advanced restoring 
 >   (especially entities), please prefer [WorldEdit](./worldedit.md) mod. 
 

@@ -17,10 +17,10 @@ Simply create spawns as usual, and use commands below to save current spawn conf
 > ℹ All of the commands are only available out of arena fight times
 
 - `/pa !sc list` \- list available spawn collections
-- `/pa !sc save [name]` \- save current spawns configuration to a collection, if this collection exists it will be 
+- `/pa !sc save <name>` \- save current spawns configuration to a collection, if this collection exists it will be 
 overridden
-- `/pa !sc switch [name]` \- replace current spawns configuration with the requested collection
-- `/pa !sc remove [name]` \- remove a spawn collection from your config 
+- `/pa !sc switch <name>` \- replace current spawns configuration with the requested collection
+- `/pa !sc remove <name>` \- remove a spawn collection from your config 
 
 > 🚩 **Tips:**  
 > * You can edit spawns of a collection by switching to this collection, editing spawn with 

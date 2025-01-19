@@ -29,4 +29,4 @@ GREEN, LIGHT_PURPLE, RED, WHITE and YELLOW.
 
 ## Commands
 
-- `/pa !aa [type]` \- toggle the announcing of types, listed above
+- `/pa !aa <type>` \- toggle the announcing of types, listed above

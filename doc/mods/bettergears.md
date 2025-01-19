@@ -24,5 +24,5 @@ Installation of this module can be done in a normal way. You'll find installatio
 
 ## Commands
 
-- `/pa !bg [name]` \- show class / team
-- `/pa !bg [name] color R G B` \- set a team's color values
+- `/pa !bg <name>` \- show class / team
+- `/pa !bg <name> color R G B` \- set a team's color values

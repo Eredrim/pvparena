@@ -8,6 +8,6 @@ The create command basically creates a standard, boring, arena. Given legacy typ
 
 Command |  Definition
 ------------- | -------------
-/pa create [arenaName] (free)   | Create an arena. Arena uses team gamemode by default, add `free` parameter to use FFA gamemode instead.
+/pa create \<arenaName\> (free)   | Create an arena. Arena uses team gamemode by default, add `free` parameter to use FFA gamemode instead.
 
 Example: `/pa create ffa free` - create a free for all arena named "ffa"

@@ -8,9 +8,9 @@ This command manages the arena classes. You can use it to show, edit and remove 
 
 Command |  Definition
 ------------- | -------------
-/pa [arena] class load [class]   | Preview the class items of the class directly in your inventory
-/pa [arena] class save [class]   | Save your inventory to the class items of a class
-/pa [arena] class remove [class] | Remove a class from an arena
+/pa \<arena\> class load \<class\>   | Preview the class items of the class directly in your inventory
+/pa \<arena\> class save \<class\>   | Save your inventory to the class items of a class
+/pa \<arena\> class remove \<class\> | Remove a class from an arena
 
 Example: use `/pa temp class save Test` to save your inventory to the class "Test" of the arena "temp"
 

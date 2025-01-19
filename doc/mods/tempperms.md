@@ -40,12 +40,12 @@ tempperms:
 
 ## Commands
 
-- `/pa [arena] !tps` \- list perms
-- `/pa [arena] !tps add [perm]` \- add permission (normal or negative)
-- `/pa [arena] !tps rem [perm]` \- remove permission
-- `/pa [arena] !tps [name]` \- list perms for a class/team
-- `/pa [arena] !tps [name] add [perm]` \- add permission for a class/team
-- `/pa [arena] !tps [name] rem [perm]` \- remove permission from a class/team 
+- `/pa <arena> !tps` \- list perms
+- `/pa <arena> !tps add <perm>` \- add permission (normal or negative)
+- `/pa <arena> !tps rem <perm>` \- remove permission
+- `/pa <arena> !tps <name>` \- list perms for a class/team
+- `/pa <arena> !tps <name> add <perm>` \- add permission for a class/team
+- `/pa <arena> !tps <name> rem <perm>` \- remove permission from a class/team 
 
 ## Troubleshooting
 

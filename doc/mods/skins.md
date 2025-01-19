@@ -30,7 +30,7 @@ This module needs a full server restart to properly hook into a disguise plugin.
 
 ## Commands
 
-- `/pa [arena] !sk [teamName or ClassName] [player's name or mob's name]` \- Set team/class to skin. See [EntityType](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html).
+- `/pa <arena> !sk <teamName or ClassName> <player's name or mob's name>` \- Set team/class to skin. See [EntityType](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html).
 
 ## Warnings
 

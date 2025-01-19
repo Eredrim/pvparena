@@ -8,7 +8,7 @@ This command allow players to change their class if it's allowed. It must be typ
 
 Command |  Definition
 ------------- | -------------
-/pa arenaclass [className] | switch you current arena class
+/pa arenaclass \<className\> | switch you current arena class
 
 Example: `/pa -ac assassin` - get the assassin class
 

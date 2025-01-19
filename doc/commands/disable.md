@@ -8,7 +8,7 @@ This command disables arenas, force stopping them in the first place.
 
 Command |  Definition
 ------------- | -------------
-/pa [arena] disable | disable an arena
+/pa \<arena\> disable | disable an arena
 
 Example: `/pa test disable` - disable the "test" arena
 

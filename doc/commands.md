@@ -4,7 +4,7 @@ Click on a command to get its syntax, usage examples and more information about 
  `/pa` are the same.
 
 > 🚩 **Note:**  
-> You always have to precise your arena name in commands (like `/pa myArena enable`) except for these cases:
+> You always have to precise your arena name in commands (like `/pa <myArena> enable`) except for these cases:
 > - For global admin commands
 > - After you joined an arena
 > - When you're editing an arena (see [`/pa edit`](commands/edit.md) command)

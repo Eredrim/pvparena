@@ -8,7 +8,7 @@ This mod enhances fighting by adding one-shot items, with editable sound, and ex
 
 Installation of this module can be done in a normal way. You'll find installation process in [modules page](../modules.md#installing-modules) of the doc.
 
-Reload your arena (with `/pa [arena] reload`) after installation to generate a default config.
+Reload your arena (with `/pa <arena> reload`) after installation to generate a default config.
 
 ## Config settings
 
@@ -36,11 +36,11 @@ modules:
 
 ## Commands
 
-- `/pa [arena] !bf explode` \- toggle `explodeOnDeath` setting
-- `/pa [arena] !bf explodeOnlyWithOneShot` \- toggle `explodeOnlyWithOneShot` setting
-- `/pa [arena] !bf add [itemType]` \- add a throwable item to one-shot item list (limited to : arrow, snowball, egg, fireball)
-- `/pa [arena] !bf remove [itemType]` \- remove a throwable item from one-shot item list
-- `/pa [arena] !bf sound [itemType] [sound]` \- set the sound one-shot when it hits player (list of sounds below).
+- `/pa <arena> !bf explode` \- toggle `explodeOnDeath` setting
+- `/pa <arena> !bf explodeOnlyWithOneShot` \- toggle `explodeOnlyWithOneShot` setting
+- `/pa <arena> !bf add <itemType>` \- add a throwable item to one-shot item list (limited to : arrow, snowball, egg, fireball)
+- `/pa <arena> !bf remove <itemType>` \- remove a throwable item from one-shot item list
+- `/pa <arena> !bf sound <itemType> <sound>` \- set the sound one-shot when it hits player (list of sounds below).
 
 
 ## Sounds list

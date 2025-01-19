@@ -99,4 +99,4 @@ As a reminder, note that some placeholders like `%player%` only makes sense in e
 Joining, killing and leaving, but not starting. Check the table above for more details ;)
 
 > ℹ️ **Notice**:  
-> Mind to reload your arena config with `/pa [arena] reload` after each change to apply it.
+> Mind to reload your arena config with `/pa <arena> reload` after each change to apply it.

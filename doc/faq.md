@@ -16,7 +16,7 @@ You can restore you battlefield (snow ground) using [BlockRestore](mods/blockres
 ## Can my players use their own inventories?
 
 Yes it is possible, just pass `playerclasses` parameter to `true`. You can do this directly by editing your config file
-or use the [`/pa [arena] set`](commands/set.md) command.
+or use the [`/pa <arena> set`](commands/set.md) command.
 
 Then you can propose player inventories as a class: corresponding class name is `custom`. If you want this class by
 default, just set `autoclass` parameter to `custom`.
@@ -82,7 +82,7 @@ Check dedicated documentation pages to get more information.
 ## Is there a way to automatically put a player into spectator mode on death instead of them having to leave the match and then rejoin as a spectator?
 
 
-Just set `tp.death` to `spectator` in your arena config file (or with [`/pa [arena] set`](commands/set.md) command).
+Just set `tp.death` to `spectator` in your arena config file (or with [`/pa <arena> set`](commands/set.md) command).
 
 <br>
 

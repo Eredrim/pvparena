@@ -8,8 +8,8 @@ Set an arena spawn to your current position, including orientation !
 
 | Command                                                 | Definition                  |
 |---------------------------------------------------------|-----------------------------|
-| /pa [arena] spawn set [spawnName] (teamName) (class)    | Define a spawn for an arena |
-| /pa [arena] spawn remove [spawnName] (teamName) (class) | Remove a spawn for an arena |
+| /pa \<arena\> spawn set \<spawnName\> (teamName) (class)    | Define a spawn for an arena |
+| /pa \<arena\> spawn remove \<spawnName\> (teamName) (class) | Remove a spawn for an arena |
 
 For multi-spawn, you can set everything as name, as long as name **start with** the spawn type.  
 The spawn will be chosen randomly.

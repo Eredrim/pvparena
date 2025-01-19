@@ -16,12 +16,12 @@ Installation of this module can be done in a normal way. You'll find installatio
 #### 1. Define where items will spawn
 
 By default, items will randomly spawn within your BATTLE region. If it's ok for you, go next step, otherwise type 
-`/pa [arena] !pu dropspawn`. Then create PowerUps spawn locations using `/pa [arena] spawn set powerupX` (with X as a number).
+`/pa <arena> !pu dropspawn`. Then create PowerUps spawn locations using `/pa <arena> spawn set powerupX` (with X as a number).
 
 #### 2. Choose how item spawning is triggered
 
 You can choose to spawn PowerUp items with a time frequency or when a number of death is reached in your arena.
-Run `/pa [arena] !pu time [number]` to use time frequency, run `/pa [arena] !pu deaths [number]` otherwise.
+Run `/pa <arena> !pu time <number>` to use time frequency, run `/pa <arena> !pu deaths <number>` otherwise.
 
 #### 3. Create your own list of special items!
 
@@ -41,13 +41,13 @@ be a number of deaths or a number of seconds.
 points. (default: false)
 
 > 🚩 **Tip:** 
-> To create a spawn point for PowerUps in your arena, use `/pa [arena] spawn set powerupX` (where X is an integer)
+> To create a spawn point for PowerUps in your arena, use `/pa <arena> spawn set powerupX` (where X is an integer)
 
 ## Commands
 
-- `/pa [arena] !pu dropspawn` \- toggle dropspawn setting
-- `/pa [arena] !pu time [number]` \- use time trigger for spawning and define spawn frequency (in seconds)
-- `/pa [arena] !pu deaths [number]` \- use deaths trigger for spawning and define death frequency between item spawns
+- `/pa <arena> !pu dropspawn` \- toggle dropspawn setting
+- `/pa <arena> !pu time <number>` \- use time trigger for spawning and define spawn frequency (in seconds)
+- `/pa <arena> !pu deaths <number>` \- use deaths trigger for spawning and define death frequency between item spawns
 
 ## PowerUps items
 

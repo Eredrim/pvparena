@@ -9,7 +9,7 @@ By default, at the end of a match, all entities are removed from [arena regions]
 
 Command |  Definition
 ------------- | -------------
-/pa [arena] regionclear [entity] (true/false) | toggle entity clearing of an arena
+/pa \<arena\> regionclear \<entity\> (true/false) | toggle entity clearing of an arena
 
 
 Example:

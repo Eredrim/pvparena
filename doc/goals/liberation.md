@@ -9,12 +9,12 @@ Other team member of jailed players can liberate them by clicking on a button, g
 
 ## Setup
 
-You have to add spawns for the jails, set them with command [`/pa [arena] spawn set jail [team]`](../commands/spawn.md).
+You have to add spawns for the jails, set them with command [`/pa <arena> spawn set jail <team>`](../commands/spawn.md).
 
 Then you have to set a button, at the outside of the jail, that will trigger the liberation of jailed players. To do 
 that:
 - place a **button** where you want
-- type `/pa [arenaname] button set [teamname]` (to open selection mode)
+- type `/pa <arenaname> button set <teamname>` (to open selection mode)
 - do a left-click on your button
 
 ## Config settings

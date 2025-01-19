@@ -24,22 +24,22 @@ After installation, the module needs a full server restart to hook into WorldEdi
 
 ## Commands
 
-- `/pa [arena] !we load [regionname]` \- load and paste the previously saved region (using its schematic)
-- `/pa [arena] !we save [regionname]` \- save the region into a schematic file
-- `/pa [arena] !we create [regionname]` \- create a region based on an active WorldEdit selection
-- `/pa [arena] !we autoload` \- toggle general automatic loading
-- `/pa [arena] !we autosave` \- toggle general automatic saving
-- `/pa [arena] !we list add [regionname]` \- add a region to the list to be automatically saved/loaded (depending on autoload/autosave config)
-- `/pa [arena] !we list remove [regionname]` \- remove a region from the list
-- `/pa [arena] !we list show [regionname]` \- show the list of the regions that are automatically saved/loaded (depending on autoload/autosave config)
+- `/pa <arena> !we load <regionname>` \- load and paste the previously saved region (using its schematic)
+- `/pa <arena> !we save <regionname>` \- save the region into a schematic file
+- `/pa <arena> !we create <regionname>` \- create a region based on an active WorldEdit selection
+- `/pa <arena> !we autoload` \- toggle general automatic loading
+- `/pa <arena> !we autosave` \- toggle general automatic saving
+- `/pa <arena> !we list add <regionname>` \- add a region to the list to be automatically saved/loaded (depending on autoload/autosave config)
+- `/pa <arena> !we list remove <regionname>` \- remove a region from the list
+- `/pa <arena> !we list show <regionname>` \- show the list of the regions that are automatically saved/loaded (depending on autoload/autosave config)
 
 
 ## Use case
 
 You just want to restore your arena after the match ? Just follow these instructions:
-- Save your BATTLE region with command `/pa [arena] regsave [regionname]`
-- Add the previously saved region name to the list with `/pa [arena] !we list add [regionname]`.
-- Enable autoload with `/pa [arena] !we autoload`
+- Save your BATTLE region with command `/pa <arena> regsave <regionname>`
+- Add the previously saved region name to the list with `/pa <arena> !we list add <regionname>`.
+- Enable autoload with `/pa <arena> !we autoload`
 
 <br>
 

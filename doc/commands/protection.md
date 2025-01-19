@@ -9,7 +9,7 @@ are prevented.**
 
 Command |  Definition
 ------------- | -------------
-/pa [arena] protection [region] [protection] (true/false)    | toggle a protection of an arena region
+/pa \<arena\> protection \<region\> \<protection\> (true/false)    | toggle a protection of an arena region
 
 Example: `/pa main protection battlefield DROP` - toggle the DROP protection of the arena "main"s region called "battlefield"
 
@@ -34,4 +34,4 @@ Here is a quick list supported flags, they include:
 <br>
 
 > **🚩 Tip:**  
-> Check your protections with [`/pa [arenaname] !rs [regionname]`](regions.md)
+> Check your protections with [`/pa <arenaname> !rs <regionname>`](regions.md)

@@ -12,5 +12,5 @@ Ignition is restricted to flint and steel item. There is one is automatically ad
 TNTs have to be added.
 
 In order to do that, for each team:
-- Type `/pa [arenaname] tnt set [team]` - this enables tnt selector
+- Type `/pa <arenaname> tnt set <team>` - this enables tnt selector
 - Left-click with your hand on the TNT block
