@@ -185,10 +185,10 @@ public class GoalCheckPoints extends ArenaGoal {
             ArenaModuleManager
                     .announce(
                             arena,
-                            Language.parse(MSG.PLAYER_HAS_WON,
+                            Language.parse(MSG.ANNOUNCE_PLAYER_HAS_WON,
                                     winner.getName()),
                             "WINNER");
-            arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON,
+            arena.broadcast(Language.parse(MSG.ANNOUNCE_PLAYER_HAS_WON,
                     winner.getName()));
             this.arena.addWinner(winner.getName());
         }
@@ -236,9 +236,9 @@ public class GoalCheckPoints extends ArenaGoal {
         String spawnName = CHECKPOINT + value;
         if (value > 0 && value <= cpLives) {
             this.arena.setSpawn(new PASpawn(new PALocation(player.getLocation()), spawnName, null, null));
-            this.arena.msg(sender, MSG.SPAWN_SET, spawnName);
+            this.arena.msg(sender, MSG.CMD_SPAWN_SET, spawnName);
         } else {
-            this.arena.msg(sender, MSG.SPAWN_UNKNOWN, spawnName);
+            this.arena.msg(sender, MSG.CMD_SPAWN_UNKNOWN, spawnName);
         }
     }
 
@@ -265,12 +265,12 @@ public class GoalCheckPoints extends ArenaGoal {
         if (arenaPlayer != null && !force) {
             ArenaModuleManager.announce(
                     this.arena,
-                    Language.parse(MSG.PLAYER_HAS_WON, arenaPlayer.getName()), "END");
+                    Language.parse(MSG.ANNOUNCE_PLAYER_HAS_WON, arenaPlayer.getName()), "END");
 
             ArenaModuleManager.announce(
                     this.arena,
-                    Language.parse(MSG.PLAYER_HAS_WON, arenaPlayer.getName()), "WINNER");
-            this.arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON, arenaPlayer.getName()));
+                    Language.parse(MSG.ANNOUNCE_PLAYER_HAS_WON, arenaPlayer.getName()), "WINNER");
+            this.arena.broadcast(Language.parse(MSG.ANNOUNCE_PLAYER_HAS_WON, arenaPlayer.getName()));
             this.arena.addWinner(arenaPlayer.getName());
         }
 

@@ -8,7 +8,6 @@ import net.slipcor.pvparena.commands.*;
 import net.slipcor.pvparena.config.Debugger;
 import net.slipcor.pvparena.config.SpawnOffset;
 import net.slipcor.pvparena.core.Config.CFG;
-import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
@@ -157,14 +156,12 @@ public class PVPArena extends JavaPlugin {
         this.arenaCommands.add(new PAA_Reload());
         this.arenaCommands.add(new PAA_Remove());
         this.arenaCommands.add(new PAA_Set());
-        this.arenaCommands.add(new PAA_Setup());
         this.arenaCommands.add(new PAA_SetOwner());
         this.arenaCommands.add(new PAA_Spawn());
         this.arenaCommands.add(new PAA_Start());
         this.arenaCommands.add(new PAA_Stop());
         this.arenaCommands.add(new PAA_Teams());
         this.arenaCommands.add(new PAA_Teleport());
-        this.arenaCommands.add(new PAA_Template());
         this.arenaCommands.add(new PAA_ToggleMod());
         this.arenaCommands.add(new PAA_WhiteList());
         this.arenaCommands.add(new PAG_Chat());
@@ -200,19 +197,13 @@ public class PVPArena extends JavaPlugin {
                              final String commandLabel, final String[] args) {
 
         if (args.length < 1) {
-            sender.sendMessage(ChatColor.COLOR_CHAR + "e"
-                    + ChatColor.COLOR_CHAR + "l|-- PVP Arena --|");
-            sender.sendMessage(ChatColor.COLOR_CHAR + "e"
-                    + ChatColor.COLOR_CHAR + "o--By slipcor--");
-            sender.sendMessage(ChatColor.COLOR_CHAR + "7"
-                    + ChatColor.COLOR_CHAR + "oDo " + ChatColor.COLOR_CHAR
-                    + "e/pa help " + ChatColor.COLOR_CHAR + '7'
-                    + ChatColor.COLOR_CHAR + "ofor help.");
+            sender.sendMessage(String.format("%s%s|-- PVP Arena --|", ChatColor.YELLOW, ChatColor.BOLD));
+            sender.sendMessage(String.format("%s%s--By slipcor & Eredrim--", ChatColor.YELLOW, ChatColor.ITALIC));
+            sender.sendMessage(String.format("%s%sWiki and documentation on %s%s", ChatColor.GRAY, ChatColor.ITALIC, ChatColor.BLUE, MSG.CMD_HELP_LINK));
             return true;
         }
 
-        if (args.length > 1 && sender.hasPermission("pvparena.admin")
-                && "ALL".equalsIgnoreCase(args[0])) {
+        if (args.length > 1 && sender.hasPermission("pvparena.admin") && "ALL".equalsIgnoreCase(args[0])) {
             final String[] newArgs = StringParser.shiftArrayBy(args, 1);
             for (Arena arena : ArenaManager.getArenas()) {
                 try {
@@ -267,8 +258,6 @@ public class PVPArena extends JavaPlugin {
         if (tempArena == null) {
             if (playerArena != null) {
                 tempArena = playerArena;
-            } else if (PAA_Setup.activeSetups.containsKey(sender.getName())) {
-                tempArena = PAA_Setup.activeSetups.get(sender.getName());
             } else if (PAA_Edit.activeEdits.containsKey(sender.getName())) {
                 tempArena = PAA_Edit.activeEdits.get(sender.getName());
             } else if (ArenaManager.count() == 1) {
@@ -334,7 +323,7 @@ public class PVPArena extends JavaPlugin {
         ArenaManager.reset(true);
         Debugger.destroy();
         ofNullable(this.getUpdateChecker()).ifPresent(UpdateChecker::runOnDisable);
-        Language.logInfo(MSG.LOG_PLUGIN_DISABLED, this.getDescription().getFullName());
+        Language.logInfo(MSG.GENERAL_PLUGIN_DISABLED, this.getDescription().getFullName());
     }
 
     @Override
@@ -379,7 +368,6 @@ public class PVPArena extends JavaPlugin {
         this.loadGlobalCommands();
 
         Language.init(this.getConfig().getString("language", "en"));
-        Help.init(this.getConfig().getString("language", "en"));
 
         this.getServer().getPluginManager().registerEvents(new BlockListener(), this);
         this.getServer().getPluginManager().registerEvents(new EntityListener(), this);
@@ -394,7 +382,7 @@ public class PVPArena extends JavaPlugin {
 
         this.updateChecker = new UpdateChecker(this.getFile());
 
-        Language.logInfo(MSG.LOG_PLUGIN_ENABLED, this.getDescription().getFullName());
+        Language.logInfo(MSG.GENERAL_PLUGIN_ENABLED, this.getDescription().getFullName());
     }
 
     @Override

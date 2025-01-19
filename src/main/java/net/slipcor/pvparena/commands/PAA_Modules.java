@@ -2,8 +2,6 @@ package net.slipcor.pvparena.commands;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.core.Help;
-import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loader.Loadable;
 import net.slipcor.pvparena.updater.ModulesUpdater;
@@ -114,7 +112,7 @@ public class PAA_Modules extends AbstractGlobalCommand {
 
             if (copyFile("pa_m_" + modName + ".jar")) {
                 PVPArena.getInstance().getAmm().reload();
-                Arena.pmsg(sender, MSG.INSTALL_DONE, modName);
+                Arena.pmsg(sender, MSG.GENERAL_INSTALL_DONE, modName);
             } else {
                 Arena.pmsg(sender, MSG.ERROR_INSTALL, modName);
             }
@@ -136,7 +134,7 @@ public class PAA_Modules extends AbstractGlobalCommand {
             String jarName = "pa_m_" + modName.toLowerCase() + ".jar";
             if (remove(jarName)) {
                 PVPArena.getInstance().getAmm().reload();
-                Arena.pmsg(sender, MSG.UNINSTALL_DONE, modName);
+                Arena.pmsg(sender, MSG.GENERAL_UNINSTALL_DONE, modName);
             } else {
                 Arena.pmsg(sender, MSG.ERROR_UNINSTALL, modName);
                 FileConfiguration cfg = PVPArena.getInstance().getConfig();
@@ -252,11 +250,6 @@ public class PAA_Modules extends AbstractGlobalCommand {
     @Override
     public String getName() {
         return this.getClass().getName();
-    }
-
-    @Override
-    public void displayHelp(final CommandSender sender) {
-        Arena.pmsg(sender, HELP.INSTALL);
     }
 
     @Override

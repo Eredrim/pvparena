@@ -6,7 +6,6 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.commands.PAA_Edit;
-import net.slipcor.pvparena.commands.PAA_Setup;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringUtils;
@@ -83,11 +82,6 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         String message = event.getMessage();
 
-        if (PAA_Setup.activeSetups.containsKey(player.getName())) {
-            PAA_Setup.chat(player, message);
-            return;
-        }
-
         ArenaPlayer aPlayer = ArenaPlayer.fromPlayer(player);
         Arena arena = aPlayer.getArena();
 
@@ -131,11 +125,6 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlayerCommandPreprocess(final PlayerCommandPreprocessEvent event) {
         final Player player = event.getPlayer();
-
-        if (PAA_Setup.activeSetups.containsKey(player.getName())) {
-            PAA_Setup.chat(player, event.getMessage().substring(1));
-            return;
-        }
 
         final Arena arena = ArenaPlayer.fromPlayer(player).getArena();
         if (arena == null || player.isOp() || PermissionManager.hasAdminPerm(player)

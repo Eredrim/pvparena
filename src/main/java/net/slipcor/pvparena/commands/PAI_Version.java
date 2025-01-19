@@ -2,7 +2,6 @@ package net.slipcor.pvparena.commands;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.loader.Loadable;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -63,11 +62,6 @@ public class PAI_Version extends AbstractGlobalCommand {
     @Override
     public String getName() {
         return this.getClass().getName();
-    }
-
-    @Override
-    public void displayHelp(final CommandSender sender) {
-        Arena.pmsg(sender, HELP.VERSION);
     }
 
     @Override

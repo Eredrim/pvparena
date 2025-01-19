@@ -2,7 +2,6 @@ package net.slipcor.pvparena.commands;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Config.CFG;
-import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
@@ -48,31 +47,34 @@ public class PAA_WhiteList extends AbstractArenaCommand {
         }
 
         //                                  args[0]
-        // usage: /pa {arenaname} blacklist clear
+        // usage: /pa {arenaname} whitelist clear
 
         if (args.length < 2) {
             if ("clear".equalsIgnoreCase(args[0])) {
                 arena.getConfig().setManually(CFG.LISTS_WHITELIST.getNode(), null);
                 arena.getConfig().save();
-                arena.msg(sender, MSG.WHITELIST_ALLCLEARED);
+                arena.msg(sender, MSG.CMD_WHITELIST_ALLCLEARED);
                 return;
             }
-            arena.msg(sender, MSG.WHITELIST_HELP);
+            arena.msg(sender, MSG.CMD_WHITELIST_HELP);
             return;
         }
         if (args.length == 2) {
-            // usage: /pa {arenaname} blacklist [type] clear
-            if (!SUBTYPES.contains(args[0].toLowerCase())) {
+            // usage: /pa {arenaname} whitelist [type] clear
+            String listType = args[0].toLowerCase();
+            if (!SUBTYPES.contains(listType)) {
                 arena.msg(sender, MSG.ERROR_WHITELIST_UNKNOWN_TYPE, StringParser.joinSet(SUBTYPES, "|"));
                 return;
             }
+
+            String listTypeNode = String.format("%s.%s", CFG.LISTS_BLACKLIST.getNode(), listType);
             if (args[1].equalsIgnoreCase("clear")) {
-                arena.getConfig().setManually(CFG.LISTS_WHITELIST.getNode(), null);
+                arena.getConfig().setManually(listTypeNode, null);
                 arena.getConfig().save();
-                arena.msg(sender, MSG.WHITELIST_ALLCLEARED);
+                arena.msg(sender, MSG.CMD_WHITELIST_CLEARED, listType);
                 return;
             }
-            arena.msg(sender, MSG.WHITELIST_HELP);
+            arena.msg(sender, MSG.CMD_WHITELIST_HELP);
             return;
         }
 
@@ -93,9 +95,9 @@ public class PAA_WhiteList extends AbstractArenaCommand {
 
         if ("add".equalsIgnoreCase(args[1])) {
             list.add(args[2]);
-            arena.msg(sender, MSG.WHITELIST_ADDED, args[2], args[0].toLowerCase());
+            arena.msg(sender, MSG.CMD_WHITELIST_ADDED, args[2], args[0].toLowerCase());
         } else if ("show".equalsIgnoreCase(args[1])) {
-            final StringBuilder output = new StringBuilder(Language.parse(MSG.WHITELIST_SHOW, args[0].toLowerCase()));
+            final StringBuilder output = new StringBuilder(Language.parse(MSG.CMD_WHITELIST_SHOW, args[0].toLowerCase()));
             for (String s : list) {
                 output.append(": ");
                 output.append(Material.getMaterial(s).name());
@@ -106,7 +108,7 @@ public class PAA_WhiteList extends AbstractArenaCommand {
             arena.msg(sender, output.toString());
         } else {
             list.remove(args[2]);
-            arena.msg(sender, MSG.WHITELIST_REMOVED, args[2], args[1]);
+            arena.msg(sender, MSG.CMD_WHITELIST_REMOVED, args[2], args[1]);
         }
 
         arena.getConfig().setManually(CFG.LISTS_WHITELIST.getNode() + '.' + args[0].toLowerCase(), list);
@@ -117,11 +119,6 @@ public class PAA_WhiteList extends AbstractArenaCommand {
     @Override
     public String getName() {
         return this.getClass().getName();
-    }
-
-    @Override
-    public void displayHelp(final CommandSender sender) {
-        Arena.pmsg(sender, HELP.WHITELIST);
     }
 
     @Override

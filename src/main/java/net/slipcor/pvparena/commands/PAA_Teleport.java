@@ -4,7 +4,6 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.core.Config.CFG;
-import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.exceptions.GameplayException;
@@ -59,7 +58,7 @@ public class PAA_Teleport extends AbstractArenaCommand {
                 String spawnNameForError = Arrays.stream(parsedSpawnName)
                         .filter(Objects::nonNull)
                         .collect(Collectors.joining(", "));
-                throw new GameplayException(Language.parse(MSG.ERROR_SPAWN_UNKNOWN, String.join(" ", spawnNameForError)));
+                throw new GameplayException(Language.parse(MSG.CMD_SPAWN_UNKNOWN, String.join(" ", spawnNameForError)));
             }
 
             ((Player) sender).teleport(loc.toLocation(), TeleportCause.PLUGIN);
@@ -72,11 +71,6 @@ public class PAA_Teleport extends AbstractArenaCommand {
     @Override
     public String getName() {
         return this.getClass().getName();
-    }
-
-    @Override
-    public void displayHelp(final CommandSender sender) {
-        Arena.pmsg(sender, HELP.TELEPORT);
     }
 
     @Override

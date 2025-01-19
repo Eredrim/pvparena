@@ -2,7 +2,6 @@ package net.slipcor.pvparena.commands;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.CollectionUtils;
-import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.managers.ConfigurationManager;
 import net.slipcor.pvparena.managers.WorkflowManager;
@@ -54,7 +53,7 @@ public class PAG_Spectate extends AbstractArenaCommand {
 
         if (PAA_Region.activeSelections.containsKey(sender.getName())) {
             PAA_Region.activeSelections.remove(sender.getName());
-            arena.msg(sender, MSG.GOAL_CLOSED_SELECTION);
+            arena.msg(sender, MSG.NOTICE_CLOSED_SELECTION);
         }
 
         WorkflowManager.handleSpectate(arena, (Player) sender);
@@ -63,11 +62,6 @@ public class PAG_Spectate extends AbstractArenaCommand {
     @Override
     public String getName() {
         return this.getClass().getName();
-    }
-
-    @Override
-    public void displayHelp(final CommandSender sender) {
-        Arena.pmsg(sender, HELP.SPECTATE);
     }
 
     @Override

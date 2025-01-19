@@ -207,7 +207,7 @@ public class GoalFood extends ArenaGoal {
     private void commitAddBlockCommand(CommandSender sender, String blockType, String teamName) {
         if (PAA_Region.activeSelections.containsKey(sender.getName())) {
             PAA_Region.activeSelections.remove(sender.getName());
-            this.arena.msg(sender, MSG.GOAL_CLOSED_SELECTION);
+            this.arena.msg(sender, MSG.NOTICE_CLOSED_SELECTION);
         } else {
             this.blockTypeName = blockType;
             this.blockTeamName = teamName;

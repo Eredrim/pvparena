@@ -3,7 +3,6 @@ package net.slipcor.pvparena.commands;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.Config.CFG;
-import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import org.bukkit.command.CommandSender;
@@ -54,7 +53,7 @@ public class PAG_Leave extends AbstractArenaCommand {
         if (!arena.hasPlayer(aPlayer.getPlayer())) {
             if (PAA_Region.activeSelections.containsKey(sender.getName())) {
                 PAA_Region.activeSelections.remove(sender.getName());
-                arena.msg(sender, MSG.GOAL_CLOSED_SELECTION);
+                arena.msg(sender, MSG.NOTICE_CLOSED_SELECTION);
             } else if(PAA_Edit.activeEdits.containsKey(sender.getName())) {
                 new PAA_Edit().commit(arena, sender, args);
             } else {
@@ -69,11 +68,6 @@ public class PAG_Leave extends AbstractArenaCommand {
     @Override
     public String getName() {
         return this.getClass().getName();
-    }
-
-    @Override
-    public void displayHelp(final CommandSender sender) {
-        Arena.pmsg(sender, HELP.LEAVE);
     }
 
     @Override

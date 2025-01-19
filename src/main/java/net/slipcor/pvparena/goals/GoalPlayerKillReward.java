@@ -171,14 +171,14 @@ public class GoalPlayerKillReward extends ArenaGoal {
                     continue;
                 }
                 ArenaModuleManager.announce(this.arena,
-                        Language.parse(MSG.PLAYER_HAS_WON, arenaPlayer.getName()),
+                        Language.parse(MSG.ANNOUNCE_PLAYER_HAS_WON, arenaPlayer.getName()),
                         "END");
 
                 ArenaModuleManager.announce(this.arena,
-                        Language.parse(MSG.PLAYER_HAS_WON, arenaPlayer.getName()),
+                        Language.parse(MSG.ANNOUNCE_PLAYER_HAS_WON, arenaPlayer.getName()),
                         "WINNER");
 
-                this.arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON, arenaPlayer.getName()));
+                this.arena.broadcast(Language.parse(MSG.ANNOUNCE_PLAYER_HAS_WON, arenaPlayer.getName()));
                 this.arena.addWinner(arenaPlayer.getName());
 
                 if (ArenaModuleManager.commitEnd(this.arena, team, arenaPlayer)) {

@@ -6,7 +6,6 @@ import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.commands.PAA_Edit;
-import net.slipcor.pvparena.commands.PAA_Setup;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
@@ -287,13 +286,6 @@ public final class ConfigurationManager {
             if (PAA_Edit.activeEdits.get(editor).getName().equals(
                     arena.getName())) {
                 errors.add(Language.parse(MSG.ERROR_EDIT_MODE));
-            }
-        }
-
-        for (String setter : PAA_Setup.activeSetups.keySet()) {
-            if (PAA_Setup.activeSetups.get(setter).getName().equals(
-                    arena.getName())) {
-                errors.add(Language.parse(MSG.ERROR_SETUP_MODE));
             }
         }
 

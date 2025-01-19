@@ -3,7 +3,6 @@ package net.slipcor.pvparena.commands;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.classes.PABlockLocation;
-import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import org.bukkit.Material;
@@ -53,17 +52,12 @@ public class PAA_ArenaClassChest extends AbstractArenaCommand {
         arena.getConfig().setManually("classchests."+aClass.getName(), loc.toString());
         arena.getConfig().save();
 
-        sender.sendMessage(Language.parse(MSG.CLASSCHEST, aClass.getName(), loc.toString()));
+        sender.sendMessage(Language.parse(MSG.CMD_CLASSCHEST, aClass.getName(), loc.toString()));
     }
 
     @Override
     public String getName() {
         return this.getClass().getName();
-    }
-
-    @Override
-    public void displayHelp(final CommandSender sender) {
-        Arena.pmsg(sender, HELP.CLASSCHEST);
     }
 
     @Override

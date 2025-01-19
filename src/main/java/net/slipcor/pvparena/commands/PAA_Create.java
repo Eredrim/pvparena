@@ -2,7 +2,6 @@ package net.slipcor.pvparena.commands;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaGoalManager;
@@ -111,11 +110,6 @@ public class PAA_Create extends AbstractGlobalCommand {
     }
 
     @Override
-    public void displayHelp(final CommandSender sender) {
-        Arena.pmsg(sender, HELP.CREATE);
-    }
-
-    @Override
     public List<String> getMain() {
         return Arrays.asList("create", "new");
     }
@@ -146,7 +140,7 @@ public class PAA_Create extends AbstractGlobalCommand {
         if (moduleManager.hasLoadable(moduleName)) {
             ArenaModule module = moduleManager.getNewInstance(moduleName);
             arena.addModule(module, false);
-            arena.msg(sender, MSG.INFO_MOD_ENABLED, moduleName);
+            arena.msg(sender, MSG.CMD_TOGGLEMOD_ENABLED, moduleName);
         } else {
             arena.msg(sender, MSG.ERROR_UNKNOWN_MODULE, moduleName);
         }

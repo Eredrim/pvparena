@@ -2,7 +2,6 @@ package net.slipcor.pvparena.commands;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaTeam;
-import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
 import org.bukkit.ChatColor;
@@ -34,7 +33,6 @@ public class PAA_Teams extends AbstractArenaCommand {
         }
 
         if (!argCountValid(sender, arena, args, new Integer[]{0, 2, 3})) {
-            this.displayHelp(sender);
             return;
         }
 
@@ -50,7 +48,6 @@ public class PAA_Teams extends AbstractArenaCommand {
         }
 
         if (!argCountValid(sender, arena, args, "remove".equals(args[0]) ? new Integer[]{2} : new Integer[]{3})) {
-            this.displayHelp(sender);
             return;
         }
 
@@ -93,18 +90,13 @@ public class PAA_Teams extends AbstractArenaCommand {
                 arena.msg(sender, MSG.ERROR_ARGUMENT, args[2], StringParser.joinArray(ChatColor.values(), ","));
             }
         } else {
-            this.displayHelp(sender);
+            arena.msg(sender, MSG.ERROR_ARGUMENT, "remove, add, set");
         }
     }
 
     @Override
     public String getName() {
         return this.getClass().getName();
-    }
-
-    @Override
-    public void displayHelp(final CommandSender sender) {
-        Arena.pmsg(sender, HELP.TEAMS);
     }
 
     @Override

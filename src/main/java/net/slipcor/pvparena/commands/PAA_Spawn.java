@@ -4,7 +4,6 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.classes.PASpawn;
-import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.exceptions.GameplayException;
 import net.slipcor.pvparena.loadables.ArenaModule;
@@ -86,9 +85,9 @@ public class PAA_Spawn extends AbstractArenaCommand {
 
         final PALocation location = SpawnManager.getSpawnByExactName(arena, spawnName, teamName, className);
         if (location == null) {
-            arena.msg(player, MSG.SPAWN_NOTSET, spawnName);
+            arena.msg(player, MSG.CMD_SPAWN_NOTSET, spawnName);
         } else {
-            arena.msg(player, MSG.SPAWN_REMOVED, spawnName);
+            arena.msg(player, MSG.CMD_SPAWN_REMOVED, spawnName);
             arena.clearSpawn(spawnName, teamName, className);
         }
     }
@@ -120,15 +119,15 @@ public class PAA_Spawn extends AbstractArenaCommand {
             }
         }
 
-        arena.msg(player, MSG.ERROR_SPAWN_UNKNOWN, spawnName);
+        arena.msg(player, MSG.CMD_SPAWN_UNKNOWN, spawnName);
     }
 
     private void commitSet(@NotNull Arena arena, @NotNull CommandSender sender, @NotNull PASpawn spawn) {
         boolean replaced = arena.setSpawn(spawn);
         if (replaced) {
-            arena.msg(sender, MSG.SPAWN_SET_AGAIN, getFormattedSpawnName(arena, spawn));
+            arena.msg(sender, MSG.CMD_SPAWN_SET_AGAIN, getFormattedSpawnName(arena, spawn));
         } else {
-            arena.msg(sender, MSG.SPAWN_SET, getFormattedSpawnName(arena, spawn));
+            arena.msg(sender, MSG.CMD_SPAWN_SET, getFormattedSpawnName(arena, spawn));
         }
     }
 
@@ -142,11 +141,6 @@ public class PAA_Spawn extends AbstractArenaCommand {
     @Override
     public String getName() {
         return this.getClass().getName();
-    }
-
-    @Override
-    public void displayHelp(final CommandSender sender) {
-        Arena.pmsg(sender, HELP.SPAWN);
     }
 
     @Override

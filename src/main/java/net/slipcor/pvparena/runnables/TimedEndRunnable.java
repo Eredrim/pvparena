@@ -199,8 +199,8 @@ public class TimedEndRunnable extends ArenaRunnable {
                         this.arena.removePlayer(arenaPlayer, this.arena.getConfig().getString(Config.CFG.TP_LOSE), true, false);
                     } else {
                         if (computedWinners.contains(arenaPlayer.getName())) {
-                            ArenaModuleManager.announce(this.arena, Language.parse(MSG.PLAYER_HAS_WON, arenaPlayer.getName()), WINNER);
-                            this.arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON, arenaPlayer.getName()));
+                            ArenaModuleManager.announce(this.arena, Language.parse(MSG.ANNOUNCE_PLAYER_HAS_WON, arenaPlayer.getName()), WINNER);
+                            this.arena.broadcast(Language.parse(MSG.ANNOUNCE_PLAYER_HAS_WON, arenaPlayer.getName()));
                             finalWinners.add(arenaPlayer.getName());
                         } else {
                             if (arenaPlayer.getStatus() == PlayerStatus.FIGHT || arenaPlayer.getStatus() == PlayerStatus.DEAD) {

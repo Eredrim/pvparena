@@ -6,7 +6,6 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.PlayerStatus;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.commands.PAA_Edit;
-import net.slipcor.pvparena.commands.PAA_Setup;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
@@ -72,9 +71,9 @@ public class BlockListener implements Listener {
         if (arena.isLocked() || !arena.isFightInProgress()) {
             if (event instanceof Cancellable) {
                 final Cancellable cEvent = (Cancellable) event;
-                cEvent.setCancelled(!(PAA_Edit.activeEdits.containsValue(arena) || PAA_Setup.activeSetups.containsValue(arena)));
+                cEvent.setCancelled(!PAA_Edit.activeEdits.containsValue(arena));
             }
-            return PAA_Edit.activeEdits.containsValue(arena) || PAA_Setup.activeSetups.containsValue(arena);
+            return PAA_Edit.activeEdits.containsValue(arena);
         }
 
         if (!arena.hasRegionsProtectingLocation(loc, rp)) {
@@ -119,7 +118,7 @@ public class BlockListener implements Listener {
         List<String> list = arena.getConfig().getStringList(CFG.LISTS_WHITELIST.getNode() + ".break", new ArrayList<>());
 
         if (!list.isEmpty() && !list.contains(event.getBlock().getType().name())) {
-            arena.msg(event.getPlayer(), MSG.ERROR_WHITELIST_DISALLOWED, Language.parse(MSG.GENERAL_BREAK));
+            arena.msg(event.getPlayer(), MSG.ERROR_WHITELIST_DISALLOWED, Language.parse(MSG.PERMISSION_BREAK));
             // not on whitelist. DENY!
             event.setCancelled(true);
             debug(event.getPlayer(), "whitelist out");
@@ -135,7 +134,7 @@ public class BlockListener implements Listener {
         list.addAll(arena.getConfig().getStringList(CFG.LISTS_BLACKLIST.getNode() + ".break", new ArrayList<>()));
 
         if (list.contains(event.getBlock().getType().name())) {
-            arena.msg(event.getPlayer(), MSG.ERROR_BLACKLIST_DISALLOWED, Language.parse(MSG.GENERAL_BREAK));
+            arena.msg(event.getPlayer(), MSG.ERROR_BLACKLIST_DISALLOWED, Language.parse(MSG.PERMISSION_BREAK));
             // on blacklist. DENY!
             event.setCancelled(true);
             debug(event.getPlayer(), "blacklist out");
@@ -387,7 +386,7 @@ public class BlockListener implements Listener {
                 new ArrayList<>());
 
         if (!list.isEmpty() && !list.contains(placedBlock.getType().name())) {
-            arena.msg(player, MSG.ERROR_WHITELIST_DISALLOWED, Language.parse(MSG.GENERAL_PLACE));
+            arena.msg(player, MSG.ERROR_WHITELIST_DISALLOWED, Language.parse(MSG.PERMISSION_PLACE));
             event.setCancelled(true);
             debug(arena, "not on whitelist. DENY!");
             return;
@@ -415,7 +414,7 @@ public class BlockListener implements Listener {
                 new ArrayList<>());
 
         if (list.contains(placedBlock.getType().name())) {
-            arena.msg(player, MSG.ERROR_BLACKLIST_DISALLOWED, Language.parse(MSG.GENERAL_PLACE));
+            arena.msg(player, MSG.ERROR_BLACKLIST_DISALLOWED, Language.parse(MSG.PERMISSION_PLACE));
             event.setCancelled(true);
             debug(arena, "on blacklist. DENY!");
             return;

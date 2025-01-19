@@ -3,7 +3,6 @@ package net.slipcor.pvparena.commands;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
-import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.managers.InventoryManager;
 import org.bukkit.command.CommandSender;
@@ -84,23 +83,18 @@ public class PAA_Class extends AbstractArenaCommand {
             arena.getConfig().save();
 
             arena.addClass(classname, storage, offhand, armor);
-            Arena.pmsg(player, MSG.CLASS_SAVED, classname);
+            Arena.pmsg(player, MSG.CMD_CLASS_SAVED, classname);
         } else if ("remove".equalsIgnoreCase(args[0])) {
             arena.getConfig().setManually("classitems." + classname, null);
             arena.getConfig().save();
             arena.removeClass(classname);
-            Arena.pmsg(player, MSG.CLASS_REMOVED, classname);
+            Arena.pmsg(player, MSG.CMD_CLASS_REMOVED, classname);
         }
     }
 
     @Override
     public String getName() {
         return this.getClass().getName();
-    }
-
-    @Override
-    public void displayHelp(final CommandSender sender) {
-        Arena.pmsg(sender, HELP.CLASS);
     }
 
     @Override

@@ -291,7 +291,7 @@ public abstract class AbstractFlagGoal extends ArenaGoal {
             this.arena.getConfig().set(this.getFlagEffectCfg(), args[2]);
 
             this.arena.getConfig().save();
-            this.arena.msg(sender, MSG.SET_DONE, this.getFlagEffectCfg().getNode(), args[2]);
+            this.arena.msg(sender, MSG.CFG_SET_DONE, this.getFlagEffectCfg().getNode(), args[2]);
             return;
         }
 
@@ -317,7 +317,7 @@ public abstract class AbstractFlagGoal extends ArenaGoal {
         this.arena.getConfig().set(this.getFlagEffectCfg(), value);
 
         this.arena.getConfig().save();
-        this.arena.msg(sender, MSG.SET_DONE, this.getFlagEffectCfg().getNode(), value);
+        this.arena.msg(sender, MSG.CFG_SET_DONE, this.getFlagEffectCfg().getNode(), value);
     }
 
     @Override

@@ -93,6 +93,4 @@ public abstract class AbstractGlobalCommand implements IArenaCommandHandler {
 
         return false;
     }
-
-    protected abstract void displayHelp(CommandSender sender);
 }

@@ -2,7 +2,6 @@ package net.slipcor.pvparena.commands;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
@@ -51,16 +50,16 @@ public class PAA_ToggleMod extends AbstractArenaCommand {
                 this.replaceSameTypeModule(arena, module, sender);
                 arena.addModule(module, true);
                 if (module.isMissingBattleRegion(arena)) {
-                    arena.msg(sender, MSG.TOGGLEMOD_NOTICE);
+                    arena.msg(sender, MSG.CMD_TOGGLEMOD_BATTLE);
                 }
-                arena.msg(sender, MSG.INFO_MOD_ENABLED, name);
+                arena.msg(sender, MSG.CMD_TOGGLEMOD_ENABLED, name);
             } else {
                 ArenaModule toRemove = arena.getMods().stream().filter(mod -> name.equalsIgnoreCase(mod.getName())).findAny().get();
                 if(toRemove.getType() == ModuleType.JOIN || toRemove.getType() == ModuleType.SPECTATE) {
-                    arena.msg(sender, MSG.INFO_MOD_NOT_REMOVABLE, name, toRemove.getType().name());
+                    arena.msg(sender, MSG.CMD_TOGGLEMOD_NOT_REMOVABLE, name, toRemove.getType().name());
                 } else {
                     arena.removeModule(name);
-                    arena.msg(sender, MSG.INFO_MOD_DISABLED, name);
+                    arena.msg(sender, MSG.CMD_TOGGLEMOD_DISABLED, name);
                 }
             }
             return;
@@ -71,11 +70,6 @@ public class PAA_ToggleMod extends AbstractArenaCommand {
     @Override
     public String getName() {
         return this.getClass().getName();
-    }
-
-    @Override
-    public void displayHelp(final CommandSender sender) {
-        Arena.pmsg(sender, HELP.TOGGLEMOD);
     }
 
     @Override
@@ -105,7 +99,7 @@ public class PAA_ToggleMod extends AbstractArenaCommand {
 
             sameTypeMod.ifPresent(mod -> {
                 arena.removeModule(mod.getName());
-                arena.msg(sender, MSG.INFO_MOD_REPLACEMENT, newMod.getName(), mod.getName());
+                arena.msg(sender, MSG.CMD_TOGGLEMOD_REPLACEMENT, newMod.getName(), mod.getName());
             });
         }
     }

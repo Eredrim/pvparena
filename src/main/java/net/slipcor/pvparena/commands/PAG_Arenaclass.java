@@ -6,7 +6,6 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.PlayerStatus;
 import net.slipcor.pvparena.classes.PAClassSign;
 import net.slipcor.pvparena.core.Config.CFG;
-import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
@@ -72,7 +71,7 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
                 }
                 classes.add(ChatColor.GREEN + ac.getName() + ChatColor.WHITE);
             }
-            arena.msg(sender, MSG.CLASS_LIST, StringParser.joinSet(classes, ", "));
+            arena.msg(sender, MSG.CMD_CLASS_LIST, StringParser.joinSet(classes, ", "));
             return;
         }
 
@@ -122,10 +121,10 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
             arenaPlayer.setArenaClass(arenaClass);
             if (arenaPlayer.getArenaClass() != null) {
                 arenaPlayer.equipPlayerFightItems();
-                arena.msg(sender, MSG.CLASS_SELECTED, arenaClass.getName());
+                arena.msg(sender, MSG.CMD_ARENACLASS_SELECTED, arenaClass.getName());
             }
         } else if (arena.getConfig().getBoolean(CFG.GENERAL_CLASSSWITCH_AFTER_RESPAWN) || arenaPlayer.getStatus() == DEAD) {
-            arena.msg(sender, MSG.CLASS_SELECTED_RESPAWN, arenaClass.getName());
+            arena.msg(sender, MSG.CMD_ARENACLASS_SELECTED_RESPAWN, arenaClass.getName());
             arenaPlayer.setNextArenaClass(arenaClass);
         }
     }
@@ -133,11 +132,6 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
     @Override
     public String getName() {
         return this.getClass().getName();
-    }
-
-    @Override
-    public void displayHelp(final CommandSender sender) {
-        Arena.pmsg(sender, HELP.ARENACLASS);
     }
 
     @Override

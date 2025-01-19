@@ -1,7 +1,6 @@
 package net.slipcor.pvparena.commands;
 
 import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.managers.ArenaManager;
 import org.bukkit.ChatColor;
@@ -42,7 +41,7 @@ public class PAI_ArenaList extends AbstractGlobalCommand {
                     ChatColor colorPrefix = ChatColor.WHITE;
                     if(a.isLocked()) {
                         colorPrefix = ChatColor.RED;
-                    } else if (PAA_Edit.activeEdits.containsValue(a) || PAA_Setup.activeSetups.containsValue(a)) {
+                    } else if (PAA_Edit.activeEdits.containsValue(a)) {
                         colorPrefix = ChatColor.YELLOW;
                     } else if (a.isFightInProgress()) {
                         colorPrefix = ChatColor.GREEN;
@@ -62,11 +61,6 @@ public class PAI_ArenaList extends AbstractGlobalCommand {
     @Override
     public String getName() {
         return this.getClass().getName();
-    }
-
-    @Override
-    public void displayHelp(final CommandSender sender) {
-        Arena.pmsg(sender, HELP.ARENALIST);
     }
 
     @Override

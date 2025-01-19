@@ -4,7 +4,6 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.PlayerStatus;
 import net.slipcor.pvparena.core.Config.CFG;
-import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
@@ -93,7 +92,7 @@ public class PAI_Ready extends AbstractArenaCommand {
         }
 
         arena.msg(aPlayer.getPlayer(), MSG.READY_DONE);
-        arena.broadcast(Language.parse(MSG.PLAYER_READY, aPlayer.getArenaTeam().colorizePlayer(aPlayer)));
+        arena.broadcast(Language.parse(MSG.ANNOUNCE_PLAYER_READY, aPlayer.getArenaTeam().colorizePlayer(aPlayer)));
         aPlayer.setStatus(PlayerStatus.READY);
 
         if (aPlayer.getArenaTeam().isEveryoneReady()) {
@@ -149,11 +148,6 @@ public class PAI_Ready extends AbstractArenaCommand {
     @Override
     public String getName() {
         return this.getClass().getName();
-    }
-
-    @Override
-    public void displayHelp(final CommandSender sender) {
-        Arena.pmsg(sender, HELP.READY);
     }
 
     @Override

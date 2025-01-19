@@ -3,8 +3,6 @@ package net.slipcor.pvparena.commands;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaClass;
-import net.slipcor.pvparena.core.Help;
-import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.RegionManager;
@@ -45,10 +43,9 @@ public class PAA_ReloadAll extends AbstractGlobalCommand {
 
         final FileConfiguration config = PVPArena.getInstance().getConfig();
         Language.init(config.getString("language", "en"));
-        Help.init(config.getString("language", "en"));
 
         if (args.length > 1 && args[1].equalsIgnoreCase("ymls")) {
-            Arena.pmsg(sender, Language.MSG.RELOAD_YMLS_DONE);
+            Arena.pmsg(sender, Language.MSG.LANG_RELOAD_DONE);
             return;
         }
 
@@ -71,11 +68,6 @@ public class PAA_ReloadAll extends AbstractGlobalCommand {
     @Override
     public String getName() {
         return this.getClass().getName();
-    }
-
-    @Override
-    public void displayHelp(final CommandSender sender) {
-        Arena.pmsg(sender, HELP.DEBUG);
     }
 
     @Override

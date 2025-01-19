@@ -2,7 +2,6 @@ package net.slipcor.pvparena.commands;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaGoalManager;
@@ -44,24 +43,19 @@ public class PAA_Goal extends AbstractArenaCommand {
         if (loadableGoal == null) {
             arena.msg(sender, MSG.ERROR_GOAL_NOTFOUND, args[0],
                     goalManager.getAllGoalNames().stream().sorted().collect(Collectors.joining(", ")));
-            arena.msg(sender, MSG.GOAL_INSTALLING);
+            arena.msg(sender, MSG.CMD_GOAL_EDITING);
             return;
         }
 
         // toggle
         ArenaGoal goal = goalManager.getNewInstance(loadableGoal.getName());
         arena.setGoal(goal, true);
-        arena.msg(sender, MSG.GOAL_SET, args[0]);
+        arena.msg(sender, MSG.CMD_GOAL_SET, args[0]);
     }
 
     @Override
     public String getName() {
         return this.getClass().getName();
-    }
-
-    @Override
-    public void displayHelp(final CommandSender sender) {
-        Arena.pmsg(sender, HELP.GOAL);
     }
 
     @Override

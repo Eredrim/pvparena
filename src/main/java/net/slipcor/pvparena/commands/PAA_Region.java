@@ -5,8 +5,6 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.core.Config.CFG;
-import net.slipcor.pvparena.core.Help.HELP;
-import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.managers.RegionManager;
 import net.slipcor.pvparena.regions.ArenaRegion;
@@ -125,7 +123,7 @@ public class PAA_Region extends AbstractArenaCommand {
             }
 
             if (shape == null) {
-                arena.msg(sender, MSG.ARENA_REGION_SHAPE_UNKNOWN, args[1]);
+                arena.msg(sender, MSG.REGION_SHAPE_UNKNOWN, args[1]);
                 return;
             }
 
@@ -179,11 +177,6 @@ public class PAA_Region extends AbstractArenaCommand {
     @Override
     public String getName() {
         return this.getClass().getName();
-    }
-
-    @Override
-    public void displayHelp(final CommandSender sender) {
-        Arena.pmsg(sender, HELP.REGION);
     }
 
     @Override

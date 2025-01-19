@@ -70,6 +70,4 @@ public abstract class AbstractArenaCommand implements IArenaCommandHandler {
 
         return hasPermission;
     }
-
-    public abstract void displayHelp(final CommandSender sender);
 }

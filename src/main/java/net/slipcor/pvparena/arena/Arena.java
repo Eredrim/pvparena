@@ -8,10 +8,8 @@ import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.core.ArrowHack;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
-import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.core.StringUtils;
 import net.slipcor.pvparena.events.PAEndEvent;
 import net.slipcor.pvparena.events.PAExitEvent;
@@ -636,10 +634,6 @@ public class Arena {
         this.playedPlayers.add(playerName);
     }
 
-    public void msg(final CommandSender sender, Help.HELP helpMsg) {
-        helpMsg.get().forEach(helpLine -> pmsg(sender, StringParser.colorize(helpLine)));
-    }
-
     public void msg(final CommandSender sender, final MSG msg, Object... args) {
         this.msg(sender, Language.parse(msg, args));
     }
@@ -1073,7 +1067,7 @@ public class Arena {
                     aPlayer.createState(aPlayer.getPlayer());
                     InventoryManager.clearInventory(aPlayer.getPlayer());
                     c.equip(aPlayer.getPlayer());
-                    this.msg(aPlayer.getPlayer(), MSG.CLASS_PREVIEW, c.getName());
+                    this.msg(aPlayer.getPlayer(), MSG.CMD_CLASS_PREVIEW, c.getName());
                 }
                 return;
             }
@@ -1239,10 +1233,6 @@ public class Arena {
 
     public static void pmsg(final CommandSender sender, MSG msg, Object... args) {
         pmsg(sender, Language.parse(msg, args));
-    }
-
-    public static void pmsg(final CommandSender sender, Help.HELP helpMsg) {
-        helpMsg.get().forEach(helpLine -> pmsg(sender, StringParser.colorize(helpLine)));
     }
 
     public static void pmsg(final CommandSender sender, final String msg) {

@@ -1,7 +1,6 @@
 package net.slipcor.pvparena.commands;
 
 import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.statistics.model.StatEntry;
 import org.bukkit.command.CommandSender;
 
@@ -44,11 +43,6 @@ public class PAI_GlobalStats extends AbstractGlobalCommand {
     @Override
     public String getName() {
         return this.getClass().getName();
-    }
-
-    @Override
-    public void displayHelp(final CommandSender sender) {
-        Arena.pmsg(sender, HELP.STATS);
     }
 
     @Override

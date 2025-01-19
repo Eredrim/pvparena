@@ -256,7 +256,7 @@ public class GoalDomination extends ArenaGoal {
                             domRunner.runTaskTimer(PVPArena.getInstance(), INTERVAL, INTERVAL);
 
                             this.getRunnerMap().put(loc, domRunner);
-                            this.barStart(loc, contestingMsg, ChatColor.WHITE, checkDistance);
+                            this.barStart(loc, Language.parse(MSG.GOAL_DOMINATION_BOSSBAR_UNCLAIMING), ChatColor.WHITE, checkDistance);
                         }
                     } else {
                         // just the owning team is there
@@ -306,7 +306,7 @@ public class GoalDomination extends ArenaGoal {
 
                 running.runTaskTimer(PVPArena.getInstance(), INTERVAL, INTERVAL);
                 this.getRunnerMap().put(loc, running);
-                this.barStart(loc, unclaimingMsg, ChatColor.WHITE, checkDistance);
+                this.barStart(loc, Language.parse(MSG.GOAL_DOMINATION_BOSSBAR_UNCLAIMING), ChatColor.WHITE, checkDistance);
             } else {
                 // flag not taken
                 debug(this.arena, "- flag not taken");
@@ -354,7 +354,7 @@ public class GoalDomination extends ArenaGoal {
 
                             running.runTaskTimer(PVPArena.getInstance(), INTERVAL, INTERVAL);
                             this.getRunnerMap().put(loc, running);
-                            this.barStart(loc, claimingMsg, arenaTeam.getColor(), checkDistance);
+                            this.barStart(loc, Language.parse(MSG.GOAL_DOMINATION_BOSSBAR_CLAIMING), arenaTeam.getColor(), checkDistance);
                         }
                     } else {
                         debug(this.arena, "  - more than one team present. continue!");
@@ -472,7 +472,7 @@ public class GoalDomination extends ArenaGoal {
             if("add".equalsIgnoreCase(args[1])) {
                 if (PAA_Region.activeSelections.containsKey(sender.getName())) {
                     PAA_Region.activeSelections.remove(sender.getName());
-                    this.arena.msg(sender, MSG.GOAL_CLOSED_SELECTION);
+                    this.arena.msg(sender, MSG.NOTICE_CLOSED_SELECTION);
                 } else {
                     PAA_Region.activeSelections.put(sender.getName(), this.arena);
                     this.arena.msg(sender, MSG.GOAL_DOMINATION_SET_FLAG);
