@@ -300,7 +300,7 @@ public class PlayerListener implements Listener {
         ArenaPlayer arenaPlayer = ArenaPlayer.fromPlayer(player);
         Arena arena = arenaPlayer.getArena();
 
-        if (arena == null) {
+        if (arena == null && event.getClickedBlock() != null) {
             Arena arenaByLocation = ArenaManager.getArenaByRegionLocation(new PABlockLocation(event.getClickedBlock().getLocation()));
             if (arenaByLocation != null) {
                 // Player doesn't belong to an arena but interacts with an arena region
