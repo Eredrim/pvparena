@@ -1,0 +1,656 @@
+# 汉化版本2.0.0,由Harry_H2O最后在2025年1月25日
+# 注意!本汉化版本为人工翻译+部分机翻,可能不会保留原有语序,若有错误,请指出!谢谢!
+__version__: 2.0.0
+arena:
+  create:
+    done: 竞技场 '%1%' 已创建，目标为 %2%！
+  disable:
+    done: 竞技场已禁用！
+  edit:
+    disabled: 已禁用竞技场的编辑模式：%1%
+    enabled: 已启用竞技场的编辑模式：%1%
+  enable:
+    done: 竞技场已启用！
+    fail: '&c竞技场加载失败。请检查配置文件。'
+  arenalist: 竞技场列表：&a%1%&r
+  reload:
+    done: 竞技场已重新加载！
+  remove:
+    done: 已移除竞技场：&e%1%&r
+  startingin: 玩家已准备就绪。将在 %1% 秒后开始！
+  start:
+    done: 竞技场已强制开始！
+  stop:
+    done: 竞技场已强制停止！
+cmd:
+  blacklist:
+    added: 已将 &a%1%&r 添加到 &e%2%&r 的黑名单中！
+    allcleared: 所有黑名单已清空！
+    cleared: 黑名单 &e%1%&r 已清空！
+    help: 使用方法：/pa blacklist clear | /pa blacklist <类型> <clear|add|remove> <ID>
+    removed: 已从 &e%2%&r 的黑名单中移除 &a%1%&r！
+    show: 黑名单 &e%1%&r：
+  whitelist:
+    added: 已将 &a%1%&r 添加到 &e%2%&r 的白名单中！
+    allcleared: 所有白名单已清空！
+    cleared: 白名单 &e%1%&r 已清空！
+    help: 使用方法：/pa whitelist clear | /pa whitelist <类型> <clear|add|remove> <ID>
+    removed: 已从 &e%2%&r 的白名单中移除 &a%1%&r！
+    show: 白名单 &e%1%&r：
+  class:
+    list: 可用职业：%1%
+    preview: 您正在预览职业：%1%。输入 &e/pa leave&r 退出预览模式。
+    removed: 已移除职业：%1%
+    saved: 已保存职业：%1%
+  arenaclass:
+    selected: 您已切换到职业 &e%1%&r。
+    selectedrespawn: 您将在下次复活时切换到职业 &e%1%&f。
+  classchest:
+    done: 已成功将 %1% 的职业物品设置为 %2% 的内容。设置完箱子后请重新加载竞技场！
+  goal:
+    added: 目标已设置：&a%1%&r
+    editing: 使用命令编辑竞技场目标：&a/pa <竞技场> goal %1%&r
+  help:
+    message: 所有命令的文档和帮助信息可在在线文档中找到：&9%1%&r
+    link: https://github.com/Eredrim/pvparena
+  setowner:
+    done: '&a%1%&r 现在是竞技场 &a%2%&r 的所有者！'
+  spawn:
+    notset: 未设置出生点：&a%1%&r
+    removed: 已移除出生点：%1%
+    set: 已设置出生点：%1%
+    setagain: 已重新设置出生点：%1%
+    unknown: 未找到出生点：&a%1%&r
+  togglemod:
+    battle: '&c您启用了一个需要 BATTLE 区域的模块！如果该竞技场已有区域，请输入：&r/pa <竞技场> !rt <区域> BATTLE'
+    replacement: 模块 &a%1%&r 将替换模块 &a%2%&r。
+    disabled: 模块已禁用：&a%1%&r
+    notremovable: 模块 &a%1%&r 无法移除。它必须被一个具有相同类型 (%2%) 的模块替换。
+    enabled: 模块已启用：&a%1%&r
+check:
+  done: 检查完成！未发现错误！
+deathcause:
+  BLOCK_EXPLOSION: 方块爆炸
+  CONTACT: 仙人掌
+  CUSTOM: Herobrine
+  DROWNING: 溺水
+  ENTITY_EXPLOSION: 实体爆炸
+  FALL: 坠落
+  FIRE_TICK: 着火
+  FIRE: 火焰
+  LAVA: 熔岩
+  LIGHTNING: 雷电
+  MAGIC: 魔法
+  POISON: 中毒
+  PROJECTILE: 被抛出的实体击中
+  STARVATION: 饥饿
+  SUFFOCATION: 窒息
+  SUICIDE: 自杀
+  THORNS: 荆棘
+  VOID: 虚空
+  FALLING_BLOCK: 落下的方块
+  HOT_FLOOR: 熔岩方块
+  CRAMMING: 碰撞过多
+  DRAGON_BREATH: 龙息
+  CREEPER: 苦力怕
+  SKELETON: 骷髅
+  SPIDER: 蜘蛛
+  GIANT: 巨人
+  ZOMBIE: 僵尸
+  SLIME: 史莱姆
+  GHAST: 幽灵
+  PIG_ZOMBIE: 僵尸猪人/僵尸猪灵
+  ENDERMAN: 末影人
+  CAVE_SPIDER: 洞穴蜘蛛
+  SILVERFISH: 蠹虫
+  BLAZE: 烈焰人
+  MAGMA_CUBE: 岩浆怪
+  ENDER_DRAGON: 末影龙
+  WITHER: 凋零
+  WITCH: 女巫
+  WOLF: 狼
+  IRON_GOLEM: 铁傀儡
+  SPLASH_POTION: 喷溅型药水
+error:
+  arena:
+    alreadyplaying: 您已经在 &a%1%&r 竞技场中！
+  arenaexists: 竞技场已存在！
+  arenanotexists: 竞技场不存在：%1%
+  arenaconfig: 加载竞技场配置时出错：%1%
+  argumenttype: '&c无效的参数类型：&r &e%1%&r 不是有效的 &a%2%&r。'
+  argument: '&c无法识别的参数：%1% - 可能的参数：&a%2%&r'
+  blacklist:
+    disallowed: 您不能 %1%！已被列入黑名单！
+    unknownsubcommand: 未知子命令。有效命令：&a%1%&r
+    unknowntype: 未知类型。有效类型：&e%1%&r
+  class:
+    full: 职业 &a%1%&r 已满！
+    notenoughexp: 您没有足够的经验来选择 &a%1%&r！
+    notfound: 未找到职业：&a%1%&r
+    notgiven: 未指定职业！
+    needsautoclass: '%1% 模块需要定义自动职业设置'
+    needsjoinduringmatchgoal: '%1% 模块需要启用 join.allowDuringMatch 并设置允许在比赛中加入的目标'
+    incompatiblesetting: '%1% 模块与 %2% 设置不兼容'
+  cmdblocked: '&c命令被阻止：%1%'
+  invalidcmd: 无效命令：%1%
+  unknowncmd: 未知命令
+  arenadisabled: 竞技场已禁用，请稍后再试！
+  editmode: 编辑模式！
+  error: '&c错误：%1%'
+  fightinprogress: 战斗正在进行中！
+  goal:
+    goalnotfound: 目标 &a%1%&r 在 &a%2%&r 中未知。有效目标：&a%3%&r
+  install: 安装 &a%1%&r 时出错！
+  invalid_argument_count: '&c参数数量无效 (&1% 而不是 %2%)！'
+  valuenotfound: 无效值：&a%1%&r！
+  existingvalue: '&a%1%&r 值已在 &e%2%&r 中存在！'
+  nonexistingvalue: '&a%1%&r 值在 &e%2%&r 中不存在！'
+  invfull: 您的背包已满。您没有收到所有奖励！
+  arenafull: 竞技场已满！
+  joinrange: 您距离竞技场太远，无法加入！
+  notjoinregion: 您不在加入区域！请移动到该区域以加入！
+  nojoinmodule: 您的竞技场配置中没有加入模块。您需要设置一个！
+  teamfull: 队伍 %1% 已满！
+  log:
+    matnotfound: 无法识别的材料：%1%
+  missingspawn: 缺失的出生点：%1%
+  missingblock: 缺失的方块：%1%
+  outofboudsspawn: 以下出生点超出您的战斗区域边界：&r%1%
+  noarenas: 未找到任何竞技场！
+  valueneg: 负值：&c%1%&r
+  nochest: 您没有看向一个箱子！
+  nocontainer: 您没有看向一个容器！
+  nogoal: 您尚未添加目标！&a/pa <竞技场> goal <目标名>
+  nospawns: 未设置出生点！
+  classperms: 您没有权限使用职业 &a%1%&r！
+  permjoin: 您没有权限加入该竞技场！
+  noperm: '&c没有权限执行 %1%！'
+  noplayerfound: 未找到玩家！
+  notinarena: 您不是竞技场的一部分！
+  notnumeric: '&c参数不是数字：%1%'
+  onlyplayers: '&c此命令只能由玩家使用！'
+  playernotfound: '&c未找到玩家：%1%&c'
+  positives: 正值：&b%1%&r
+  potioneffecttypenotfound: 药水效果类型未找到：&e%1%&r
+  needsameblocktype: 所有方块必须具有相同的类型/材质
+  ready:
+    notready0: 至少有一名玩家尚未准备好！
+    notready1: 您是竞技场中唯一的玩家！
+    notready2: 您的队伍是竞技场中唯一的队伍！
+    notready3: 一个队伍缺少玩家！
+    notready4: 竞技场缺少玩家！
+    notready5: 至少有一名玩家尚未选择职业！
+    noclass: 您没有职业！
+  region:
+    flagnotfound: 区域标志 &a%1%&r 未知！有效值：%2%
+    invalid: 区域选择无效。该区域将没有体积且无用！
+    notfound: 区域 &a%1%&r 未找到！
+    protectionnotfound: 区域保护 &a%1%&r 未知！
+    typenotfound: 区域类型 &a%1%&r 未知！有效值：%2%
+    youselect: 您正在为竞技场选择区域！
+    youselect2: 再次输入命令以取消选择模式！
+    youselectexit: 区域选择已取消！
+  select2: 在保存之前请先选择两个点。
+  teamnotfound: 未找到队伍：&a%1%&r
+  noteamavailable: 没有可用的队伍。
+  uninstall: 卸载时出错：&a%1%&r
+  uninstall2: PVP Arena 将在服务器重启时尝试卸载！
+  unknownmodule: 未找到模块：%1%
+  whitelist:
+    disallowed: 您不能 %1%！（未被列入白名单）
+    unknownsubcommand: 未知子命令。有效命令：&a%1%&r
+    unknowntype: 未知类型。有效类型：&e%1%&r
+nopermto:
+  madmin: 管理
+  create: 创建竞技场
+  disable: 禁用
+  edit: 编辑竞技场
+  enable: 启用
+  nopermjoin: 加入竞技场
+  reload: 重新加载
+  remove: 移除竞技场
+  set: 设置配置节点
+  teleport: 传送到竞技场出生点
+  user: 使用 PVP 竞技场
+  cmds:
+    blacklist: 使用黑名单命令
+    check: 使用检查命令
+    class: 使用职业命令
+    create: 使用创建命令
+    debug: 使用调试命令
+    disable: 使用禁用命令
+    edit: 使用编辑命令
+    enable: 使用启用命令
+    gamemode: 使用游戏模式命令
+    goal: 使用目标命令
+    playerclass: 使用玩家职业命令
+    playerjoin: 使用玩家加入命令
+    protection: 使用保护命令
+    region: 使用区域命令
+    regionflag: 使用区域标志命令
+    regions: 使用区域列表命令
+    regiontype: 使用区域类型命令
+    reload: 使用重新加载命令
+    remove: 使用移除命令
+    set: 使用设置命令
+    setowner: 使用设置所有者命令
+    spawn: 使用出生点命令
+    start: 使用开始命令
+    stop: 使用停止命令
+    teams: 使用队伍命令
+    teleport: 使用传送命令
+    template: 使用模板命令
+    togglemod: 使用切换模块命令
+    uninstall: 使用卸载模块命令
+    whitelist: 使用白名单命令
+    arenaclass: 使用竞技场职业命令
+    chat: 使用聊天命令
+    join: 使用加入命令
+    leave: 使用离开命令
+    spectate: 使用观战命令
+    arenalist: 使用竞技场列表命令
+    help: 使用帮助命令
+    info: 使用信息命令
+    list: 使用列表命令
+    ready: 使用准备命令
+    shutup: 使用闭嘴命令
+    stats: 使用统计命令
+    version: 使用版本命令
+fight:
+  begins: 战斗开始！
+  draw: 这场比赛是平局！没有赢家！
+  killedbyremaining: '%1% 被 %2% 杀死了！剩余生命：%3%。'
+  killedbyremainingfrags: '%1% 被 %2% 杀死了！剩余击杀：%3%。'
+  killedbyremainingteam: '%1% 被 %2% 杀死了！%4% 队剩余生命：%3%。'
+  killedbyremainingteamfrags: '%1% 被 %2% 杀死了！%4% 队剩余击杀：%3%。'
+  killedby: '%1% 被 %2% 杀死了！'
+  playerleft: '%1% 已离开战斗！'
+permission:
+  break: 破坏
+  place: 放置
+info:
+  classes: 职业：&a%1%&r
+  goal_active: 目标：&a%1%&r
+  head_headlin: 竞技场信息：&a%1%&r | [&a%2%&r]
+  head_teams: 队伍：&a%1%&r
+  mod_active: 模块：&a%1%&r
+  owner: 所有者：&a%1%&r
+  regions: 区域：&a%1%&r
+  section: '----- &a%1%&r -----'
+general:
+  installed: 已安装：&a%1%&r
+  uninstalled: 已卸载：&a%1%&r
+  plugindisabled: 禁用（版本 %1%）
+  pluginenabled: 启用（版本 %1%）
+list:
+  arenas: 可用竞技场：%1%
+  dead: 已死亡：%1%
+  fighting: 正在战斗：%1%
+  lost: 已失败：%1%
+  lounge: 休息区：%1%
+  'null': 异常：%1%
+  players: 玩家：%1%
+  team: 队伍 %1%：%2%
+  ready: 已准备：%1%
+  warm: 热身：%1%
+  watching: 正在观战：%1%
+messages:
+  toArena: 您现在正在与竞技场对话！
+  toPublic: 您现在正在与公共频道对话！
+  toTeam: 您现在正在与队伍对话！
+  general: '&e[%1%&e] &r%2%'
+notice:
+  closedselection: '&e选择模式已关闭'
+  nodropitem: 不要这么快！别作弊！
+  noteleport: 请使用 '/pa leave' 退出战斗！
+  notice: 提示：%1%
+  rewardedplayer: '%1% 获得了 %2%。'
+  remove: '&c这将永久移除竞技场 &a%1%&c。您确定吗？再次输入命令以确认！&r 要禁用此提示，请查看 config.yml 中的 "safeadmin"！'
+  waitingequal: 等待队伍人数相等！
+  waitingforarena: 等待当前进行的竞技场结束！
+  welcomespec: 欢迎来到观战区！
+  youdeath: 您进入了死亡区域。再见！
+  youescaped: 您逃离了战场。再见！
+  arenabounds: 您已到达竞技场边界。
+  arenaintrusion: 这是一个禁止访问的区域。如果您想参加此竞技场，请输入 &e/pa %1%&r。如果您想观战，请输入 &e/pa %1% spectate&r。
+  youleft: 您已离开竞技场！
+  younocamp: 您处于禁止驻留区域。请移动！
+announce:
+  playerhaswon: '%1% 是冠军！'
+  playerready: '%1%&e 已准备好！'
+player:
+  prevented:
+    break: '&c您不能破坏方块！'
+    place: '&c您不能放置方块！'
+    tnt: '&c您不能使用 TNT！'
+    tntbreak: '&c您不能破坏 TNT！'
+    drop: '&c您不能丢弃物品！'
+    inventory: '&c您不能访问此物品栏！'
+    craft: '&c您不能进行合成！'
+ready:
+  list: 玩家：%1%
+  done: 您已被标记为已准备！
+region:
+  clear:
+    added: 已添加到区域实体清理白名单：&a%1%&r
+    list: 区域实体清理白名单：&a%1%&r
+    removed: 已从区域实体清理白名单中移除：&a%1%&r
+  flag:
+    added: 区域标志已添加：&a%1%&r
+    removed: 区域标志已移除：&a%1%&r
+  height: 区域高度已设置为：&a%1%&r
+  pos1: 第一个位置已设置。
+  pos2: 第二个位置已设置。
+  protection_added: 区域保护已添加：&a%1%&r
+  protection_removed: 区域保护已移除：&a%1%&r
+  radius: 区域半径已设置为：&a%1%&r
+  removed: 区域已移除：%1%
+  saved: 区域已保存。
+  saved_notice: '&6您创建了一个自定义区域。它目前没有功能！要将其设置为战场区域，请输入 &r/pvparena %1% !rt %2% BATTLE。'
+  select: 使用魔杖物品选择两个点，先左键点击，然后右键点击！
+  typeset: 区域类型已设置为：&e%1%
+  youselect: 您现在正在为竞技场 &a%1%&r 选择区域！
+  shapeunknown: 未知的竞技场形状 '%1%'。可用形状：长方体、球形、圆柱形。
+regions:
+  flags: 区域标志：&a%1%&r
+  head: '--- &a竞技场区域&r [&e%1%&r]---'
+  listhead: '--- &a竞技场区域列表&r [&e%1%&r]---'
+  listvalue: '&a%1%&r：%2%, %3%'
+  protections: 区域保护：&a%1%&r
+  shape: 区域形状：&a%1%&r
+  type: 区域类型：&a%1%&r
+cfg:
+  reloaded: '&2%1% 的配置已重新加载。'
+  reloadfail: '&c重新加载竞技场 %1% 失败。&f 请检查竞技场配置。'
+  set:
+    done: '&a%1%&r 已设置为 &e%2%&r！'
+    help: 使用 /pa <竞技场> set [页面] 获取节点列表。
+    unknown: 未知节点：&e%1%&r！
+    items_not: 请使用手持物品或物品栏来设置物品节点！
+  add:
+    done: '&e%2%&r 已添加到 &a%1%&r！'
+  remove:
+    done: '&e%2%&r 已从 &a%1%&r 中移除！'
+lang:
+  reloaded: 语言已重新加载！
+stats:
+  head: 统计数据 TOP %1% (%2%)
+  typenotfound: 未找到统计数据类型！有效值：&e%1%&r
+stattype:
+  DAMAGE: 总伤害输出
+  DAMAGE_TAKEN: 总伤害承受
+  DEATHS: 死亡次数
+  KILLS: 击杀次数
+  LOSSES: 比赛失败次数
+  MAX_DAMAGE: 最大伤害输出
+  MAX_DAMAGE_TAKEN: 最大伤害承受
+  WINS: 比赛胜利次数
+team:
+  haswon: 队伍 %1%&r 是冠军！
+  ready: 队伍 %1%&r 已准备好！
+teams:
+  list: 可用队伍：%1%
+  add: 已添加队伍：%1%
+  set: 已设置队伍：%1%
+  remove: 已移除队伍：%1%
+time:
+  minutes: 分钟
+  seconds: 秒
+timer:
+  countdowninterrupt: 倒计时已中断！等待玩家准备……
+  ending: 比赛将在 %1% 后结束！
+  resetting: 竞技场将在 %1% 后重置！
+  warmingup: 正在热身……%1%！
+  pvpactivating: PVP 将在 %1% 后激活！
+updater:
+  plugin: PVP 竞技场
+  modules: PVP 竞技场模块包
+  announce: '%1% %2% 现在可用！您的版本：%3%'
+  success: '%1% 已更新至 %2%。'
+  restart: 重启服务器以应用更新。
+  downloading: 正在下载 %1%……
+  downloaderror: 下载 %1% 时出错
+goal:
+  blockdestroy:
+    score: '%1% 摧毁了队伍 %2% 的方块！剩余摧毁次数：%3%'
+    setblock: 方块已成功设置为队伍 %1%&r
+    tosetflag: 左键点击队伍 %1%&r 的方块
+    notfound: 未找到队伍 %1% 的方块
+    removed: 队伍 %1% 的方块已被移除
+  checkpoints:
+    score: '%1% &e到达了检查点 #%2%！'
+    youmissed: '您错过了检查点 #%1%！这是 #%2%'
+  dom:
+    bossbar_claiming: 正在取消占领……
+    claiming: '&e队伍 %1% 正在占领旗帜！'
+    claimed: '&e队伍 %1% 已占领旗帜！'
+    score: '&e队伍 %1% 通过持有旗帜获得了 %2% 分！'
+    contesting: '&e队伍 %1% 占领的旗帜正在被争夺！'
+    unclaiming: '&e队伍 %1% 占领的旗帜正在被取消占领！'
+    setflag: '&e点击旗帜以注册它们，它们需要是可以染色的方块。再次输入此命令以关闭选择模式。'
+    existingflag: '&e该旗帜已被设置'
+  flag:
+    flaghomeleft: '%1% 将队伍 %2% 的旗帜带回了基地！剩余占领次数：%3%'
+    touchhomeleft: '%1% 将触地得分旗帜带回了基地！其他队伍失去一条生命！'
+    flagsave: '%1% 放下了队伍 %2% 的旗帜！'
+    flagsavetouch: '%1% 放下了触地得分旗帜！'
+    flaggrab: '%1% 抓取了队伍 %2% 的旗帜！'
+    flaggrabtouch: '%1% 抓取了触地得分旗帜！'
+    flagnotsafe: 您的旗帜已被抢走！不能带回敌方旗帜！
+    setflag: 已为 %1% 队设置旗帜
+    tosetflag: 左键点击 %1% 队的旗帜
+    notfound: 未找到旗帜：&e%1%
+    removed: 已移除旗帜 &e%1%&r
+  food:
+    notyourfood: 这不是您的熔炉！
+    tosetfood: '&e点击每个 &f%1%&e 以注册它。然后，再次输入此命令以关闭选择模式。'
+    notfound: '未找到方块：%1% %2% #%3%'
+    removed: '%1% %2% #%3% 已被移除'
+    existingblock: 此方块已为队伍 %1% 设置
+    foodfurnaceset: '熔炉 #%1% 已设置为队伍 %2%'
+    foodchestset: '食物箱子 #%1% 已设置为队伍 %2%'
+    itemsput: 队伍 %1% 已将 %2% 个物品放入箱子！得分：%3%/%4%
+    itemsremoved: 队伍 %1% 已从箱子中移除 %2% 个物品！得分：%3%/%4%
+  infected:
+    lost: '&6感染玩家已被全部击杀！'
+    player: '&c%1% 已被感染！'
+    you: '&c您已被感染！'
+    won: '&6感染玩家赢得了比赛！'
+    iprotect: 感染队伍被禁止：%1%
+    iprotectset: '&e玩家保护 &f%1%&f 已设置为：%2%'
+  killreward:
+    added: 击杀奖励已添加：&e%1%&r->&a%2%
+    removed: 击杀奖励已移除：&e%1%
+  liberation:
+    liberated: 队伍 %1% 已被解放！
+    setbutton: '%1% 按钮已设置'
+    scoreboardheading: 监狱中的玩家：
+    scoreboardseparator: '----------------'
+    tosetbutton: 点击 %1% 队的按钮以注册它
+    buttonnotfound: '%1% 按钮不存在'
+    buttonremoved: '%1% 按钮已被移除'
+  physicalflags:
+    holdflag: 您需要手持旗帜才能将其带回！
+  sabotage:
+    tntignite: '%1% 点燃了队伍 %2% 的 TNT！'
+    set: '%1% TNT 已设置'
+    toset: 点击队伍 %1% 的 TNT 以注册它
+    noselfdestroy: 您不能点燃自己的 TNT！
+    notgooditem: 您需要使用打火石来点燃 TNT。
+    youtnt: 您现在持有破坏工具。
+    tntnotfound: '%1% TNT 不存在'
+    tntremoved: '%1% TNT 已被移除'
+  tank:
+    tankdown: 坦克已倒下！
+    tankmode: 坦克模式！所有人击杀 %1%，他是坦克！
+    tankwon: 坦克赢得了比赛！恭喜 %1%！
+  tdc:
+    denied: '%1% 拒绝了一次击杀！'
+    remaining: '%1% 击杀剩余：%2%。'
+    scored: '%1% 获得了一次击杀！'
+    youdenied: 您拒绝了一次击杀！
+    youscored: 您获得了一次击杀！
+mod:
+  aftermatch:
+    aftermatch: 赛后环节已开始！
+    startingin: 赛后环节将在 %1% 后开始！
+    spawnnotset: 未设置 “赛后” 出生点！
+  announcements:
+    ignoreon: 您现在不再接收公告！
+    ignoreoff: 您现在正在接收公告！
+  battlefieldjoin:
+    lang:
+      remainingtime: 在接下来的 %1% 秒内，玩家可以继续加入竞技场
+  bankick:
+    lang:
+      playerbanned: 玩家已被封禁：%1%
+      playerkicked: 玩家已被踢出：%1%
+      playernotonline: 玩家不在线：%1%
+      playerunbanned: 玩家已被解封：%1%
+      youwerebanned: 您已被封禁于竞技场 %1%！
+      youwerekicked: 您已被踢出竞技场 %1%！
+      youwereunbanned: 您已被解封于竞技场 %1%！
+  betterclasses:
+    add: 职业效果 &e%2%&r 已添加到职业 &e%1%&r！
+    clear: 职业 &e%1%&r 的效果已清除！
+    listhead: '--- 职业 &e%1%&r 的效果列表 ---'
+    remove: 职业效果 &e%2%&r 已从职业 &e%1%&r 中移除！
+    respawncommand_remove: 从职业 &e%1%&r 中移除了复活命令！
+    classchange:
+      mteam: '&c您的队伍已超出职业变更限制！'
+      mplayer: '&c您已超出职业变更限制！'
+  bettergears:
+    showteam: 队伍 %1% 的颜色为 %2%。
+    teamdone: 队伍 %1% 现在的颜色为 %2%。
+  blockrestore:
+    clearinvdone: 物品栏已清空！下次竞技场开始时可能会出现延迟！
+    addedtolist: 容器 (%1%) 已添加到物品栏恢复列表中！
+  chestfiller:
+    sourceChest: 位于 "%1%" 的容器已成为竞技场的新源箱子。
+    removedSource: 竞技场的源容器已被移除，现在使用 'chestfiller.items' 配置来填充箱子。
+    clear: 要填充的箱子列表已被清空！
+    addedToList: 已成功添加到填充列表：%1%
+  duel:
+    accepted: '%1% &e接受了挑战！比赛即将开始。'
+    announce: '%1% &e向您发起了挑战！输入 &r/pa %2% accept&e 接受挑战。'
+    announcemoney: '&e他们设置了 %1% 的费用！'
+    announce2: '&e输入 &r/pa %2% decline&e 取消挑战。'
+    cancelled: '&c挑战已被取消！'
+    busy: '%1% &e正在战斗中，请稍后再试。'
+    declineds: 您的对手拒绝了请求。挑战已被取消。
+    declinedr: 您拒绝了挑战请求！
+    requested: 您 &e向 &r%1%&e 发起了挑战！
+    requestedalready: 您已经向某人发起了挑战！
+    requestexpireds: 您的对手未在规定时间内接受请求。挑战已被取消。
+    requestexpiredr: 您未在规定时间内接受请求。挑战已被取消。
+    starting: 挑战开始！
+    nodirectjoin: 您不能直接加入此竞技场！请与某人发起挑战：&e/pa %1% duel <玩家>
+  latelounge:
+    announce: 竞技场 %1% 即将开始！玩家 %2% 想要开始。加入请使用：/pa %1%
+    position: 您在队列中的位置：%1%
+    rejoin: 准备检查发现您无法加入。请在可以时重新加入！
+    wait: 竞技场即将开始，请稍等！
+    leave: 您已离开竞技场 %1% 的队列。
+  playerfinder:
+    near: 最近的玩家：%1% 块！
+    point: 指南针指向最近的玩家！
+  powerups:
+    invalidpowerupeffect: 无效的增益效果：%1%
+    puplayer: '%1% 拾取了增益：%2%'
+    puserver: 增益已投放！
+    livesplayer: 由于增益效果，%1% 失去了 %2% 生命/点数！
+    livesteams: 由于增益效果，%1% 队伍失去了 %2% 生命/点数！
+    frozen: 您将在接下来的 %1% 秒内被冻结！
+  realspectate:
+    info: 您正在以沉浸式视角观战！潜行可切换到下一位选手，按下 “投掷物品” 键可切换回上一位。
+  respawnrelay:
+    respawning: 正在重生中……%1%
+    choice: 如果您想在特定出生点重生，请在聊天中输入出生点编号。可用出生点：%1%
+    chosen: 您的下次重生点选择已记录。
+  skins:
+    dc: 正在连接 DisguiseCraft！
+    ld: 正在连接 LibsDisguises！
+    nomod: 未找到伪装插件，皮肤模块处于非活动状态！
+    showclass: 职业 &e%1%&r 将伪装为：&a%2%
+    showteam: 队伍 %1% 将伪装为：&a%2%
+  spawncollections:
+    saved: 生产集合 "%1%" 已保存
+    use: 现在，竞技场使用 "%1%" 生产集合的出生点
+    notexist: 生产集合 "%1%" 不存在
+    removed: 生产集合 "%1%" 已被移除
+    list: 已保存的生产集合：%1%
+    empty: 没有已保存的生产集合
+  squads:
+    nosquad: 没有小队已加载！请添加一些：/pa <竞技场> !sq add <名称>
+    listhead: 竞技场 &b%1% 的小队
+    listitem: 小队 %1% (最大人数：%2%) %3%
+    added: 小队 %1% 已添加
+    set: 小队 %1% 已设置
+    removed: 小队 %1% 已移除
+    notexist: 小队 %1% 不存在！
+    join: 您已加入小队 &b%1%&r！
+    leave: 您已离开小队 &b%1%&r！
+    error: 编辑小队时出错，语法不正确！
+    full: 此小队已满！
+    help: |-
+      /pa !sq | 显示竞技场小队
+      /pa !sq add <名称> <限制> | 添加小队并设置玩家限制（设置为 0 表示无限制）
+      /pa !sq set <名称> <限制> | 设置小队的玩家限制
+      /pa !sq remove <名称> | 移除小队 <名称>
+  startfreeze:
+    announce: 游戏将在 %1% 秒后开始！
+  tempperms:
+    noperms: 未找到权限插件，将默认使用管理员权限。
+    head: 临时权限的 &e%1%&r：
+    added: 临时权限 &e%1%&r 已添加到 &a%2%&r。
+    removed: 临时权限 &e%1%&r 已从 &a%2%&r 中移除。
+  vault:
+    notenough: 您没有足够的 %1%。
+    noaccount: 需要银行账户才能使用此命令或参加此竞技场。
+    theynotenough: '%1% 没有足够的资金！'
+    bettimeover: 押注时间已结束！
+    beforebettime: 押注时间尚未开始！请等待比赛开始。
+    betnotyours: 不能对自己正在进行的比赛下注！
+    betonlyteams: 只能对（非空）队伍下注！
+    betonlyplayers: 只能对玩家下注！
+    wrongamount: 押注金额必须在 %1% 和 %2% 之间！
+    invalidamount: 无效金额：%1%
+    betplaced: 您的 %1% 押注已成功下在 %2% 上。
+    betchanged: 您的押注已更改。现在您押注 %1% 在 %2% 上。
+    youearned: 您赢得了 %1%！
+    joinpay: 您支付了 %1% 以加入竞技场。
+    killreward: 您因击杀 %2% 获得了 %1%！
+    refunding: 正在退款 %1%！
+  walls:
+    fallingin: 墙壁将在 %1% 后倒塌……
+    separator: '--------------------'
+    timer: 墙壁将在 %1% 后被移除！
+  worldedit:
+    created: 已创建区域：&e%1%&r
+    list:
+      added: '&e%1%&r 已添加到区域列表中。'
+      removed: '&e%1%&r 已从区域列表中移除。'
+      show: 这些区域将根据自动保存/自动加载配置进行保存或加载：&e%1%&r
+      empty: 未添加任何区域到列表中。因此，所有 BATTLE 区域将根据自动保存/自动加载配置进行保存或加载。
+    loaded: 已加载区域：&e%1%&r
+    saved: 已保存区域：&e%1%&r
+time_intervals:
+  '1': 1..
+  '2': 2..
+  '3': 3..
+  '4': 4..
+  '5': 5..
+  '10': 10 %s
+  '20': 20 %s
+  '30': 30 %s
+  '60': 60 %s
+  '120': 2 %m
+  '180': 3 %m
+  '240': 4 %m
+  '300': 5 %m
+  '600': 10 %m
+  '1200': 20 %m
+  '1800': 30 %m
+  '2400': 40 %m
+  '3000': 50 %m
+  '3600': 60 %m
