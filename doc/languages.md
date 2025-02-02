@@ -7,11 +7,11 @@ Download the file and copy it in the folder `plugins/pvparena/`. Then edit the f
 set the `language` setting to the new language code (second column below).
 Finally, reload your plugin configuration by running [`/pa reload`](commands/reload.md)
 
-| download                       | language code  | language           | author          | last update |
-|--------------------------------|----------------|--------------------|-----------------|-------------|
-| generated                      | 'en' (default) | English            | slipcor/Eredrim | 2025-01     |
-| [link](../lang/lang_fr.yml)    | 'fr'           | Français           | Eredrim         | 2025-01     |
-| [link](../lang/lang_zh-CN.yml) | 'zh-CN'        | Simplified Chinese | Harry_H2O       | 2025-01     |
+| download                       | language code  | language | author          | last update |
+|--------------------------------|----------------|----------|-----------------|-------------|
+| generated                      | 'en' (default) | English  | slipcor/Eredrim | 2025-02     |
+| [link](../lang/lang_fr.yml)    | 'fr'           | Français | Eredrim         | 2025-02     |
+| [link](../lang/lang_zh-CN.yml) | 'zh-CN'        | 简体中文     | Harry_H2O       | 2025-01     |
 
 <br>
 

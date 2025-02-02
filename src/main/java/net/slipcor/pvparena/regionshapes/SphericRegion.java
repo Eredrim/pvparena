@@ -2,15 +2,13 @@ package net.slipcor.pvparena.regionshapes;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.classes.PABlockLocation;
-import net.slipcor.pvparena.regions.ArenaRegion;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
+import net.slipcor.pvparena.regions.ArenaRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -154,12 +152,12 @@ public class SphericRegion extends ArenaRegionShape {
     }
 
     @Override
-    public void showBorder(final Player player) {
+    protected Set<Block> getBorder() {
         final PABlockLocation center = new PABlockLocation(this.getCenter().toLocation());
 
         final World world = Bukkit.getWorld(this.region.getWorldName());
 
-        this.border.clear();
+        Set<Block> border = new HashSet<>();
 
         final PABlockLocation minimum = new PABlockLocation(this.region.locs[1].toLocation());
         minimum.setY(this.region.locs[0].getY());
@@ -175,26 +173,26 @@ public class SphericRegion extends ArenaRegionShape {
         for (int x = 0; x <= Math.ceil(radius + 1d / 2); x++) {
             final int z = (int) Math.abs(Math.sqrt(radiusSquared - x * x));
 
-            this.border.add(new Location(world, center.getX() + x, center.getY(),
+            border.add(new Location(world, center.getX() + x, center.getY(),
                     center.getZ() + z).getBlock());
-            this.border.add(new Location(world, center.getX() - x, center.getY(),
+            border.add(new Location(world, center.getX() - x, center.getY(),
                     center.getZ() + z).getBlock());
-            this.border.add(new Location(world, center.getX() + x, center.getY(),
+            border.add(new Location(world, center.getX() + x, center.getY(),
                     center.getZ() - z).getBlock());
-            this.border.add(new Location(world, center.getX() - x, center.getY(),
+            border.add(new Location(world, center.getX() - x, center.getY(),
                     center.getZ() - z).getBlock());
         }
 
         for (int z = 0; z <= Math.ceil(radius + 1d / 2); z++) {
             final int x = (int) Math.abs(Math.sqrt(radiusSquared - z * z));
 
-            this.border.add(new Location(world, center.getX() + x, center.getY(),
+            border.add(new Location(world, center.getX() + x, center.getY(),
                     center.getZ() + z).getBlock());
-            this.border.add(new Location(world, center.getX() - x, center.getY(),
+            border.add(new Location(world, center.getX() - x, center.getY(),
                     center.getZ() + z).getBlock());
-            this.border.add(new Location(world, center.getX() + x, center.getY(),
+            border.add(new Location(world, center.getX() + x, center.getY(),
                     center.getZ() - z).getBlock());
-            this.border.add(new Location(world, center.getX() - x, center.getY(),
+            border.add(new Location(world, center.getX() - x, center.getY(),
                     center.getZ() - z).getBlock());
         }
 
@@ -205,13 +203,13 @@ public class SphericRegion extends ArenaRegionShape {
         for (int y = 0; y <= Math.ceil(radius + 1d / 2); y++) {
             final int x = (int) Math.abs(Math.sqrt(radiusSquared - y * y));
 
-            this.border.add(new Location(world, center.getX() + x, center.getY() + y,
+            border.add(new Location(world, center.getX() + x, center.getY() + y,
                     center.getZ()).getBlock());
-            this.border.add(new Location(world, center.getX() - x, center.getY() + y,
+            border.add(new Location(world, center.getX() - x, center.getY() + y,
                     center.getZ()).getBlock());
-            this.border.add(new Location(world, center.getX() + x, center.getY() - y,
+            border.add(new Location(world, center.getX() + x, center.getY() - y,
                     center.getZ()).getBlock());
-            this.border.add(new Location(world, center.getX() - x, center.getY() - y,
+            border.add(new Location(world, center.getX() - x, center.getY() - y,
                     center.getZ()).getBlock());
 
         }
@@ -219,13 +217,13 @@ public class SphericRegion extends ArenaRegionShape {
         for (int x = 0; x <= Math.ceil(radius + 1d / 2); x++) {
             final int y = (int) Math.abs(Math.sqrt(radiusSquared - x * x));
 
-            this.border.add(new Location(world, center.getX() + x, center.getY() + y,
+            border.add(new Location(world, center.getX() + x, center.getY() + y,
                     center.getZ()).getBlock());
-            this.border.add(new Location(world, center.getX() - x, center.getY() + y,
+            border.add(new Location(world, center.getX() - x, center.getY() + y,
                     center.getZ()).getBlock());
-            this.border.add(new Location(world, center.getX() + x, center.getY() - y,
+            border.add(new Location(world, center.getX() + x, center.getY() - y,
                     center.getZ()).getBlock());
-            this.border.add(new Location(world, center.getX() - x, center.getY() - y,
+            border.add(new Location(world, center.getX() - x, center.getY() - y,
                     center.getZ()).getBlock());
 
         }
@@ -237,48 +235,30 @@ public class SphericRegion extends ArenaRegionShape {
         for (int y = 0; y <= Math.ceil(radius + 1d / 2); y++) {
             final int z = (int) Math.abs(Math.sqrt(radiusSquared - y * y));
 
-            this.border.add(new Location(world, center.getX(), center.getY() + y,
+            border.add(new Location(world, center.getX(), center.getY() + y,
                     center.getZ() + z).getBlock());
-            this.border.add(new Location(world, center.getX(), center.getY() - y,
+            border.add(new Location(world, center.getX(), center.getY() - y,
                     center.getZ() + z).getBlock());
-            this.border.add(new Location(world, center.getX(), center.getY() + y,
+            border.add(new Location(world, center.getX(), center.getY() + y,
                     center.getZ() - z).getBlock());
-            this.border.add(new Location(world, center.getX(), center.getY() - y,
+            border.add(new Location(world, center.getX(), center.getY() - y,
                     center.getZ() - z).getBlock());
         }
 
         for (int z = 0; z <= Math.ceil(radius + 1d / 2); z++) {
             final int y = (int) Math.abs(Math.sqrt(radiusSquared - z * z));
 
-            this.border.add(new Location(world, center.getX(), center.getY() + y,
+            border.add(new Location(world, center.getX(), center.getY() + y,
                     center.getZ() + z).getBlock());
-            this.border.add(new Location(world, center.getX(), center.getY() - y,
+            border.add(new Location(world, center.getX(), center.getY() - y,
                     center.getZ() + z).getBlock());
-            this.border.add(new Location(world, center.getX(), center.getY() + y,
+            border.add(new Location(world, center.getX(), center.getY() + y,
                     center.getZ() - z).getBlock());
-            this.border.add(new Location(world, center.getX(), center.getY() - y,
+            border.add(new Location(world, center.getX(), center.getY() - y,
                     center.getZ() - z).getBlock());
         }
 
-        for (Block b : this.border) {
-            if (!this.region.isInNoWoolSet(b)) {
-                player.sendBlockChange(b.getLocation(), Material.WHITE_WOOL.createBlockData());
-            }
-        }
-
-        Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.getInstance(),
-                new Runnable() {
-
-                    @Override
-                    public void run() {
-                        for (Block b : SphericRegion.this.border) {
-                            player.sendBlockChange(b.getLocation(),
-                                    b.getType().createBlockData());
-                        }
-                        SphericRegion.this.border.clear();
-                    }
-
-                }, 100L);
+        return border;
     }
 
     @Override

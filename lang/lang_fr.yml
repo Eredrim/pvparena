@@ -340,12 +340,13 @@ region:
   flag:
     added: "Le flag &a%1%&r a été ajouté à la région"
     removed: "Le flag &a%1%&r a été supprimée de la région"
-  height: "Nouvelle hauteur de la région : &a%1%&r"
+  shifted: La région a été déplacée de &a%1%&r blocs dans la direction &a%2%&r
+  expanded: La région a été agrandie de &a%1%&r blocs vers la direction &a%2%&r
+  contracted: La région a été réduite de &a%1%&r blocs depuis la direction &a%2%&r
   pos1: Position n°1 enregistrée.
   pos2: Position n°2 enregistrée.
   protection_added: "La protection &a%1%&r a été ajoutée à la région"
   protection_removed: "La protection &a%1%&r a été supprimée de la région"
-  radius: "Nouveau rayon de la région: &a%1%&r"
   removed: "La région %1% a été supprimée"
   saved: Region sauvegardée.
   saved_notice: "&6Vous venez de créer une région de type &oCUSTOM&6, c'est à dire sans fonctionnalité 

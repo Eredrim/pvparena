@@ -1,11 +1,15 @@
 package net.slipcor.pvparena.loadables;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.regions.ArenaRegion;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashSet;
 import java.util.List;
@@ -24,6 +28,8 @@ import java.util.Set;
 public abstract class ArenaRegionShape {
 
     private final String name;
+
+    private BukkitRunnable stopShowBorderTask;
 
     protected ArenaRegionShape(final String name) {
         this.name = name;
@@ -44,8 +50,6 @@ public abstract class ArenaRegionShape {
     public abstract PABlockLocation getMinimumLocation();
 
     public abstract boolean overlapsWith(ArenaRegion other);
-
-    public abstract void showBorder(Player player);
 
     public abstract boolean tooFarAway(int joinRange, Location location);
 
@@ -93,4 +97,36 @@ public abstract class ArenaRegionShape {
     public abstract void extend(BlockFace direction, int parseInt);
 
     public abstract void initialize(ArenaRegion region);
+
+    public final void showBorder(Player player) {
+        this.stopPreviousShowBorder();
+
+        Set<Block> shapeBorder = this.getBorder();
+
+        shapeBorder.forEach(b ->
+                player.sendBlockChange(b.getLocation(), Material.MAGENTA_STAINED_GLASS.createBlockData())
+        );
+
+        this.stopShowBorderTask = new BukkitRunnable() {
+            private final Set<Block> border = shapeBorder;
+
+            @Override
+            public void run() {
+                this.border.forEach(b -> player.sendBlockChange(b.getLocation(), b.getBlockData()));
+                this.border.clear();
+            }
+        };
+
+        this.stopShowBorderTask.runTaskLater(PVPArena.getInstance(), 100L);
+    }
+
+    protected abstract Set<Block> getBorder();
+
+    private void stopPreviousShowBorder() {
+        if (this.stopShowBorderTask != null && !this.stopShowBorderTask.isCancelled()) {
+            this.stopShowBorderTask.cancel();
+            this.stopShowBorderTask.run();
+            this.stopShowBorderTask = null;
+        }
+    }
 }

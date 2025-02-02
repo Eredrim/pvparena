@@ -2,15 +2,13 @@ package net.slipcor.pvparena.regionshapes;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.classes.PABlockLocation;
-import net.slipcor.pvparena.regions.ArenaRegion;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
+import net.slipcor.pvparena.regions.ArenaRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -29,7 +27,6 @@ import java.util.Set;
 
 public class CuboidRegion extends ArenaRegionShape {
 
-    private final Set<Block> border = new HashSet<>();
     private ArenaRegion region;
 
     public CuboidRegion() {
@@ -169,67 +166,49 @@ public class CuboidRegion extends ArenaRegionShape {
     }
 
     @Override
-    public void showBorder(final Player player) {
+    protected Set<Block> getBorder() {
 
         final Location min = this.getMinimumLocation().toLocation();
         final Location max = this.getMaximumLocation().toLocation();
         final World w = Bukkit.getWorld(this.region.getWorldName());
 
-        this.border.clear();
+        Set<Block> border = new HashSet<>();
 
         // move along exclusive x, create miny+maxy+minz+maxz
         for (int x = min.getBlockX() + 1; x < max.getBlockX(); x++) {
-            this.border.add(new Location(w, x, min.getBlockY(), min.getBlockZ())
+            border.add(new Location(w, x, min.getBlockY(), min.getBlockZ())
                     .getBlock());
-            this.border.add(new Location(w, x, min.getBlockY(), max.getBlockZ())
+            border.add(new Location(w, x, min.getBlockY(), max.getBlockZ())
                     .getBlock());
-            this.border.add(new Location(w, x, max.getBlockY(), min.getBlockZ())
+            border.add(new Location(w, x, max.getBlockY(), min.getBlockZ())
                     .getBlock());
-            this.border.add(new Location(w, x, max.getBlockY(), max.getBlockZ())
+            border.add(new Location(w, x, max.getBlockY(), max.getBlockZ())
                     .getBlock());
         }
         // move along exclusive y, create minx+maxx+minz+maxz
         for (int y = min.getBlockY() + 1; y < max.getBlockY(); y++) {
-            this.border.add(new Location(w, min.getBlockX(), y, min.getBlockZ())
+            border.add(new Location(w, min.getBlockX(), y, min.getBlockZ())
                     .getBlock());
-            this.border.add(new Location(w, min.getBlockX(), y, max.getBlockZ())
+            border.add(new Location(w, min.getBlockX(), y, max.getBlockZ())
                     .getBlock());
-            this.border.add(new Location(w, max.getBlockX(), y, min.getBlockZ())
+            border.add(new Location(w, max.getBlockX(), y, min.getBlockZ())
                     .getBlock());
-            this.border.add(new Location(w, max.getBlockX(), y, max.getBlockZ())
+            border.add(new Location(w, max.getBlockX(), y, max.getBlockZ())
                     .getBlock());
         }
         // move along inclusive z, create minx+maxx+miny+maxy
         for (int z = min.getBlockZ(); z <= max.getBlockZ(); z++) {
-            this.border.add(new Location(w, min.getBlockX(), min.getBlockY(), z)
+            border.add(new Location(w, min.getBlockX(), min.getBlockY(), z)
                     .getBlock());
-            this.border.add(new Location(w, min.getBlockX(), max.getBlockY(), z)
+            border.add(new Location(w, min.getBlockX(), max.getBlockY(), z)
                     .getBlock());
-            this.border.add(new Location(w, max.getBlockX(), min.getBlockY(), z)
+            border.add(new Location(w, max.getBlockX(), min.getBlockY(), z)
                     .getBlock());
-            this.border.add(new Location(w, max.getBlockX(), max.getBlockY(), z)
+            border.add(new Location(w, max.getBlockX(), max.getBlockY(), z)
                     .getBlock());
         }
 
-        for (Block b : this.border) {
-            if (!this.region.isInNoWoolSet(b)) {
-                player.sendBlockChange(b.getLocation(), Material.WHITE_WOOL.createBlockData());
-            }
-        }
-
-        Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.getInstance(),
-                new Runnable() {
-
-                    @Override
-                    public void run() {
-                        for (Block b : CuboidRegion.this.border) {
-                            player.sendBlockChange(b.getLocation(),
-                                    b.getType().createBlockData());
-                        }
-                        CuboidRegion.this.border.clear();
-                    }
-
-                }, 100L);
+        return border;
     }
 
     @Override
@@ -332,19 +311,19 @@ public class CuboidRegion extends ArenaRegionShape {
         if (diffX > 0) {
             this.region.locs[1] = new PABlockLocation(this.region.locs[1].toLocation().add(diffX * value, 0, 0));
         } else if (diffX < 0) {
-            this.region.locs[0] = new PABlockLocation(this.region.locs[0].toLocation().subtract(diffX * value, 0, 0));
+            this.region.locs[0] = new PABlockLocation(this.region.locs[0].toLocation().add(diffX * value, 0, 0));
         }
 
         if (diffY > 0) {
             this.region.locs[1] = new PABlockLocation(this.region.locs[1].toLocation().add(0, diffY * value, 0));
         } else if (diffY < 0) {
-            this.region.locs[0] = new PABlockLocation(this.region.locs[0].toLocation().subtract(0, diffY * value, 0));
+            this.region.locs[0] = new PABlockLocation(this.region.locs[0].toLocation().add(0, diffY * value, 0));
         }
 
         if (diffZ > 0) {
             this.region.locs[1] = new PABlockLocation(this.region.locs[1].toLocation().add(0, 0, diffZ * value));
         } else if (diffZ < 0) {
-            this.region.locs[0] = new PABlockLocation(this.region.locs[0].toLocation().subtract(0, 0, diffZ * value));
+            this.region.locs[0] = new PABlockLocation(this.region.locs[0].toLocation().add(0, 0, diffZ * value));
         }
 
     }

@@ -11,7 +11,6 @@ import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
-import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
@@ -19,9 +18,7 @@ import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.PermissionManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Hanging;
@@ -49,15 +46,9 @@ public class ArenaRegion {
     private final Set<RegionProtection> protections = new HashSet<>();
     private final NoCampRunnable noCampRunnable;
 
-    private static final Set<Material> NOWOOLS = new HashSet<>();
-
     public final PABlockLocation[] locs;
 
     private final ArenaRegionShape shape;
-
-    static {
-        NOWOOLS.add(Material.CHEST);
-    }
 
     /**
      * check if an arena has overlapping battlefield region with another arena
@@ -294,10 +285,6 @@ public class ArenaRegion {
         return this.world;
     }
 
-    public boolean isInNoWoolSet(final Block block) {
-        return NOWOOLS.contains(block.getType());
-    }
-
     public boolean isInRange(final int offset, final PABlockLocation loc) {
         if (!this.world.equals(loc.getWorldName())) {
             return false;
@@ -493,55 +480,5 @@ public class ArenaRegion {
             PADeathInfo pluginDeathCause = new PADeathInfo(EntityDamageEvent.DamageCause.LIGHTNING);
             aPlayer.handleDeathAndLose(pluginDeathCause);
         }
-    }
-
-    public String update(final String key, final String value) {
-        // usage: /pa {arenaname} region [regionname] radius [number]
-        // usage: /pa {arenaname} region [regionname] height [number]
-        // usage: /pa {arenaname} region [regionname] position [position]
-        // usage: /pa {arenaname} region [regionname] flag [flag]
-        // usage: /pa {arenaname} region [regionname] type [regiontype]
-
-        if ("height".equalsIgnoreCase(key)) {
-            final int height;
-            try {
-                height = Integer.parseInt(value);
-            } catch (final Exception e) {
-                return Language.parse(MSG.ERROR_NOT_NUMERIC, value);
-            }
-
-            this.locs[0].setY(this.shape.getCenter().getY() - (height >> 1));
-            this.locs[1].setY(this.locs[0].getY() + height);
-
-            return Language.parse(MSG.REGION_HEIGHT, value);
-        }
-        if (key.equalsIgnoreCase("radius")) {
-            int radius;
-            try {
-                radius = Integer.parseInt(value);
-            } catch (Exception e) {
-                return Language.parse(MSG.ERROR_NOT_NUMERIC, value);
-            }
-
-            final PABlockLocation loc = this.shape.getCenter();
-
-            this.locs[0].setX(loc.getX() - radius);
-            this.locs[0].setY(loc.getY() - radius);
-            this.locs[0].setZ(loc.getZ() - radius);
-
-            this.locs[1].setX(loc.getX() + radius);
-            this.locs[1].setY(loc.getY() + radius);
-            this.locs[1].setZ(loc.getZ() + radius);
-
-            return Language.parse(MSG.REGION_RADIUS, value);
-        }
-        if (key.equalsIgnoreCase("position")) {
-            return null; // TODO insert function to align the arena based on a
-            // position setting.
-            // TODO see SETUP.creole
-        }
-
-        return Language.parse(MSG.ERROR_ARGUMENT, key,
-                "height | radius | position");
     }
 }

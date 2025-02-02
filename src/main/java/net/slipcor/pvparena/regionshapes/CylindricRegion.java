@@ -2,15 +2,13 @@ package net.slipcor.pvparena.regionshapes;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.classes.PABlockLocation;
-import net.slipcor.pvparena.regions.ArenaRegion;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
+import net.slipcor.pvparena.regions.ArenaRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -173,7 +171,7 @@ public class CylindricRegion extends ArenaRegionShape {
     }
 
     @Override
-    public void showBorder(final Player player) {
+    protected Set<Block> getBorder() {
 
         final PABlockLocation lowercenter = new PABlockLocation(this.getCenter()
                 .toLocation());
@@ -186,7 +184,7 @@ public class CylindricRegion extends ArenaRegionShape {
 
         final World world = Bukkit.getWorld(this.region.getWorldName());
 
-        this.border.clear();
+        Set<Block> border = new HashSet<>();
 
         final Double radius = this.getRadius();
 
@@ -195,83 +193,65 @@ public class CylindricRegion extends ArenaRegionShape {
         for (int x = 0; x <= Math.ceil(radius + 1d / 2); x++) {
             final int z = (int) Math.abs(Math.sqrt(radiusSquared - x * x));
 
-            this.border.add(new Location(world, center.getX() + x, center.getY(),
+            border.add(new Location(world, center.getX() + x, center.getY(),
                     center.getZ() + z).getBlock());
-            this.border.add(new Location(world, center.getX() - x, center.getY(),
+            border.add(new Location(world, center.getX() - x, center.getY(),
                     center.getZ() + z).getBlock());
-            this.border.add(new Location(world, center.getX() + x, center.getY(),
+            border.add(new Location(world, center.getX() + x, center.getY(),
                     center.getZ() - z).getBlock());
-            this.border.add(new Location(world, center.getX() - x, center.getY(),
+            border.add(new Location(world, center.getX() - x, center.getY(),
                     center.getZ() - z).getBlock());
 
-            this.border.add(new Location(world, lowercenter.getX() + x, lowercenter
+            border.add(new Location(world, lowercenter.getX() + x, lowercenter
                     .getY(), lowercenter.getZ() + z).getBlock());
-            this.border.add(new Location(world, lowercenter.getX() - x, lowercenter
+            border.add(new Location(world, lowercenter.getX() - x, lowercenter
                     .getY(), lowercenter.getZ() + z).getBlock());
-            this.border.add(new Location(world, lowercenter.getX() + x, lowercenter
+            border.add(new Location(world, lowercenter.getX() + x, lowercenter
                     .getY(), lowercenter.getZ() - z).getBlock());
-            this.border.add(new Location(world, lowercenter.getX() - x, lowercenter
+            border.add(new Location(world, lowercenter.getX() - x, lowercenter
                     .getY(), lowercenter.getZ() - z).getBlock());
 
-            this.border.add(new Location(world, uppercenter.getX() + x, uppercenter
+            border.add(new Location(world, uppercenter.getX() + x, uppercenter
                     .getY(), uppercenter.getZ() + z).getBlock());
-            this.border.add(new Location(world, uppercenter.getX() - x, uppercenter
+            border.add(new Location(world, uppercenter.getX() - x, uppercenter
                     .getY(), uppercenter.getZ() + z).getBlock());
-            this.border.add(new Location(world, uppercenter.getX() + x, uppercenter
+            border.add(new Location(world, uppercenter.getX() + x, uppercenter
                     .getY(), uppercenter.getZ() - z).getBlock());
-            this.border.add(new Location(world, uppercenter.getX() - x, uppercenter
+            border.add(new Location(world, uppercenter.getX() - x, uppercenter
                     .getY(), uppercenter.getZ() - z).getBlock());
         }
         for (int z = 0; z <= Math.ceil(radius + 1d / 2); z++) {
             final int x = (int) Math.abs(Math.sqrt(radiusSquared - z * z));
 
-            this.border.add(new Location(world, center.getX() + x, center.getY(),
+            border.add(new Location(world, center.getX() + x, center.getY(),
                     center.getZ() + z).getBlock());
-            this.border.add(new Location(world, center.getX() - x, center.getY(),
+            border.add(new Location(world, center.getX() - x, center.getY(),
                     center.getZ() + z).getBlock());
-            this.border.add(new Location(world, center.getX() + x, center.getY(),
+            border.add(new Location(world, center.getX() + x, center.getY(),
                     center.getZ() - z).getBlock());
-            this.border.add(new Location(world, center.getX() - x, center.getY(),
+            border.add(new Location(world, center.getX() - x, center.getY(),
                     center.getZ() - z).getBlock());
 
-            this.border.add(new Location(world, lowercenter.getX() + x, lowercenter
+            border.add(new Location(world, lowercenter.getX() + x, lowercenter
                     .getY(), lowercenter.getZ() + z).getBlock());
-            this.border.add(new Location(world, lowercenter.getX() - x, lowercenter
+            border.add(new Location(world, lowercenter.getX() - x, lowercenter
                     .getY(), lowercenter.getZ() + z).getBlock());
-            this.border.add(new Location(world, lowercenter.getX() + x, lowercenter
+            border.add(new Location(world, lowercenter.getX() + x, lowercenter
                     .getY(), lowercenter.getZ() - z).getBlock());
-            this.border.add(new Location(world, lowercenter.getX() - x, lowercenter
+            border.add(new Location(world, lowercenter.getX() - x, lowercenter
                     .getY(), lowercenter.getZ() - z).getBlock());
 
-            this.border.add(new Location(world, uppercenter.getX() + x, uppercenter
+            border.add(new Location(world, uppercenter.getX() + x, uppercenter
                     .getY(), uppercenter.getZ() + z).getBlock());
-            this.border.add(new Location(world, uppercenter.getX() - x, uppercenter
+            border.add(new Location(world, uppercenter.getX() - x, uppercenter
                     .getY(), uppercenter.getZ() + z).getBlock());
-            this.border.add(new Location(world, uppercenter.getX() + x, uppercenter
+            border.add(new Location(world, uppercenter.getX() + x, uppercenter
                     .getY(), uppercenter.getZ() - z).getBlock());
-            this.border.add(new Location(world, uppercenter.getX() - x, uppercenter
+            border.add(new Location(world, uppercenter.getX() - x, uppercenter
                     .getY(), uppercenter.getZ() - z).getBlock());
         }
 
-        for (Block b : this.border) {
-            if (!this.region.isInNoWoolSet(b)) {
-                player.sendBlockChange(b.getLocation(), Material.WHITE_WOOL.createBlockData());
-            }
-        }
-
-        Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.getInstance(),
-                new Runnable() {
-
-                    @Override
-                    public void run() {
-                        for (Block b : CylindricRegion.this.border) {
-                            player.sendBlockChange(b.getLocation(),
-                                    b.getType().createBlockData());
-                        }
-                        CylindricRegion.this.border.clear();
-                    }
-
-                }, 100L);
+        return border;
     }
 
     private Double getRadius() {
@@ -361,12 +341,6 @@ public class CylindricRegion extends ArenaRegionShape {
                 center.getX(),
                 this.region.locs[1].getY(),
                 center.getZ()+diff)); // == 3
-/*
-        getRegion().getArena().debug("CYLINDRIC blockCheckList");
-
-        for (PABlockLocation block : result) {
-            getRegion().getArena().debug(block.toString());
-        }*/
 
         return result;
     }
@@ -428,9 +402,9 @@ public class CylindricRegion extends ArenaRegionShape {
             this.region.locs[1] = new PABlockLocation(this.region.locs[1].toLocation().add(diffX * value, 0, diffZ * value));
         } else if (diffY > 0) {
             // positive Y means "up", means change the TOP value
-            this.region.locs[1] = new PABlockLocation(this.region.locs[1].toLocation().add(diffX * value, diffY * value, diffZ * value));
+            this.region.locs[1] = new PABlockLocation(this.region.locs[1].toLocation().add(0, diffY * value, 0));
         } else {
-            this.region.locs[0] = new PABlockLocation(this.region.locs[0].toLocation().subtract(diffX * value, diffY * value, diffZ * value));
+            this.region.locs[0] = new PABlockLocation(this.region.locs[0].toLocation().add(0, diffY * value, 0));
         }
     }
 }

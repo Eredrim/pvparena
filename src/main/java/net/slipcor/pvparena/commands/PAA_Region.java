@@ -6,12 +6,13 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.managers.RegionManager;
-import net.slipcor.pvparena.regions.ArenaRegion;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
 import net.slipcor.pvparena.loader.Loadable;
+import net.slipcor.pvparena.managers.RegionManager;
+import net.slipcor.pvparena.regions.ArenaRegion;
 import net.slipcor.pvparena.regionshapes.CuboidRegion;
 import org.bukkit.Bukkit;
+import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -19,6 +20,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static net.slipcor.pvparena.core.CollectionUtils.containsIgnoreCase;
+import static org.bukkit.block.BlockFace.*;
 
 /**
  * <pre>PVP Arena REGION Command class</pre>
@@ -33,6 +37,8 @@ public class PAA_Region extends AbstractArenaCommand {
 
     public static final Map<String, Arena> activeSelections = new HashMap<>();
 
+    private static final List<BlockFace> DIRECTIONS = List.of(UP, DOWN, NORTH, SOUTH, EAST, WEST);
+
     private static String selector;
 
     public PAA_Region() {
@@ -45,7 +51,7 @@ public class PAA_Region extends AbstractArenaCommand {
             return;
         }
 
-        if (!argCountValid(sender, arena, args, new Integer[]{0, 1, 2, 3})) {
+        if (!argCountValid(sender, arena, args, new Integer[]{0, 1, 2, 3, 4})) {
             return;
         }
 
@@ -74,9 +80,8 @@ public class PAA_Region extends AbstractArenaCommand {
             activeSelections.put(sender.getName(), arena);
             arena.msg(sender, MSG.REGION_YOUSELECT, arena.getName());
             arena.msg(sender, MSG.REGION_SELECT, arena.getName());
-            return;
-        }
-        if (args.length == 2 && args[1].equalsIgnoreCase("border")) {
+
+        } else if (args.length == 2 && args[1].equalsIgnoreCase("border")) {
             // usage: /pa {arenaname} region [regionname] border | check a region border
             final ArenaRegion region = arena.getRegion(args[0]);
 
@@ -85,9 +90,8 @@ public class PAA_Region extends AbstractArenaCommand {
                 return;
             }
             region.getShape().showBorder((Player) sender);
-            return;
-        }
-        if (args.length == 2 && args[1].equalsIgnoreCase("remove")) {
+
+        } else if (args.length == 2 && args[1].equalsIgnoreCase("remove")) {
             // usage: /pa {arenaname} region [regionname] remove | remove a region
             final ArenaRegion region = arena.getRegion(args[0]);
 
@@ -101,9 +105,8 @@ public class PAA_Region extends AbstractArenaCommand {
             arena.getRegions().remove(region);
             arena.getConfig().save();
             RegionManager.getInstance().reloadCache();
-            return;
-        }
-        if (args.length < 3) {
+
+        } else if (args.length < 3) {
             // usage: /pa {arenaname} region [regionname] {regionshape} | save selected region
 
             final ArenaPlayer aPlayer = ArenaPlayer.fromPlayer((Player) sender);
@@ -144,34 +147,66 @@ public class PAA_Region extends AbstractArenaCommand {
 
             arena.msg(sender, MSG.REGION_SAVED_NOTICE, arena.getName(), args[0]);
 
-            return;
-        }
+        } else if (containsIgnoreCase(List.of("shift", "expand", "contract"), args[1])) {
+            final ArenaRegion region = arena.getRegion(args[0]);
 
-        final ArenaRegion region = arena.getRegion(args[0]);
+            if (region == null) {
+                arena.msg(sender, MSG.ERROR_REGION_NOTFOUND, args[0]);
+                return;
+            }
 
-        if (region == null) {
-            arena.msg(sender, MSG.ERROR_REGION_NOTFOUND, args[0]);
-            return;
-        }
+            final int amount;
+            try {
+                amount = Integer.parseInt(args[2]);
+            } catch (final Exception e) {
+                arena.msg(sender, MSG.ERROR_NOT_NUMERIC, args[2]);
+                return;
+            }
 
-        final String message = region.update(args[1], args[2]);
+            BlockFace direction;
+            Player player = (Player) sender;
 
-        if (message != null) {
+            if (args.length == 4 && DIRECTIONS.stream().anyMatch(dir -> dir.name().equalsIgnoreCase(args[3]))) {
+                direction = BlockFace.valueOf(args[3].toUpperCase());
+            } else {
+                BlockFace playerFacing = player.getFacing();
+                if (player.getFacing().isCartesian()) {
+                    direction = playerFacing;
+
+                    float pitch = player.getLocation().getPitch();
+                    if (pitch > 70) {
+                        direction = DOWN;
+                    } else if (pitch < -70) {
+                        direction = UP;
+                    }
+                } else {
+                    arena.msg(sender, MSG.ERROR_INVALID_VALUE, playerFacing.name());
+                    return;
+                }
+            }
+
+            if("shift".equalsIgnoreCase(args[1])) {
+                region.getShape().move(direction, amount);
+                arena.msg(sender, MSG.REGION_SHIFTED, amount, direction);
+            } else if ("expand".equalsIgnoreCase(args[1])) {
+                region.getShape().extend(direction, amount);
+                arena.msg(sender, MSG.REGION_EXPANDED, amount, direction);
+            } else if ("contract".equalsIgnoreCase(args[1])) {
+                region.getShape().extend(direction, amount * -1);
+                arena.msg(sender, MSG.REGION_CONTACTED, amount, direction);
+            }
+
+            region.getShape().showBorder(player);
+            region.saveToConfig();
+
+            // Save modified region if worldedit autosave is set
             if (arena.getConfig().getBoolean(CFG.MODULES_WORLDEDIT_AUTOSAVE)) {
                 Bukkit.getServer().dispatchCommand(sender, "pvparena " + arena.getName() + " regsave " + region.getRegionName());
             }
-            arena.msg(sender, message);
+
+        } else {
+            arena.msg(sender, MSG.ERROR_ARGUMENT, args[1], "border, remove, shift, expand, contract");
         }
-
-        // usage: /pa {arenaname} region [regionname] radius [number]
-        // usage: /pa {arenaname} region [regionname] height [number]
-        // usage: /pa {arenaname} region [regionname] position [position]
-
-
-        // #region name can be anything you want
-        // #radius should be clear
-        // #height is not needed / parsed for spheric regions
-        // #position is the alignment to the battlefield
     }
 
     @Override
@@ -199,9 +234,15 @@ public class PAA_Region extends AbstractArenaCommand {
         for (ArenaRegion region : arena.getRegions()) {
             for (Loadable<?> shapeLoadable : PVPArena.getInstance().getArsm().getAllLoadables()) {
                 result.define(new String[]{region.getRegionName(), shapeLoadable.getName()});
-                result.define(new String[]{region.getRegionName(), "border"});
-                result.define(new String[]{region.getRegionName(), "remove"});
             }
+            result.define(new String[]{region.getRegionName(), "border"});
+            result.define(new String[]{region.getRegionName(), "remove"});
+
+            DIRECTIONS.forEach(direction -> {
+                result.define(new String[]{region.getRegionName(), "shift", "{int}", direction.name()});
+                result.define(new String[]{region.getRegionName(), "expand", "{int}", direction.name()});
+                result.define(new String[]{region.getRegionName(), "contract", "{int}", direction.name()});
+            });
         }
         return result;
     }

@@ -2,7 +2,7 @@
 
 Regions enhance your game play by adding protections, triggers or special configurations.
 
-You can list existing arena regions with [`/pa [arena] regions`](commands/regions.md)
+You can list existing arena regions with [`/pa <arena> regions`](commands/regions.md)
 
 ## Region Creation
 
@@ -12,7 +12,7 @@ Start creating an arena region with [`/pa region`](commands/region.md).
 
 Now select a region by holding your arena wand (a STICK by default) and left click for position 1 and right click for position 2. Detailed information about the special region shapes, i.e. which points to select, check out the tutorial.
 
-After selecting those points, use [`/pa !r [regionname] [regionshape]`](commands/region.md) to save the region.
+After selecting those points, use [`/pa !r <regionname> <regionshape>`](commands/region.md) to save the region.
 
 The following region shapes exist:
 - CUBOID (default)
@@ -21,11 +21,11 @@ The following region shapes exist:
 
 Of course, different shapes cover different areas. Note that a cylinder means an area like a can, so a standing cylinder.
 
-To remove a region, use [`/pa !r [regionname] remove`](commands/region.md)
+To remove a region, use [`/pa !r <regionname> remove`](commands/region.md)
 
 ## Region Types
 
-Set a region's type with [`/pa !rt [regionname] [regiontype]`](commands/regiontype.md)
+Set a region's type with [`/pa !rt <regionname> <regiontype>`](commands/regiontype.md)
 
 The following Region Types exist:
 
@@ -49,7 +49,7 @@ Example:
 ## Region Flags
 
 You can enable special player interactions with players by using regions flags. 
-Just use the command [`/pa !rf [regionname] [regionflag]`](commands/regionflags.md).
+Just use the command [`/pa !rf <regionname> <regionflag>`](commands/regionflags.md).
 
 Those are valid Region Flags:
 
@@ -61,8 +61,8 @@ Those are valid Region Flags:
 
 ## Region Protection
 
-The BATTLE Region parses region protection flags (other regions can assigned protections, too, but atm they don't 
-really use them). Set them via [`/pa !p [regionname] [protection]`](commands/protection.md) - you can add on, off, yes, 
+The BATTLE Region parses region protection flags (other regions can assign protections, too, but atm they don't 
+really use them). Set them via [`/pa !p <regionname> <protection>`](commands/protection.md) - you can add on, off, yes, 
 no, true, false to specify a setting, or just as just told to toggle the state.
 
 Valid protections are:
@@ -86,7 +86,23 @@ Example: `/pa !p main break on` - disallow players to break blocks in "main" reg
 > 🚩 **Tip:**  
 > There is an "ALL" protection argument that toggle all protections
 
+## Editing a region area
+
+If a region is too large, too small or at the wrong place, you can edit its area. To do that, use one of the following
+commands: 
+* `/pa <arena> region <regionName> shift <amount> (direction)`
+* `/pa <arena> region <regionName> expand <amount> (direction)`
+* `/pa <arena> region <regionName> contract <amount> (direction)`
+
+`<amount>` is a number of blocks and `direction` argument is optional. If it's not set, the command uses the direction
+you are looking to.
+
+Example: `/pa !r battlefield expand 10 UP` - extend the region "battlefield" of your arena 10 blocks upward
+
+> 🚩 **Tip:**  
+> At any time, you can use `/pa <arena> region <regionName> border` to see your arena region bounds.
+
 ## Region Removal
 
-First, you need to know the region name. List regions with `/pa [arenaname] regions`.  
-Then, use `/pa [arenaName] region [regionname] remove` to remove the region.
+First, you need to know the region name. List regions with `/pa <arenaname> regions`.  
+Then, use `/pa <arenaName> region <regionname> remove` to remove the region.
