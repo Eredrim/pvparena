@@ -25,14 +25,14 @@ import static net.slipcor.pvparena.config.Debugger.debug;
 
 public class ArenaScoreboard {
     private final Arena arena;
-    private final boolean special;
+    private final boolean displayed;
     private Scoreboard scoreboard;
 
     public ArenaScoreboard(Arena arena) {
         this.arena = arena;
-        this.special = arena.getConfig().getBoolean(Config.CFG.USES_SCOREBOARD);
+        this.displayed = arena.getConfig().getBoolean(Config.CFG.USES_SCOREBOARD);
 
-        if(this.special) {
+        if(this.displayed) {
             this.initSpecialScoreboard();
         } else {
             this.initCommonScoreboard(false);
@@ -51,7 +51,7 @@ public class ArenaScoreboard {
             );
         }
 
-        if (this.special) {
+        if (this.displayed) {
             Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), () -> {
                 this.registerPlayerInTeam(arenaPlayer);
                 this.refreshForPlayer(player);
@@ -67,7 +67,7 @@ public class ArenaScoreboard {
     }
 
     public void reset(final Player player, final boolean force, final boolean soft) {
-        if (this.special) {
+        if (this.displayed) {
             String msg = "ScoreBoards: " + (soft ? "(soft) " : "") + "remove: " + player.getName();
             debug(this.arena, player, msg);
             try {
@@ -130,26 +130,33 @@ public class ArenaScoreboard {
             }
             final ArenaPlayer ap = ArenaPlayer.fromPlayer(player);
             if (ap.hasBackupScoreboard()) {
-                try {
-                    Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), () -> {
-                        Scoreboard backupScoreboard = ap.getBackupScoreboard();
-                        if (ap.getBackupScoreboardTeam() != null) {
-                            Team original = ofNullable(backupScoreboard.getTeam(ap.getBackupScoreboardTeam()))
-                                    .orElseGet(() -> backupScoreboard.registerNewTeam(ap.getBackupScoreboardTeam()));
-                            original.addEntry(ap.getName());
-                        }
-                        player.setScoreboard(backupScoreboard);
-                        ap.setBackupScoreboardTeam(null);
-                    }, 3L);
-                } catch (IllegalPluginAccessException ignored) {
+                Runnable resetBackupScoreboard = () -> {
+                    Scoreboard backupScoreboard = ap.getBackupScoreboard();
+                    if (ap.getBackupScoreboardTeam() != null) {
+                        Team original = ofNullable(backupScoreboard.getTeam(ap.getBackupScoreboardTeam()))
+                                .orElseGet(() -> backupScoreboard.registerNewTeam(ap.getBackupScoreboardTeam()));
+                        original.addEntry(ap.getName());
+                    }
+                    player.setScoreboard(backupScoreboard);
+                    ap.setBackupScoreboardTeam(null);
+                };
 
+                if (force) {
+                    resetBackupScoreboard.run();
+                } else {
+                    try {
+                        Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), resetBackupScoreboard, 3L);
+                    } catch (IllegalPluginAccessException ignored) {
+
+                    }
                 }
+
             }
         }
     }
 
     public void switchPlayerTeam(final Player player, final ArenaTeam oldTeam, final ArenaTeam newTeam) {
-        if (this.special) {
+        if (this.displayed) {
             Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), () -> {
                 this.applyTeamSwitching(player, oldTeam, newTeam);
                 this.refreshForPlayer(player);
@@ -160,7 +167,7 @@ public class ArenaScoreboard {
     }
 
     public void refresh() {
-        if (this.special) {
+        if (this.displayed) {
             Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), () -> {
                 if (this.arena.isFreeForAll()) {
                     for (ArenaPlayer arenaPlayer : this.arena.getEveryone()) {
@@ -171,7 +178,7 @@ public class ArenaScoreboard {
                             );
                         }
                         Player player = arenaPlayer.getPlayer();
-                        if (!this.scoreboard.equals(player.getScoreboard())) {
+                        if (!this.scoreboard.equals(player.getScoreboard()) && player.isOnline()) {
                             player.setScoreboard(this.scoreboard);
                         }
                     }
@@ -185,7 +192,7 @@ public class ArenaScoreboard {
                     }
                     for (ArenaPlayer arenaPlayer : this.arena.getEveryone()) {
                         Player player = arenaPlayer.getPlayer();
-                        if (!this.scoreboard.equals(player.getScoreboard())) {
+                        if (!this.scoreboard.equals(player.getScoreboard()) && player.isOnline()) {
                             player.setScoreboard(this.scoreboard);
                         }
                     }
@@ -338,7 +345,7 @@ public class ArenaScoreboard {
     }
 
     private void refreshForPlayer(final Player player) {
-        if (this.special) {
+        if (this.displayed) {
             final ArenaPlayer ap = ArenaPlayer.fromPlayer(player);
 
             // if player is a spectator, special case. Just update and do not add to the scores
@@ -348,7 +355,9 @@ public class ArenaScoreboard {
                         .setScore(WorkflowManager.handleGetLives(this.arena, ap));
             }
 
-            player.setScoreboard(this.scoreboard);
+            if(player.isOnline()) {
+                player.setScoreboard(this.scoreboard);
+            }
         }
     }
 
