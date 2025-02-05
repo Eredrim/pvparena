@@ -9,6 +9,7 @@ import net.slipcor.pvparena.arena.PlayerStatus;
 import net.slipcor.pvparena.classes.PADeathInfo;
 import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.compatibility.AttributeAdapter;
+import net.slipcor.pvparena.compatibility.DeathEventCreator;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
@@ -30,7 +31,6 @@ import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -283,8 +283,12 @@ public class WorkflowManager {
         }
 
         if (arena.getConfig().getBoolean(CFG.USES_DEATH_EVENTS)) {
-            PlayerDeathEvent playerDeathEvent = new PlayerDeathEvent(player, droppedInv, droppedExp, null);
-            Bukkit.getPluginManager().callEvent(playerDeathEvent);
+            try {
+                DeathEventCreator.getInstance().sendDeathEvent(player, event, droppedInv, droppedExp);
+            } catch (ReflectiveOperationException e) {
+                PVPArena.getInstance().getLogger().warning("Unable to create and send fake PlayerDeathEvent. StackTrace: ");
+                e.printStackTrace();
+            }
         }
 
         debug(arena, player, "parsing death: " + goal.getName());
