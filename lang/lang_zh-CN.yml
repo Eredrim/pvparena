@@ -338,12 +338,13 @@ region:
   flag:
     added: 区域标志已添加：&a%1%&r
     removed: 区域标志已移除：&a%1%&r
-  height: 区域高度已设置为：&a%1%&r
   pos1: 第一个位置已设置。
   pos2: 第二个位置已设置。
   protection_added: 区域保护已添加：&a%1%&r
   protection_removed: 区域保护已移除：&a%1%&r
-  radius: 区域半径已设置为：&a%1%&r
+  expanded: 区域已向 &a%1%&r 方向扩展了 &a%2%&r 块
+  contracted: 区域已向 &a%1%&r 方向缩减了 &a%2%&r 块
+  shifted: 区域已向 &a%1%&r 方向移动了 &a%2%&r 块
   removed: 区域已移除：%1%
   saved: 区域已保存。
   saved_notice: '&6您创建了一个自定义区域。它目前没有功能！要将其设置为战场区域，请输入 &r/pvparena %1% !rt %2% BATTLE。'
