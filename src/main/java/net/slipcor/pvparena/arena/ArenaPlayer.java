@@ -110,7 +110,7 @@ public class ArenaPlayer {
      * 
      * @param player bukkit player
      */
-    private ArenaPlayer(@NotNull final Player player) {
+    protected ArenaPlayer(@NotNull final Player player) {
         Objects.requireNonNull(player);
         this.player = player;
     }

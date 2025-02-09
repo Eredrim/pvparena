@@ -289,27 +289,30 @@ public class PlayerListener implements Listener {
         ArenaPlayer arenaPlayer = ArenaPlayer.fromPlayer(player);
         Arena arena = arenaPlayer.getArena();
 
-        if (arena == null && event.getClickedBlock() != null) {
-            Arena arenaByLocation = ArenaManager.getArenaByRegionLocation(new PABlockLocation(event.getClickedBlock().getLocation()));
-            if (arenaByLocation != null) {
-                // Player doesn't belong to an arena but interacts with an arena region
+        if (arena == null) {
+            if(event.getClickedBlock() != null) {
+                Arena arenaByLocation = ArenaManager.getArenaByRegionLocation(new PABlockLocation(event.getClickedBlock().getLocation()));
+                if (arenaByLocation != null) {
+                    // Player doesn't belong to an arena but interacts with an arena region
 
-                if (!arenaByLocation.equals(PAA_Edit.activeEdits.get(player.getName()))) {
-                    debug(player, "[Cancel #1] Player in area of arena '{}' but not in edit mode");
-                    event.setCancelled(true);
-                    return;
+                    if (!arenaByLocation.equals(PAA_Edit.activeEdits.get(player.getName()))) {
+                        debug(player, "[Cancel #1] Player in area of arena '{}' but not in edit mode");
+                        event.setCancelled(true);
+                        return;
+                    }
+                    // else: player has edit mode. Interaction allowed as if they are out of an arena.
                 }
-                // else: player has edit mode. Interaction allowed as if they are out of an arena.
-            }
 
-            // player is out of any arena
-            if (WorkflowManager.handleSetBlock(player, event.getClickedBlock()) || ArenaRegion.handleSetRegionPosition(event, player)) {
-                debug(player, "[Cancel #2] Admin is setting a block or a region");
-                event.setCancelled(true);
-            } else {
-                debug(player, "Try sign join");
-                InteractionManager.handleJoinSignInteract(event, player);
+                // player is out of any arena
+                if (WorkflowManager.handleSetBlock(player, event.getClickedBlock()) || ArenaRegion.handleSetRegionPosition(event, player)) {
+                    debug(player, "[Cancel #2] Admin is setting a block or a region");
+                    event.setCancelled(true);
+                } else {
+                    debug(player, "Try sign join");
+                    InteractionManager.handleJoinSignInteract(event, player);
+                }
             }
+            // Air interactions are ignored
         } else {
             ArenaTeam team = arenaPlayer.getArenaTeam();
 
