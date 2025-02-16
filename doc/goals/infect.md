@@ -11,7 +11,7 @@ Either the infected win by killing everyone else, or the other way round.
 ## Setup
 
 At least one special "infected" spawn has to be set. Type the following command: 
-[`/pa <arena> spawn infected*`](../commands/spawn.md)
+[`/pa <arena> spawn infected`](../commands/spawn.md)
 
 The other spawns are set like the standard free for all goals, with spawns named like _spawn1_ through _spawn10_ or alike.
 

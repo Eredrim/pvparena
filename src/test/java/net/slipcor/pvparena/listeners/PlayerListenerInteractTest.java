@@ -13,7 +13,6 @@ import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.WorkflowManager;
 import net.slipcor.pvparena.regions.ArenaRegion;
 import net.slipcor.pvparena.testUtils.ArenaPlayerTest;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
@@ -59,9 +58,6 @@ class PlayerListenerInteractTest {
 
     @Mock
     private Block clickedBlock;
-
-    @Mock
-    private World world;
 
     @Mock(strictness = Mock.Strictness.LENIENT)
     private Config config;

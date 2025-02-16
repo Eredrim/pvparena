@@ -419,11 +419,7 @@ public final class SpawnManager {
             spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, spawnName, arenaPlayer.getArenaTeam().getName(), arenaClass));
 
         } else if (arena.isFreeForAll()) {
-            if (FREE.equals(arenaPlayer.getArenaTeam().getName())) {
-                spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, spawnName));
-            } else {
-                spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, spawnName, arenaPlayer.getArenaTeam().getName()));
-            }
+            spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, spawnName));
         } else {
             spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, spawnName, arenaPlayer.getArenaTeam().getName()));
         }
