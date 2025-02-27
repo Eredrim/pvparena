@@ -37,7 +37,7 @@ After installation, the module needs a full server restart to hook into WorldEdi
 ## Use case
 
 You just want to restore your arena after the match ? Just follow these instructions:
-- Save your BATTLE region with command `/pa <arena> regsave <regionname>`
+- Save your BATTLE region with command `/pa <arena> !we save <regionname>`
 - Add the previously saved region name to the list with `/pa <arena> !we list add <regionname>`.
 - Enable autoload with `/pa <arena> !we autoload`
 

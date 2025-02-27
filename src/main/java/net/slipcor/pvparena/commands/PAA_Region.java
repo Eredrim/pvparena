@@ -11,7 +11,6 @@ import net.slipcor.pvparena.loader.Loadable;
 import net.slipcor.pvparena.managers.RegionManager;
 import net.slipcor.pvparena.regions.ArenaRegion;
 import net.slipcor.pvparena.regionshapes.CuboidRegion;
-import org.bukkit.Bukkit;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -201,7 +200,10 @@ public class PAA_Region extends AbstractArenaCommand {
 
             // Save modified region if worldedit autosave is set
             if (arena.getConfig().getBoolean(CFG.MODULES_WORLDEDIT_AUTOSAVE)) {
-                Bukkit.getServer().dispatchCommand(sender, "pvparena " + arena.getName() + " regsave " + region.getRegionName());
+                arena.getMods().stream()
+                                .filter(mod -> mod.getName().equals("WorldEdit"))
+                                .findAny()
+                                .ifPresent(mod -> mod.commitCommand(sender, new String[]{"!we", "save", region.getRegionName()}));
             }
 
         } else {
