@@ -1,5 +1,9 @@
 package net.slipcor.pvparena.listeners;
 
+import be.seeseemelk.mockbukkit.Coordinate;
+import be.seeseemelk.mockbukkit.MockBukkit;
+import be.seeseemelk.mockbukkit.ServerMock;
+import be.seeseemelk.mockbukkit.WorldMock;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
@@ -12,12 +16,16 @@ import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.WorkflowManager;
 import net.slipcor.pvparena.regions.ArenaRegion;
+import net.slipcor.pvparena.regions.RegionType;
+import net.slipcor.pvparena.regionshapes.CuboidRegion;
 import net.slipcor.pvparena.testUtils.ArenaPlayerTest;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AutoClose;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,6 +75,8 @@ class PlayerListenerInteractTest {
 
     private Arena arena;
 
+    private ServerMock server;
+
     @BeforeAll
     static void beforeAll() {
         // Needed to avoid issue loading while using config mock
@@ -75,9 +85,15 @@ class PlayerListenerInteractTest {
 
     @BeforeEach
     void beforeEach() {
+        this.server = MockBukkit.mock();
         this.arena = new Arena("Test");
         this.arena.setConfig(this.config);
         this.arenaPlayerMock = Mockito.mockStatic(ArenaPlayer.class, withSettings().defaultAnswer(Mockito.CALLS_REAL_METHODS));
+    }
+
+    @AfterEach
+    void afterEach() {
+        MockBukkit.unmock();
     }
 
     @Test
@@ -127,17 +143,17 @@ class PlayerListenerInteractTest {
         listener.onPlayerInteract(this.event);
         PAA_Edit.activeEdits.clear();
 
+        pablMock.closeOnDemand();
+        amMock.closeOnDemand();
+        wmMock.closeOnDemand();
+        arMock.closeOnDemand();
+
         // Then
         if (shouldCancel) {
             verify(this.event).setCancelled(true);
         } else {
             verify(this.event, never()).setCancelled(true);
         }
-
-        pablMock.closeOnDemand();
-        amMock.closeOnDemand();
-        wmMock.closeOnDemand();
-        arMock.closeOnDemand();
     }
 
     @ParameterizedTest
@@ -158,6 +174,7 @@ class PlayerListenerInteractTest {
 
         // When
         listener.onPlayerInteract(this.event);
+        ammMock.closeOnDemand();
 
         // Then
         if (shouldCancel) {
@@ -165,13 +182,66 @@ class PlayerListenerInteractTest {
         } else {
             verify(this.event, never()).setCancelled(true);
         }
+    }
 
+    @ParameterizedTest
+    @MethodSource("argumentsForLounge")
+    void shouldHandleEventForLounge(PlayerStatus status, Action action, boolean inLoungeRegion, boolean hasLoungeInteract, boolean shouldCancelBlock, boolean shouldCancelItem) {
+        // Given
+        ArenaPlayerTest apt = new ArenaPlayerTest(this.player);
+        apt.setArena(this.arena);
+        apt.setTeamMock(new ArenaTeam("free", "WHITE"));
+        apt.setStatus(status);
+
+        when(this.event.getPlayer()).thenReturn(this.player);
+        when(this.event.getAction()).thenReturn(action);
+
+        if (action == Action.LEFT_CLICK_BLOCK || action == Action.RIGHT_CLICK_BLOCK) {
+            WorldMock world = this.server.addSimpleWorld("world");
+            Block block = world.createBlock(new Coordinate(0, 0, 0));
+
+            when(this.event.getClickedBlock()).thenReturn(block);
+
+            PABlockLocation[] rgBounds = new PABlockLocation[] {
+                    new PABlockLocation("world", 0, 0, 0),
+                    new PABlockLocation("world", 1, 1, 1)
+            };
+
+            if (inLoungeRegion) {
+                ArenaRegion lounge = new ArenaRegion(this.arena, "lounge", new CuboidRegion(), rgBounds);
+                lounge.setType(RegionType.LOUNGE);
+                this.arena.addRegion(lounge);
+            }
+        }
+
+        this.arenaPlayerMock.when(() -> ArenaPlayer.fromPlayer(eq(this.player))).thenReturn(apt);
+
+        MockedStatic<ArenaModuleManager> ammMock = Mockito.mockStatic(ArenaModuleManager.class);
+        ammMock.when(() -> ArenaModuleManager.onPlayerInteract(any(), any())).thenReturn(false);
+
+        // When
+        listener.onPlayerInteract(this.event);
         ammMock.closeOnDemand();
+
+        // Then
+        if (shouldCancelBlock) {
+            verify(this.event).setUseInteractedBlock(Event.Result.DENY);
+        }
+
+        if (shouldCancelItem) {
+            verify(this.event).setUseItemInHand(Event.Result.DENY);
+        }
+
+        if(!shouldCancelBlock && !shouldCancelItem) {
+            verify(this.event, never()).setCancelled(true);
+            verify(this.event, never()).setUseInteractedBlock(any());
+            verify(this.event, never()).setUseItemInHand(any());
+        }
     }
 
     @ParameterizedTest
     @MethodSource("argumentsForSpectator")
-    void shouldHandleEventForSpectator(PlayerStatus playerStatus, boolean hasSpecInteract, boolean shouldCancel) {
+    void shouldHandleEventForSpectator(PlayerStatus playerStatus, boolean hasSpecInteract, boolean shouldCancelBlock, boolean shouldCancelItem) {
         // Given
         ArenaPlayer apt = new ArenaPlayerTest(this.player);
         apt.setArena(this.arena);
@@ -185,10 +255,17 @@ class PlayerListenerInteractTest {
         listener.onPlayerInteract(this.event);
 
         // Then
-        if (shouldCancel) {
-            verify(this.event).setCancelled(true);
+        if (shouldCancelBlock || shouldCancelItem) {
+            if (shouldCancelBlock) {
+                verify(this.event).setUseInteractedBlock(eq(Event.Result.DENY));
+            }
+            if (shouldCancelItem) {
+                verify(this.event).setUseItemInHand(eq(Event.Result.DENY));
+            }
         } else {
             verify(this.event, never()).setCancelled(true);
+            verify(this.event, never()).setUseInteractedBlock(any());
+            verify(this.event, never()).setUseItemInHand(any());
         }
     }
 
@@ -214,11 +291,36 @@ class PlayerListenerInteractTest {
         );
     }
 
+    private static Stream<Arguments> argumentsForLounge() {
+        return Stream.of(
+                Arguments.of(PlayerStatus.LOUNGE, Action.LEFT_CLICK_BLOCK, false, false, true, true),
+                Arguments.of(PlayerStatus.LOUNGE, Action.LEFT_CLICK_BLOCK, false, true, false, true),
+                Arguments.of(PlayerStatus.LOUNGE, Action.LEFT_CLICK_BLOCK, true, false, false, true),
+                Arguments.of(PlayerStatus.LOUNGE, Action.LEFT_CLICK_AIR, false, false, false, true),
+                Arguments.of(PlayerStatus.LOUNGE, Action.LEFT_CLICK_AIR, true, false, false, true),
+                Arguments.of(PlayerStatus.LOUNGE, Action.RIGHT_CLICK_BLOCK, false, false, true, true),
+                Arguments.of(PlayerStatus.LOUNGE, Action.RIGHT_CLICK_BLOCK, false, true, false, true),
+                Arguments.of(PlayerStatus.LOUNGE, Action.RIGHT_CLICK_BLOCK, true, false, false, true),
+                Arguments.of(PlayerStatus.LOUNGE, Action.RIGHT_CLICK_AIR, false, false, false, true),
+                Arguments.of(PlayerStatus.LOUNGE, Action.RIGHT_CLICK_AIR, true, false, false, true),
+                Arguments.of(PlayerStatus.READY, Action.LEFT_CLICK_BLOCK, false, false, true, true),
+                Arguments.of(PlayerStatus.READY, Action.LEFT_CLICK_BLOCK, false, true, false, true),
+                Arguments.of(PlayerStatus.READY, Action.LEFT_CLICK_BLOCK, true, false, false, true),
+                Arguments.of(PlayerStatus.READY, Action.LEFT_CLICK_AIR, false, false, false, true),
+                Arguments.of(PlayerStatus.READY, Action.LEFT_CLICK_AIR, true, false, false, true),
+                Arguments.of(PlayerStatus.READY, Action.RIGHT_CLICK_BLOCK, false, false, true, true),
+                Arguments.of(PlayerStatus.READY, Action.RIGHT_CLICK_BLOCK, false, true, false, true),
+                Arguments.of(PlayerStatus.READY, Action.RIGHT_CLICK_BLOCK, true, false, false, true),
+                Arguments.of(PlayerStatus.READY, Action.RIGHT_CLICK_AIR, false, false, false, true),
+                Arguments.of(PlayerStatus.READY, Action.RIGHT_CLICK_AIR, true, false, false, true)
+        );
+    }
+
     private static Stream<Arguments> argumentsForSpectator() {
         return Stream.of(
-                Arguments.of(PlayerStatus.WATCH, true, false),
-                Arguments.of(PlayerStatus.WATCH, false, true),
-                Arguments.of(PlayerStatus.NULL, true, true)
+                Arguments.of(PlayerStatus.WATCH, true, false, true),
+                Arguments.of(PlayerStatus.WATCH, false, true, true),
+                Arguments.of(PlayerStatus.NULL, true, true, true)
         );
     }
 }

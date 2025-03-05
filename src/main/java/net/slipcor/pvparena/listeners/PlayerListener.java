@@ -342,6 +342,9 @@ public class PlayerListener implements Listener {
 
                     } else if (event.useInteractedBlock() != Event.Result.DENY) {
                         if (arenaPlayer.getStatus() != FIGHT) {
+                            // Player is in lounge or spectating => cancel interaction with item in hand
+                            event.setUseItemInHand(Event.Result.DENY);
+                            // Check if block interaction should be cancelled
                             InteractionManager.handleNotFightingPlayersWithTeam(event, arena, arenaPlayer);
 
                         } else if (block.getState() instanceof Container) {
@@ -349,12 +352,17 @@ public class PlayerListener implements Listener {
                         }
                         // else: regular fighting player => interaction allowed
                     }
+                } else if (arenaPlayer.getStatus() != FIGHT) {
+                    // Player is not interacting with a block but is in lounge or spectating
+                    // => cancel interaction with item in hand
+                    event.setUseItemInHand(Event.Result.DENY);
                 }
             } else {
+                event.setUseItemInHand(Event.Result.DENY);
                 if (arenaPlayer.getStatus() != WATCH || !arena.getConfig().getBoolean(CFG.PERMS_SPECINTERACT)) {
                     // disable all event in arena for player without team or special spectate setting
                     debug(arenaPlayer, "[Cancel #9] player without team who is not a spectator with allowed interactions");
-                    event.setCancelled(true);
+                    event.setUseInteractedBlock(Event.Result.DENY);
                 } else {
                     debug(arenaPlayer, "allowing spectator interaction due to config setting!");
                 }

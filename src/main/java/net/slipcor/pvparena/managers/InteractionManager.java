@@ -161,7 +161,7 @@ public final class InteractionManager {
                     debug(arenaPlayer, "Lounge player is in a lounge region => allow interaction");
                 } else {
                     debug(arenaPlayer, "[Cancel #6] Lounge player not in the lounge area");
-                    event.setCancelled(true);
+                    event.setUseInteractedBlock(Event.Result.DENY);
                 }
             }
         } else if (asList(WATCH, LOST).contains(arenaPlayer.getStatus()) && arena.getConfig().getBoolean(Config.CFG.PERMS_SPECINTERACT)) {
@@ -176,12 +176,12 @@ public final class InteractionManager {
                     debug(arenaPlayer, "Spectate player is in a spectate region => allow interaction");
                 } else {
                     debug(arenaPlayer, "[Cancel #7] Spectate player not in the spectate area");
-                    event.setCancelled(true);
+                    event.setUseInteractedBlock(Event.Result.DENY);
                 }
             }
         } else {
             debug(arenaPlayer, "[Cancel #8] Not fighting nor in the lounge/spectate area");
-            event.setCancelled(true);
+            event.setUseInteractedBlock(Event.Result.DENY);
         }
     }
 }

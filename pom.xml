@@ -14,6 +14,7 @@
         <mockito.version>5.15.2</mockito.version>
         <junit.version>5.11.4</junit.version>
         <assertj.version>3.26.3</assertj.version>
+        <MockBukkit.version>1.5.2</MockBukkit.version>
     </properties>
 
     <repositories>
@@ -91,6 +92,12 @@
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <version>${assertj.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.seeseemelk</groupId>
+            <artifactId>MockBukkit-v1.16</artifactId>
+            <version>${MockBukkit.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
