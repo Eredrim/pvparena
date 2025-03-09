@@ -425,7 +425,7 @@ public class PlayerListener implements Listener {
         ArenaPlayer arenaPlayer = ArenaPlayer.fromPlayer(player);
         Arena arena = arenaPlayer.getArena();
         if (arena != null) {
-            if(arena.getConfig().getBoolean(CFG.JOIN_ALLOW_REJOIN) && arenaPlayer.canLeaveWithoutEndingArena()) {
+            if (asList(FIGHT, DEAD).contains(arenaPlayer.getStatus()) && arena.getConfig().getBoolean(CFG.JOIN_ALLOW_REJOIN) && arenaPlayer.canLeaveWithoutEndingArena()) {
                 arenaPlayer.setStatus(OFFLINE);
                 try {
                     if(arena.getGoal().checkEnd()) {
@@ -441,7 +441,7 @@ public class PlayerListener implements Listener {
                 arena.playerLeave(player, CFG.TP_EXIT, false, true, false);
                 arenaPlayer.unload();
             }
-        } else if(arenaPlayer.getQueuedArena() != null) {
+        } else if (arenaPlayer.getQueuedArena() != null) {
             for (ArenaModule mod : arenaPlayer.getQueuedArena().getMods()) {
                 if(mod.handleQueuedLeave(arenaPlayer)) {
                     arenaPlayer.unload();
