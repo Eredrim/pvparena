@@ -113,12 +113,18 @@ are ready.
 
 ## 6. Join the arena!
 
-Your first arena was created! Join the game with:
+Your first arena was created! Congratulations!
 
+You can already join it by typing:
 `/pa <arenaName> (join) (teamName)`
 
 > **🚩 Tip:**  
 > If you just type `/pa <arenaName>` your team will be randomly selected.
+
+<br>
+
+Now, to fully test it, you'll need to invite some friends to join you in the arena. PVP is not testable alone 😉  
+Read the [player guide](player-guide.md) to know the few required commands to play an arena and, enjoy the game!
 
 <br>
 

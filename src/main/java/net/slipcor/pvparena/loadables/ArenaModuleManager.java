@@ -16,7 +16,6 @@ import net.slipcor.pvparena.modules.BattlefieldJoin;
 import net.slipcor.pvparena.modules.QuickLounge;
 import net.slipcor.pvparena.modules.StandardLounge;
 import net.slipcor.pvparena.modules.StandardSpectate;
-import net.slipcor.pvparena.modules.WarmupJoin;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -69,7 +68,6 @@ public class ArenaModuleManager {
         this.addInternalLoadable(QuickLounge.class);
         this.addInternalLoadable(StandardLounge.class);
         this.addInternalLoadable(StandardSpectate.class);
-        this.addInternalLoadable(WarmupJoin.class);
     }
 
     public static void announce(final Arena arena, final String message, final String type) {

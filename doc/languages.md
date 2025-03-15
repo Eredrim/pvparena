@@ -15,7 +15,7 @@ Finally, reload your plugin configuration by running [`/pa reload`](commands/rel
 
 <br>
 
-> 💡 **Did you know ?**  
+> 💡 **Did you know?**  
 > PVP Arena is powered by community! You can offer your own language file by [creating an issue](https://github.com/Eredrim/pvparena/issues).
 
 ## How to create your own language file?

@@ -2,7 +2,7 @@
 
 ## Description
 
-Have players joining into an arena, to the spectator spawn. They are invisible and can fly.
+With this module, players can spectate the game flying in the arena and being invisible to other players.
 
 ## Installation
 
@@ -10,20 +10,9 @@ Installation of this module can be done in a normal way. You'll find installatio
 
 ## Setup
 
-\-
+[Create a region](../regions.md#region-creation) of type WATCH to make sure that spectators do not fly out of the arena 
+or try to get free access to fly mode.
 
-## Config settings
-
-\-
-
-## Commands
-
-\-
-
-## Warnings
-
-Add a region of type WATCH if you want to make sure that spectators do not fly out of the arena ;)
-
-## Dependencies
-
-\-
+> 🚩 **Tip:**  
+> Choose a good spot for the [spectator spawn point](../getting-started.md#3-set-spawn-points), for instance in the 
+> middle of the battlefield.

@@ -27,21 +27,21 @@ Hook into many different aspects of the game!
 | [BlockDissolve](mods/blockdissolve.md)         | dissolve blocks under fighting players                                           |          | ✔️️    |
 | [BlockRestore](mods/blockrestore.md)           | restore the battlefield                                                          |          | ✔️️    |
 | [ChestFiller](mods/chestfiller.md)             | fill battlefield containers with random and customizable content!                |          | ✔️️    |
-| [Duel](mods/duel.md)                           | duel someone!                                                                    |          | ⚠️️    |
+| [Duel](mods/duel.md)                           | duel someone!                                                                    |          | ❌️     |
 | [EventActions](mods/eventactions.md)           | trigger actions at different moments of the arena lifecycle                      |          | ✔️️    |
 | [FlySpectate](mods/flyspectate.md)             | have players spectating a fight in fly mode                                      | SPECTATE | ✔️️    |
 | [ItemSpawners](mods/itemspawners.md)           | spawn (random) items on different points                                         |          | ✔️️    |
 | [LateLounge](mods/latelounge.md)               | keep playing until enough players joined the arena                               |          | ✔️️    |
 | [PlayerFinder](mods/playerfinder.md)           | allow players to find others with a compass                                      |          | ✔️️    |
-| [Points](mods/points.md)                       | allow to restrict certain classes to require players to fight for better classes |          | ⚠️     |
+| [Points](mods/points.md)                       | allow to restrict certain classes to require players to fight for better classes |          | ❌️     |
 | [PowerUps](mods/powerups.md)                   | spawn items giving special powers                                                |          | ✔️️    |
 | [Projectiles](mods/projectiles.md)             | add knockback to throwable items (snowballs, eggs, etc)                          |          | ✔️️    |
 | [QuickLounge](mods/quicklounge.md)             | join a lounge which starts the game automatically                                | JOIN     | ✔️️    |
 | [RealSpectate](mods/realspectate.md)           | spectate the game, CounterStrike style!                                          | SPECTATE | ✔️️    |
 | [RespawnRelay](mods/respawnrelay.md)           | add a relay for respawning players                                               |          | ✔️️    |
-| [Skins](mods/skins.md)                         | add custom skins to teams/classes                                                |          | ❌      |
+| [Skins](mods/skins.md)                         | add custom skins to teams/classes                                                |          | ❌️     |
 | [SpawnCollections](mods/spawncollections.md)   | save different spawn configurations of the battlefield and switch between them   |          | ✔️️    |
-| [Spectate](mods/spectate.md)                   | use the new 1.8 SPECTATOR mode to allow flying and POV spectating                | SPECTATE | ✔️️    |
+| [Spectate](mods/spectate.md)                   | use the Minecraft SPECTATOR gamemode to allow flying and POV spectating          | SPECTATE | ✔️️    |
 | StandardLounge                                 | Default lounge module                                                            | JOIN     | ✔️️    |
 | StandardSpectate                               | Default spectate module (survival mode)                                          | SPECTATE | ✔️️    |
 | [Squads](mods/squads.md)                       | add squads to the game, create group of players respawning together              |          | ✔️️    |
@@ -49,23 +49,26 @@ Hook into many different aspects of the game!
 | [TeamSizeRestrict](mods/teamsizerestrict.md)   | a small mod to restrict the size of specific teams                               |          | ✔️️    |
 | [TempPerms](mods/tempperms.md)                 | add temporary perms                                                              |          | ✔️️    |
 | [Titles](mods/titles.md)                       | send messages to players as the "title" command would do                         |          | ✔️️    |
-| [Turrets](mods/turrets.md)                     | add turrets where players fire projectiles                                       |          | ⚠️     |
+| [Turrets](mods/turrets.md)                     | add turrets where players fire projectiles                                       |          | ❌️     |
 | [Vault](mods/vault.md)                         | add economy, money rewards and bet features                                      |          | ✔️️    |
-| [Walls](mods/walls.md)                         | define wall regions to simulate "The Walls"                                      |          | ⚠️     |
-| [WarmupJoin](mods/warmupjoin.md)               | ???                                                                              | JOIN     | ⚠️     |
+| [Walls](mods/walls.md)                         | define wall regions to simulate "The Walls"                                      |          | ❌️     |
+| [WarmupJoin](mods/warmupjoin.md)               | ???                                                                              | JOIN     | ❌️     |
 | [WorldEdit](mods/worldedit.md)                 | backup/restore regions                                                           |          | ✔️️    |
 
-**Key :** ✔️️ Adapted and fully tested for 2.0 | ☑️ Fully works with previous PVPArena version, but not tested with 2.0 | ⚠️ Legacy modules, not tested for a while | ❌ Temporarily unavailable
+**Key :** ✔️️ Optimized (even rewritten) and fully tested for 2.0 | ❌ Temporarily unavailable
 
 > ℹ **NB:** StandardLounge, StandardSpectate, QuickLounge, BattlefieldJoin and WarmupJoin are bundled in the plugin. Consequently, they're missing from the modules pack.
 
 ### Why are there different statuses?
 
 PVP Arena exists since 2011 and Minecraft servers evolution make modules follow-up complicated. The objective of 2.0 
-version will be to make a great check-up of all of them and fix all eventual issues.
+version was to make a great check-up of all of them, fix their issues and make them more performant and easy-to-use.
 
-Anyway, don't hesitate to test legacy modules by yourself, a big part of them work normally or have trivial issues. Obviously
-if you encounter one, you can [report it](https://github.com/Eredrim/pvparena/issues) 😉
+Unfortunately, rewriting modules is a long and tedious task, and maintaining two versions of PVPArena and two versions 
+of each module became too complicated. That's why I decided to focus on most-used modules and on the release of the 2.0
+version of the plugin.
+
+Anyway, the unavailable modules will come back soon, just the time to fix (or rewrite them).
 
 ### What happened to BattlefieldManager and Items?
 The modules have been renamed to SpawnCollections and ItemSpawners respectively.

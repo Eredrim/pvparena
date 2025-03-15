@@ -1,10 +1,10 @@
 ![PVP-Arena](doc/images/logo.png)
 
 <p align="center">
-    <b>
-        THIS VERSION IS CURRENTLY DISTRIBUTED AS DEV PREVIEW. DON'T USE IT FOR PRODUCTION!<br>
-        PLEASE READ <a href="doc/2.0-guide.md">THIS PAGE</a> IF YOU WANT TO TRY IT OR ASK SUPPORT
-    </b>
+   <b>
+       IF YOU'RE UPGRADING FROM 1.15.x VERSION OR BELOW, PLEASE READ 
+       <a href="doc/update-version.md">UPGRADE DOCUMENTATION</a>
+   </b>
 </p>
 
 ***
@@ -18,10 +18,10 @@
 
 PVP Arena is a plugin for Spigot based servers which enables creation of customizable fight and mini-games arenas.
 Define your own teams, classes, lobbies, spawn points, messages, gear colors, rewards and even game modes!
-Theses game modes (included in the plugin) can combined with tens of modules to enhance your gameplay!
+These game modes (included in the plugin) can be combined with tens of modules to enhance your gameplay!
 In addition, all arenas can be protected with an embedded protection system based on regions.
 
-Anyway, here's a quick (non exhaustive) list of plugin features:
+Anyway, here's a quick (non-exhaustive) list of plugin features:
 - Multiple arenas
 - Arena regions and protections
 - Player-state saving
@@ -42,8 +42,8 @@ So take time to read the docs, it's full of useful information 😉
 
 ## Dependencies
 
-- Spigot 1.13+
-- Java 8+
+- Spigot 1.16.5+ (or derivatives like Paper, Purpur, Pufferfish, etc.)
+- Java 11+
 
 ***
 
@@ -53,8 +53,8 @@ PVP Arena release version can be downloaded on following pages:
 - [PVP Arena - SpigotMC](https://www.spigotmc.org/resources/pvp-arena.16584/)
 - [Github releases page](https://github.com/Eredrim/pvparena/releases)
 
-Development builds (experimental) can be downloaded on Jenkins:
-- [Jenkins dev builds](https://ci.craftyn.com/view/Spigot%20PVP%20Arena/)
+Development builds (experimental) can be downloaded on our discord:
+- [Discord server](https://discord.gg/a8NhSsXKVQ) (channel #dev-builds)
 
 ***
 
@@ -66,7 +66,12 @@ Place PVP Arena `.jar` file in the plugin repository of your server and restart.
 
 ## Documentation
 
+- [_What's new in PVPArena 2.0?_](doc/2.0-whats-new.md)
+- [_Updating from 1.15.x_](doc/update-version.md)
+<br>
+
 - [Getting started](doc/getting-started.md)
+- [Playing an arena](doc/player-guide.md)
 - [Commands](doc/commands.md)
 - [Permissions](doc/permissions.md)
 - [Regions](doc/regions.md)
@@ -105,8 +110,6 @@ kind of used Minecraft server, etc. You can disable it in the dedicated config f
 - Bradley Hilton for the fork until version v0.0.3
 - Carbon131 for adding features until version v0.0.5
 - Drehverschluss for great support during the v0.6+v0.7 rewrite
-- NodinChan for helping me cleaning up my code and for his loader!
-- zyxep and Bradley Hilton for the Jenkins
-- Oruss7 for the documentation head start
+- Oruss7 for his valued help in 2.0 version and for documentation
 
 ***

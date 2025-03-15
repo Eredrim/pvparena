@@ -406,6 +406,14 @@ public class PVPArena extends JavaPlugin {
             if(modsDir.exists() && modsDir.canWrite()) {
                 Stream.of(modsDir.listFiles()).forEach(File::delete);
             }
+            File langFile = new File(this.getDataFolder(), "lang_en.yml");
+            if(langFile.exists() && langFile.canWrite()) {
+                langFile.delete();
+            }
+            File helpFile = new File(this.getDataFolder(), "help_en.yml");
+            if(helpFile.exists() && helpFile.canWrite()) {
+                helpFile.delete();
+            }
         }
 
         try {
