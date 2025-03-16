@@ -1,24 +1,12 @@
 package net.slipcor.pvparena.commands;
 
 import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.core.Language.MSG;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.Collections;
 import java.util.List;
 
-/**
- * <pre>PVP Arena PLAYERTEAM Command class</pre>
- * <p/>
- * A command to put a player into an arena
- *
- * @author slipcor
- * @version v0.10.0
- */
-
-public class PAP_PlayerSpectate extends AbstractArenaCommand {
+public class PAP_PlayerSpectate extends AbstractSuperUserCommand {
 
     public PAP_PlayerSpectate() {
         super(new String[]{"pvparena.cmds.playerspectate"});
@@ -36,15 +24,8 @@ public class PAP_PlayerSpectate extends AbstractArenaCommand {
 
         // usage: /pa {arenaname} playerspectate [playername]
 
-        final Player player = Bukkit.getPlayer(args[0]);
-
-        if (player == null) {
-            arena.msg(sender, MSG.ERROR_PLAYER_NOTFOUND, args[0]);
-            return;
-        }
-
-        final PAG_Spectate cmd = new PAG_Spectate();
-        cmd.commit(arena, player, new String[0]);
+        PAG_Spectate cmd = new PAG_Spectate();
+        commitCommandParsingSelector(arena, sender, cmd, args);
     }
 
     @Override
