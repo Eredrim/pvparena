@@ -19,11 +19,11 @@ public class VersionUtils {
 
         final int versionLen = currentVerArr.length;
         for(int i = 0; i < versionLen; i++) {
-            int weight = (versionLen - i) * 2;
+            int weight = (versionLen - 1 - i) * 2;
             long currentVerChunk = Long.parseLong(currentVerArr[i]);
             long newVerChunk = Long.parseLong(newVerArr[i]);
-            currentVerVal += (int) (currentVerChunk * Math.pow(100, weight));
-            newVerVal += (int) (newVerChunk * Math.pow(100, weight));
+            currentVerVal += (int) (currentVerChunk * Math.pow(10, weight));
+            newVerVal += (int) (newVerChunk * Math.pow(10, weight));
         }
 
         if(currentVerVal == newVerVal) {
