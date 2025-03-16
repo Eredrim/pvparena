@@ -90,7 +90,7 @@ Place PVP Arena `.jar` file in the plugin repository of your server and restart.
 
 You can contact us to ask your questions or just discuss, you can go here:
 - <img src="https://www.spigotmc.org/favicon.ico" height="16"></img> [Spigot Forums](https://www.spigotmc.org/threads/pvp-arena.113406/)
-- <img src="https://discord.com/assets/07dca80a102d4149e9736d4b162cff6f.ico" height="16"></img> [Discord server](https://discord.gg/43nZYXZ)
+- <img src="https://discord.com/assets/07dca80a102d4149e9736d4b162cff6f.ico" height="16"></img> [Discord server](https://discord.gg/a8NhSsXKVQ)
 
 To report issues and make suggestion, please use our [Github issues page](https://github.com/Eredrim/pvparena/issues).
 
