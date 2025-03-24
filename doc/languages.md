@@ -10,6 +10,7 @@ Finally, reload your plugin configuration by running [`/pa reload`](commands/rel
 | download                       | language code  | language | author          | last update |
 |--------------------------------|----------------|----------|-----------------|-------------|
 | generated                      | 'en' (default) | English  | slipcor/Eredrim | 2025-02     |
+| [link](../lang/lang_es.yml)    | 'es'           | Español  | Tonnetti-Bou    | 2025-03     |
 | [link](../lang/lang_fr.yml)    | 'fr'           | Français | Eredrim         | 2025-02     |
 | [link](../lang/lang_zh-CN.yml) | 'zh-CN'        | 简体中文     | Harry_H2O       | 2025-02     |
 

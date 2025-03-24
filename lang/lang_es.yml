@@ -1,0 +1,670 @@
+__version__: 2.0.0
+arena:
+  create:
+    done: Arena '%1%' creada!
+  disable:
+    done: Arena desactivada!
+  edit:
+    disabled: 'Desactivado el modo de edicion de arena: %1%'
+    enabled: 'Activado el modo de edicion de arena: %1%'
+  enable:
+    done: Arena activada!
+  arenalist: 'Arenas: &a%1%&r'
+  regionshapeunknown: Forma de arena '%1%' desconocida.
+  reload:
+    done: Arena recargada!
+  remove:
+    done: 'Arena borrada: &e%1%&r'
+  startingin: Suficientes jugadores preparados. Comenzando en %1%!
+  start:
+    done: Arena forzada a iniciarse!
+  stop:
+    done: Arena forzada a pararse!
+cmd:
+  blacklist:
+    added: 'Añadido &a%1%&r a la &e%2%&r blacklist!'
+    allcleared: 'Todas las blacklists borradas!'
+    cleared: 'Blacklist &e%1%&r borrada!'
+    help: 'Usa: blacklist clear | blacklist [type] [clear|add|remove] [id]'
+    removed: 'borrado &a%1%&r de la &e%2%&r blacklist!'
+    show: 'Blacklist &e%1%&r:'
+  whitelist:
+    added: 'Añadido &a%1%&r a &e%2%&r whitelist!'
+    allcleared: 'Whitelist borrada!'
+    cleared: 'Borrado &e%1%&r de Whitelist!'
+    help: 'Usa: blacklist clear | blacklist [type] [clear|add|remove] [id]'
+    removed: 'Borrado &a%1%&r de la &e%2%&r whitelist!'
+    show: 'Whitelist &e%1%&r:'
+  class:
+    list: 'Clases disponibles: %1%'
+    selectedrespawn: 'Cambiarás a la clase &e%1%&f en el próximo respawn.'
+    preview: 'Ahora estas probando la clase %1%'
+    removed: 'Clase borrada: %1%'
+    saved: 'Clase guardada: %1%'
+    selected: 'Has seleccionado la clase &e%1%&e.'
+  arenaclass:
+    selected: 'Has cambiado a la clase &e%1%&r.'
+    selectedrespawn: 'Cambiarás a la clase &e%1%&f en el próximo respawn.'
+  classchest:
+    done: Establecido con éxito los elementos de clase de %1% a los contenidos de %2%.!Por favor recarga la arena cuando hayas terminado de configurar los cofres!
+  goal:
+    added: 'Meta establecida: &a%1%&r'
+    editing: 'Editar meta de arena con comando: &a/pa <arena> goal %1%&r'
+  help:
+    message: La documentación y toda la ayuda sobre los comandos están disponibles en línea en &9%1%&r
+    link: https://github.com/Eredrim/pvparena
+  setowner:
+    done: '&a%1%&r es ahora el propietario de la arena &a%2%&r!'
+  spawn:
+    notset: 'Spawn no establecido: &a%1%&r'
+    removed: 'Spawn eliminado: %1%'
+    set: 'Spawn activado: %1%'
+    setagain: 'Spawn puesto otra vez: %1%'
+    unknown: 'Spawn no encontrado: &a%1%&r'
+  togglemod:
+    battle: '&c¡Has activado un módulo que requiere una región BATTLE! Si esta arena ya tiene una región, escribe: &r/pa <arena> !rt <region> BATTLE'
+    replacement: 'El módulo &a%1%&r sustituirá al módulo &a%2%&r.'
+    disabled: 'Módulo desactivado: &a%1%&r'
+    notremovable: 'El módulo &a%1%&r no se puede eliminar. Tiene que ser reemplazado por un módulo del mismo tipo (%2%)'
+    enabled: 'Módulo habilitado: &a%1%&r'
+check:
+  done: '¡Comprobacion hecha! ¡No hay errores!'
+deathcause:
+  FALLING_BLOCK: un bloque caido
+  HOT_FLOOR: andar por las brasas
+  CRAMMING: demasiado roce
+  DRAGON_BREATH: oler aliento de dragon
+  THORNS: algunas espinas
+  BLOCK_EXPLOSION: una explosion
+  CONTACT: un cactus
+  CUSTOM: Herobrine
+  DROWNING: no saber nadar
+  ENTITY_EXPLOSION: una explosion
+  FALL: querer volar
+  FIRE_TICK: fuego
+  FIRE: un fuego
+  LAVA: lava
+  LIGHTNING: poder de Thornetti
+  MAGIC: magia imbiuda
+  POISON: envenenado
+  PROJECTILE: algo que no vio venir
+  STARVATION: con el estomago vacio
+  SUFFOCATION: falta de aire
+  SUICIDE: egoismo
+  VOID: salio al vacio
+  CREEPER: un creeper
+  SKELETON: un esqueleto
+  SPIDER: una araña
+  GIANT: un gigante
+  ZOMBIE: un zombie
+  SLIME: un slime
+  GHAST: un ghast
+  PIG_ZOMBIE: un pig zombie
+  ENDERMAN: un enderman
+  CAVE_SPIDER: una araña de cueva
+  SILVERFISH: una rata plateada
+  BLAZE: un blaze
+  MAGMA_CUBE: un brasero cubico
+  ENDER_DRAGON: un dragon de AfterBeyond
+  WITHER: un wither boss
+  WITCH: una brujita loca
+  WOLF: un lobo rabioso
+  IRON_GOLEM: un golem ferrico
+  SPLASH_POTION: una bomba de area
+error:
+  arena:
+    alreadyplaying: 'Ya eres parte de &a%1%&r'
+  arenaexists: '¡La arena ya existe!'
+  arenanotexists: 'La Arena no existe: &a%1%&r'
+  arenaconfig: 'Error al cargar config de la arena: %1%'
+  argumenttype: '&cTipo de argumento no válido:&r &e%1%&r no es adecuado &a%2%&r'
+  argument: '&cEl argumento no reconocido:&r %1% - posibles argumentos: &a%2%&r'
+  blacklist:
+    disallowed: '¡No puedes hacer esto &a%1%&r!'
+    unknownsubcommand: 'Desconocido subcomando. Comandos válidos: &a%1%&r'
+    unknowntype: 'Tipo desconocido. Los tipos válidos: &e%1%&r'
+  class:
+    full: '¡La clase &a%1%&r esta completa!'
+    notenoughexp: ¡'No tienes suficiente EXP para elegir &a%1%&r!'
+    notfound: 'Clase no encontrada: &a%1%&r'
+    notgiven: 'No se ha dado ninguna clase'
+    needsautoclass: '%1% el módulo requiere que se defina la autoclase'
+    needsjoinduringmatchgoal: '%1% módulo requiere habilitar join.allowDuringMatch y un objetivo que permita join durante el partido'
+    incompatiblesetting: '%1% módulo no es compatible con %2% configuración'
+  cmdblocked: '&cComando bloqueado: %1%'
+  invalidcmd: 'Comando no valido(%1%)'
+  unknowncmd: 'Comando desconocido'
+  arenadisabled: ¡'Arena deshabilitada, por favor vuelve a intentarlo mas tarde!'
+  editmode: '¡Activaste modo editor!'
+  error: '&cError: %1%'
+  fightinprogress: '¡La partida ya esta en curso!'
+  goal:
+    legacyunknown: '¡Objetivo Legacy &a%1%&r desconocido! Añadelo usando: &a/pa [arena] goal [goalname]&r'
+    goalnotfound: '¡Objetivo &a%1%&r desconocido! Añadelo usando: &a/pa [arena] goal [goalname]&r Objetivos validos: &a%2%&r'
+  install: 'Error al instalar &a%1%&r'
+  invalid_argument_count: '&cNúmero no válido de argumentos&r (%1% en lugar de %2%)!'
+  invalidstattype: 'Tipo de estadísticas no válido: %1%'
+  valuenotfound: '¡Valor no válido: &a%1%&r!'
+  existingvalue: '¡El valor &a%1%&r ya existe en &e%2%&r!'
+  nonexistingvalue: '¡El valor &a%1%&r no existe en &e%2%&r!'
+  invfull: 'Tu inventario estaba lleno. No has recibido todas las recompensas.'
+  arenafull: '¡La arena está llena!'
+  joinrange: 'Estás demasiado lejos para unirte a esta arena.'
+  notjoinregion: '¡No estás en la región de unión! ¡Muévete allí para unirte!'
+  nojoinmodule: 'No hay ningún módulo join en la configuración de tu arena. Tienes que configurar uno.'
+  teamfull: '¡El equipo %1% está completo!'
+  insidevehicle: 'No se puede unir dentro de un vehículo!'
+  errorloungefree: '¡Error! Arena no gratuita.'
+  log:
+    matnotfound: 'Material no reconocido: %1%'
+  missingspawn: 'Falta(n) spawn(s): &r%1%'
+  missingblock: 'Falta(n) bloque(s): &r%1%'
+  outofboudsspawn: 'Los siguientes spawn(s) están fuera de los límites de tu(s) región(es) de BATTLE: &r%1%'
+  noarenas: '¡No se han encontrado arenas!'
+  valueneg: 'Valores negativos: &c%1%&r'
+  nochest: '¡No estás viendo un cofre!'
+  nocontainer: '¡No estás viendo un contenedor!'
+  nogoal: '¡No has añadido un objetivo! &a/pa <arena> objetivo <goalname>&r¡'
+  nospawns: '¡No hay spawns establecidos!'
+  classperms: '¡No tienes permiso para la clase &a%1%&r!'
+  permjoin: '¡No tienes permiso para unirte a esta arena!'
+  noperm: '&c¡No tienes permiso para %1%!'
+  noplayerfound: '¡No se ha encontrado ningún jugador!'
+  notinarena: '¡No formas parte de una arena!'
+  notnumeric: '&cArgumento no numérico:&r %1%'
+  onlyplayers: '&c¡Este comando sólo puede ser usado por jugadores!'
+  playernotfound: '&cJugador no encontrado: &r%1%&c'
+  positivos: 'Valores positivos: &b%1%&r'
+  potioneffecttypenotfound: 'PotionEffectType no encontrado: &e%1%&r'
+  needsameblocktype: 'Todos tus bloques deben ser el tipo/material'
+  ready:
+    notready0: '¡Por lo menos un jugador no esta listo!'
+    notready1: '¡Estas solo en la arena!'
+    notready2: '¡Tu equipo esta solo en la arena!'
+    notready3: '¡A un equipo le faltan jugadores!'
+    notready4: '¡Faltan jugadores para comenzar!'
+    notready5: '¡Al menos un jugador no ha elegido una clase!'
+    noclass: '¡No tienes una clase!'
+    error: ¡'La arena &4%1%&r no esta lista!'
+  region:
+    flagnotfound: 'arenaregion FLAG &a%1%&r ¡desconocida! Valores válidos: %2%'
+    invalid: 'La selección de región no es válida. ¡La región no tendrá volumen y será inútil!'
+    notfound: '¡Región &a%1%&r no encontrada!'
+    protectionnotfound: 'RegionProtection &a%1%&r ¡desconocida!'
+    typenotfound: '¡Tipo de región &a%1%&r desconocido! Valores válidos: %2%'
+    youselect: '¡Ya estás seleccionando una región para una arena!'
+    youselect2: 'Vuelve a escribir el comando para cancelar el modo de selección.'
+    youselectexit: '¡Selección de región cancelada!'
+  select2: 'Selecciona dos puntos antes de intentar guardar.'
+  teamnotfound: 'Equipo no encontrado: &a%1%&r'
+  noteamavailable: 'Equipo no disponible.'
+  uninstall: 'Error al desinstalar: &a%1%&r'
+  uninstall2: 'PVP Arena intentará desinstalarse al reiniciar el servidor.'
+  unknownmodule: 'Módulo no encontrado: %1%'
+  setupmode: 'Modo Configuracion (SETUP)'
+  whitelist:
+    disallowed: '¡No puedes %1% esto! (bloqueado)'
+    unknownsubcommand: 'Subcomando desconocido. Comandos válidos: &a%1%&r'
+    unknowntype: 'Tipo desconocido. Tipos válidos: &e%1%&r'
+nopermto:
+  madmin: administrar
+  create: crear una arena
+  disable: deshabilitar
+  edit: editar una arena
+  enable: habilitar
+  nopermjoin: unirse a una arena
+  reload: recargar
+  remove: borrar una arena
+  set: establecer un nodo de configuración
+  setup: configurar una arena
+  teleport: teletransportarse a un spawn arena
+  user: utilizar PVP Arena
+  cmds:
+    blacklist: usar el comando &4blacklist&r.
+    check: usar el comando &4check&r.
+    class: usar el comando &4class&r.
+    create: usar el comando &4create&r.
+    debug: usar el comando &4debug&r.
+    disable: usar el comando &4disable&r.
+    edit: usar el comando &4edit&r.
+    enable: usar el comando &4enable&r.
+    gamemode: usar el comando &4gamemode&r.
+    goal: usar el comando &4goal&r.
+    playerclass: usar el comando &4playerclass&r.
+    playerjoin: usar el comando &4playerjoin&r.
+    protection: usar el comando &4protection&r.
+    region: usar el comando &4region&r.
+    regionflag: usar el comando &4regionflag&r.
+    regions: usar el comando &4regions&r.
+    regiontype: usar el comando &4regiontype&r.
+    reload: usar el comando &4reload&r.
+    remove: usar el comando &4remove&r.
+    set: usar el comando &4set&r.
+    setowner: usar el comando &4setowner&r.
+    spawn: usar el comando &4spawn&r.
+    start: usar el comando &4start&r.
+    stop: usar el comando &4stop&r.
+    teams: usar el comando &4teams&r.
+    teleport: usar el comando &4teleport&r.
+    template: usar el comando &4template&r.
+    togglemod: usar el comando &4togglemod&r.
+    uninstall: usar el comando &4modules&r.
+    whitelist: usar el comando &4whitelist&r.
+    arenaclass: usar el comando &4arenaclass&r.
+    chat: usar el comando &4chat&r.
+    join: usar el comando &4join&r.
+    leave: usar el comando &4leave&r.
+    spectate: usar el comando &4spectate&r.
+    arenalist: usar el comando &4arenalist&r.
+    help: usar el comando &4help&r.
+    info: usar el comando &4info&r.
+    list: usar el comando &4list&r.
+    ready: usar el comando &4ready&r.
+    shutup: usar el comando &4shutup&r.
+    stats: usar el comando &4stats&r.
+    version: usar el comando &4version&r.
+fight:
+  begins: '¡Que comience la lucha!'
+  draw: '¡Este combate fue un empate! ¡No hay ganadores!'
+  matadoporquedan: '¡%1% ha sido matado por %2%! %3% vidas restantes.'
+  killedbyremainingfrags: '¡%1% ha sido asesinado por %2%! %3% muertes restantes.'
+  killedbyremainingteam: '¡%1% ha sido asesinado por %2%! %3% vidas restantes para %4%.'
+  killedbyremainingteamfrags: '¡%1% ha sido asesinado por %2%! %3% muertes restantes para %4%.'
+  killedby: '¡%1% ha sido asesinado por %2%!'
+  playerleft: '¡%1% ha abandonado el combate!'
+permission:
+  break: romper
+  place: poner
+  use: usar
+info:
+  classes: 'Clases: &a%1%&r'
+  goal_active: 'Objetivo: &a%1%&r'
+  goal_inactive: 'Objetivo: &b%1%&r &7== INACTIVO =='
+  head_headlin: 'Informacion de: &e[%2%&e]&r'
+  head_teams: 'Equipos: &a%1%&r'
+  mod_active: 'Modulo/s: &a%1%&r'
+  mod_inactive: 'Modulo/s : &b%1%&r &7== INACTIVO =='
+  owner: 'Dueño: &a%1%&r'
+  regions: 'Zonas: &a%1%&r'
+  section: '----- &a%1%&r -----'
+general:
+  installed: 'Instalado: &a%1%&r'
+  uninstalled: 'Desinstalado: &a%1%&r'
+  plugindisabled: '§4Inactivo§e (version: §4%1%§e)§r'
+  pluginenabled: '§2Activo§e (version: §2%1%§e)§r'
+list:
+  arenas: 'Arenas disponibles: %1%'
+  dead: 'Muerto: %1%'
+  fighting: 'Luchando: %1%'
+  lost: 'Perdido: %1%'
+  lounge: 'Lobby: %1%'
+  'null': 'Error: %1%'
+  players: 'Jugadores: %1%'
+  team: 'Equipo %1%: %2%'
+  ready: 'Preparados: %1%'
+  warm: 'Warm: %1%'
+  watching: 'Espectadores: %1%'
+messages:
+  toArena: '¡Chat de la arena!'
+  toPublic: '!Chat publico!'
+  toTeam: '¡Chat de equipo!'
+  general: '&e[%1%&e] &f%2%'
+notice:
+  awarded: 'Recibes %1%'
+  closedselection: '&eEl modo de selección se ha cerrado'
+  nodropitem: '¡No tan rápido! ¡Sin trampas!'
+  noteleport: '¡Por favor, usa &2/pa leave&r para salir del combate!'
+  notice: 'Aviso: %1%'
+  rewardedplayer: '%1% ha ganado %2%.'
+  remove: '&cEsto eliminará permanentemente la arena &a%1%&c. ¿Estás seguro? Entonces para desactivar este mensaje, vea ''safeadmin'' en su config.yml.'
+  waitingequal: '¡Esperando a que los equipos tengan el mismo número de jugadores!'
+  waitingforarena: '¡Esperando a que una arena en ejecución termine!'
+  welcomespec: '¡Bienvenido a la zona de espectadores!'
+  gameloot: '!Aqui tienes tu recompensa!'
+  welcomespec2: '/pa bet [name] [amount] para apostar por un equipo o jugador.'
+  youdeath: 'Has entrado en una región de MUERTE. ¡Adiós!'
+  youescaped: 'Has escapado del campo de batalla. Adiós: has escapado del campo de batalla.'
+  arenabounds: 'Has alcanzado los límites de la arena.'
+  arenaintrusion: 'Esta es un área cerrada a los visitantes. Si quieres jugar en esta arena escribe &e/pa %1%&r. Si quieres ser espectador, escribe &e/pa %1% spectate&r.'
+  youleft: 'Has abandonado la arena.'
+  younocamp: 'Estás en una región NOCAMP. Muévete.'
+announce:
+  playerhaswon: '¡%1% es el ganador!'
+  playerready: '¡%1%&e esta preparado!'
+player:
+  prevented:
+    break: '&c¡No puedes romper bloques!'
+    place: '«¡No puedes colocar bloques!'
+    tnt: '&c¡No puedes usar TNT!'
+    tntbreak: '&c¡No puedes romper TNT!'
+    drop: '&c¡No puedes soltar objetos!'
+    inventory: '&c¡No puedes acceder a esto!'
+    craft: '&c¡No puedes carftear!'
+ready:
+  list: 'Jugadores: %1%'
+  done: '¡Ha sido marcado como listo!'
+region:
+  clear:
+    added: 'Añadido a la lista blanca de limpieza de entidades de la region: &a%1%&r'
+    list: 'Lista blanca de entidades de la región: &a%1%&r'
+    removed: 'Eliminado de la lista blanca de entidades de la region: &a%1%&r'
+  flag:
+    added: 'Bandera de región añadida: &a%1%&r'
+    removed: 'Bandera de región eliminada: &a%1%&r'
+  expanded: 'La región se ha ampliado &a%1%&r bloques hacia la dirección &a%2%&r'
+  contracted: 'La región se ha reducido en &a%1%&r bloques en la dirección &a%2%&r'
+  pos1: 'Primera posición fijada.'
+  pos2: 'Segunda posición fijada.'
+  protection_added: 'Protección_región añadida: &a%1%&r'
+  protection_removed: 'RegionProtection eliminada: &a%1%&r'
+  shifted: 'La región se ha desplazado &a%1%&r bloques en la dirección &a%2%&r'
+  removed: 'Región eliminada: %1%'
+  saved: 'Región guardada.'
+  saved_notice: '&6Has creado una region &oCUSTOM&6. ¡Aún no tiene función! Para convertirla en una región de campo de batalla, escribe &r/pvparena %1% !rt %2% BATTLE.'
+  select: '¡Selecciona dos puntos con tu item varita, primero click izquierdo y luego click derecho!'
+  type set: 'Region Type set: &e%1%'
+  youselect: '¡Estás seleccionando una región para la arena &a%1%&r!'
+  shapeunknown: 'Forma de Arena ''%1%'' desconocida. Formas disponibles: Cuboide, Esférica, Cilíndrica».'
+regions:
+  flags: 'Flags de Región: &a%1%&r.'
+  head: '--- &aRegión de Arena&r [&e%1%&r]---'
+  listhead: '--- &aRegiones de la Arena&r [&e%1%&r]---'
+  listvalue: '&a%1%&r: %2%, %3%'
+  protections: 'Protecciones de region: &a%1%&r.'
+  shape: 'Forma de la región: &a%1%&r.'
+  type: 'Tipo de región: &a%1%&r.'
+cfg:
+  reloaded: '&2Configuración de &e[&4%1%&e]&2 recargada.'
+  reloadfail: '&cFallo al recargar arena &e[&4%1%&e]&c.&f Por favor, comprueba la configuración de la arena.'
+  config:
+    done: '&a%1%&r ¡configurada a &e%2%&r!'
+    help: 'Usa &e/pa <arena> set [page]&r para obtener una lista de nodos.'
+    unknown: '¡Nodo desconocido: &e%1%&r!'
+    items_not: 'Por favor, ¡utiliza la mano o el inventario para establecer un nodo de ítem!'
+  add:
+    done: '¡&e%2%&r añadido a &a%1%&r!'
+  remove:
+    done: '¡&e%2%&r eliminado de &a%1%&r!'
+lang:
+  reloaded: '&2Archivos de idiomas recargados&r'
+stats:
+  head: 'Nuestro TOP %1% (%2%)'
+  typenotfound: '¡No se ha encontrado el tipo de estadística! Valores válidos: &e%1%&r'
+stattype:
+  DAMAGE: daño total infligido
+  DAMAGE_TAKEN: daño total recibido
+  DEATHS: muertes
+  KILLS: muertes
+  LOSSES: partidos perdidos
+  MAX_DAMAGE: daño máximo infligido
+  MAX_DAMAGE_TAKEN: daño máximo recibido
+  WINS: partidos ganados
+team:
+  haswon: ¡El equipo %1%&r son los campeones!
+  ready: ¡El equipo %1%&r está listo!
+teams:
+  list: 'Equipos disponibles: %1%'
+  add: 'Equipo añadido: %1%'
+  set: 'Equipo configurado: %1%'
+  remove: 'Equipo eliminado: %1%'
+time:
+  minutes: minutos
+  seconds: segundos
+timer:
+  countdowninterrupt: '¡Conteo regresivo interrumpido! Esperando jugadores listos...'
+  ending: '¡La partida terminará en %1%!'
+  resetting: '¡La arena se reiniciará en %1%!'
+  warmingup: 'Calentando... %1%!'
+  pvpactivating: '¡El PVP se activará en %1%!'
+updater:
+  plugin: 'PVP Arena'
+  modules: 'PVP Arena pack de módulos'
+  announce: '%1% %2% ¡ya está disponible! Su versión: %3%'
+  success: '%1% ha sido actualizado a %2%. Reinicia tu servidor para aplicar la actualización.'
+  restart: 'Reinicie su servidor para aplicar la actualización.'
+  downloading: 'Descargando %1%...'
+  downloaderror: 'Error al descargar %1%'
+goal:
+  blockdestroy:
+    score: '¡%1% destruyó el bloque del equipo %2%! Destrucciones restantes: %3%'
+    setblock: Bloque establecido con éxito para el equipo %1%&r
+    tosetflag: Clic izquierdo en el bloque para el equipo %1%&r
+    notfound: No se encuentra el bloque para el equipo %1%&r
+    removed: Bloque eliminado para el equipo %1
+  checkpoints:
+    score: '%1% &ereached checkpoint #%2%!'
+    youmissed: '¡Te has saltado el punto de control #%1%! Esto es #%2%'
+  dom:
+    bossbar_claiming: 'Reclamando...'
+    claiming: '¡El equipo %1% reclama una bandera!'
+    claimed: '¡El equipo %1% ha reclamado una bandera!'
+    score: '¡El equipo %1% ha conseguido %2% puntos por tener una bandera!'
+    contesting: '&e¡Una bandera reclamada por el equipo %1% está siendo disputada!'
+    unclaiming: '&e¡Una bandera reclamada por el equipo %1% no está siendo reclamada!'
+    setflag: '&eHaga clic en las banderas para registrarlas, deben ser bloques coloreables. Escribe este comando de nuevo para cerrar el modo de selección.'
+    existingflag: '&eEsta bandera ya estaba establecida'
+  flag:
+    flaghomeleft: '¡%1% trajo a casa la bandera del equipo %2%! Capturas restantes: %3%'
+    touchhomeleft: '¡%1% trajo a casa la bandera robada! ¡El otro equipo pierde una vida!'
+    flagsave: '¡%1% dejó caer la bandera del equipo %2%!'
+    flagsavetouch: '¡%1% dejó caer la bandera robada!'
+    flaggrab: ¡%1% ha cogido la bandera del equipo %2%!'
+    flaggrabtouch: '%1% ¡agarró la bandera robada!'
+    flagnotsafe: '¡Tu bandera ha sido tomada! No puedes recuperar una bandera enemiga.'
+    setflag: '%1% bandera ha sido puesta'
+    tosetflag: 'Haz clic con el botón izquierdo del ratón en la bandera deseada para el equipo %1%'
+    notfound: 'Bandera no encontrada: &e%1%'
+    removed: 'Bandera &e%1%&r ha sido eliminada.'
+  food:
+    notyourfood: '¡Este no es tu horno!'
+    tosetfood: '&eHaga clic en cada &f%1%&e para registrarlo. A continuación, escriba este comando de nuevo para cerrar el modo de selección'
+    notfound: 'Bloque no encontrado: %1% %2% #%3%'
+    removed: '%1% %2% #%3% ha sido eliminado'
+    existingblock: 'Este bloque ya se ha establecido para el equipo %1%'
+    foodfurnaceset: 'Horno #%1% establecido para el equipo %2%'
+    foodchestset: 'Cofre de comida #%1% establecido para el equipo %2%'
+    itemsput: '¡El equipo %1% ha puesto %2% objetos en su cofre! Puntuación: %3%/%4%'
+    itemsremoved: '¡El equipo %1% ha quitado %2% objetos de su cofre! Puntuación: %3%/%4%'
+  infected:
+    lost: '&6¡Los jugadores infectados han muerto!'
+    player: '&c%1% ¡está infectado!'
+    you: '&c¡Estás infectado!'
+    won: '&6¡Los jugadores infectados han ganado la partida!'
+    iprotect: 'El equipo infectado no puede: %1%'
+    iprotectset: '&eProtecciónJugador &f%1%&f establecida en: %2%'
+  killreward:
+    added: 'Recompensa de muerte añadida: &e%1%&r->&a%2%'
+    removed: 'Recompensa por muerte eliminada: &e%1%'
+  liberation:
+    liberated: '¡El equipo %1% ha sido liberado!'
+    setbutton: 'El botón %1% ha sido puesto'
+    scoreboardheading: 'Jugadores en la cárcel:'
+    scoreboardseparator: '----------------'
+    tosetbutton: 'Haz clic en el botón del equipo %1% para registrarlo'
+    buttonnotfound: '%1% botón no existe'
+    buttonremoved: '%1% botón ha sido eliminado'
+  physicalflags:
+    holdflag: 'Tienes que sostener la bandera para traerla de vuelta.'
+  sabotage:
+    tntignite: '¡%1% encendió la TNT del equipo %2%!'
+    set: '%1% TNT ha sido encendida'
+    toset: 'Haz click en la TNT del equipo %1% para registrarla'
+    noselfdestroy: '¡No puedes encender tu propia TNT!'
+    notgooditem: 'Necesitas un pedernal y acero para encender la TNT.'
+    youtnt: 'Ahora llevas la herramienta de sabotaje.'
+    tntnotfound: '%1% tnt no existe'
+    tntremoved: '%1% tnt ha sido eliminado'
+  tank:
+    tankdown: '¡El tanque ha caído!'
+    tankmode: '¡MODE TANQUE! Que todo el mundo mate a %1%, ¡el tanque!'
+    tankwon: '¡El tanque ha ganado! ¡Enhorabuena a %1%!'
+  tdc:
+    denied: '%1% denegada una muerte.'
+    remaining: '¡%1% muertes restantes para %2%.'
+    scored: '¡%1% consiguió una muerte!'
+    youdenied:  '¡Negaste una muerte!'
+    youscored:  '¡Conseguiste una muerte!'
+mod:
+  aftermatch:
+    aftermatch: '¡El aftermatch ha comenzado!'
+    startingin: '¡AfterMatch en %1%!'
+    spawnnotset: '¡Spawn &cafter&r no establecido!'
+  announcements:
+    ignoreon: 'Ahora ignoras los anuncios.'
+    ignoreoff: '¡Ahora está recibiendo anuncios!'
+  battlefieldjoin:
+    lang:
+      remainingtime: 'Los jugadores pueden seguir entrando en la arena durante los próximos &e%1%&r segundos.'
+  bankick:
+    lang:
+      playerbanned: 'Jugador baneado: &e%1%&r.'
+      playerkicked: 'Jugador expulsado: &e%1%&r.'
+      playernotonline: 'Jugador no está conectado: &e%1%&r.'
+      playerunbanned: 'Jugador desbaneado: &e%1%&r.'
+      youwerebanned: '¡Estás baneado de la arena %1%!'
+      youwerekicked: '¡Te han expulsado de la arena %1%!'
+      youwereunbanned: '¡Has sido desbaneado de la arena %1%!'
+  betterclasses:
+    add: '¡PotionEffect &e%2%&r añadido a ArenaClass: &e%1%&r!'
+    clear: '¡ArenaClase &e%1%&r eliminada!'
+    listhead: '--- Efectos de Poción para clase &e%1%&r ---'
+    remove: '¡PotionEffect &e%2%&r eliminado de ArenaClass: &e%1%&r!'
+    respawncommand_remove: '¡Comando de reaparición eliminado de ArenaClass: &e%1%&r!'
+    classchange:
+      mteam: '&c¡Tu equipo ha excedido el límite de cambio de clase!'
+      mplayer: '&c¡Has excedido el límite de cambio de clase!'
+  bettergears:
+    showteam: 'Equipo %1% usa el color %2%.'
+    teamdone: 'Equipo %1% ahora usa el Color %2%.'
+  blockrestore:
+    clearinvdone: '¡Inventarios limpios! Se espera ligero lagg en el próximo inicio de la arena.'
+    addedtolist: '¡Contenedor (%1%) ha sido añadido a los inventarios para restaurar!'
+  chestfiller:
+    sourceChest: 'El contenedor en «%1%» se convierte en el nuevo cofre fuente de la arena.'
+    removedSource: 'El contenedor fuente de la arena ha sido eliminado, ahora usa -chestfiller.items- para llenar los cofres.'
+    clear: '¡La lista de cofres a rellenar ha sido borrada!'
+    addedToList: 'Añadido con éxito a la lista a rellenar: %1%'
+  duel:
+    accepted: '¡%1% &eha aceptado el desafio! El juego comienza.'
+    announce: '¡%1% &ete ha desafiado! Acepta el duelo con &r/pa %2% accept&e.'
+    announcecemoney: '&e¡Han establecido una cuota de &c%1%&e!'
+    announce2: '&e¡Cancela el duelo con &r/pa %2% decline&e.'
+    cancelled: '&c¡El duelo ha sido cancelado!'
+    busy: '%1% &eya está en una trifurca, inténtelo más tarde.'
+    declineds: 'Tu oponente ha rechazado la petición. El duelo ha sido cancelado.'
+    declinedr: '¡Has rechazado la solicitud de duelo!'
+    requested: '¡Has &retado a &r%1%&e!'
+    requestedalready: 'Ya has retado a alguien.'
+    requestexpireds: 'Tu oponente no aceptó la solicitud a tiempo. El duelo ha sido cancelado.'
+    requestexpiredr: 'No has aceptado la petición a tiempo. El duelo ha sido cancelado.'
+    starting: '¡El duelo comienza!'
+    nodirectjoin: '¡No puedes unirte a esta arena directamente! Duelo con: &e/pa %1% duel <jugador>'
+  latelounge:
+    announce: '¡La Arena %1% está empezando! Jugador %2% quiere empezar. Únete con: /pa %1%'
+    position: 'Estás en la cola. Posición: #%1%'
+    rejoin: 'Chequeo de incio te ha pillado sin poder unirte. ¡Vuelve a unirte cuando puedas!'
+    wait: 'La arena empezará pronto, ¡por favor espera!'
+    leave: 'Has abandonado la cola de la arena %1%.'
+  playerfinder:
+    near: '¡Jugador más cercano: %1% manzanas!'
+    point: '¡Brújula apuntando al jugador más cercano!'
+  powerups:
+    invalidpowerupeffect: 'Invalid PowerupEffect: %1%'
+    puplayer: '%1% ha recogido PowerUp: %2%'
+    puserver: '¡PowerUp desplegado!'
+    livesplayer: '¡Debido a un PowerUp, %1% ha perdido %2% vidas/puntos!'
+    livesteams: '¡Debido a un PowerUp, el equipo %1% ha perdido %2% vidas/puntos!'
+    frozen: '¡Estás congelado durante los próximos %1% segundos!'
+  realspectate:
+    info: '¡Estás espectando en vista inmersiva! Deslízate para cambiar al siguiente luchador y pulsa la tecla «lanzar objeto» para volver al anterior.'
+  respawnrelay:
+    respawning: '¡Respawning en %1%!'
+    choice: 'Si quieres respawnear en un punto de spawn en particular, simplemente escribe el número de spawn en tu chat. Puntos de aparición disponibles: %1%'
+    chosen: 'Tu próxima elección de punto de spawn ha sido registrada.'
+  skins:
+    dc: '¡Enganchando en DisguiseCraft!'
+    ld: '¡Enganchando en LibsDisguises!'
+    nomod: 'No se ha encontrado ningún plugin de disfraces, ¡el módulo Skins está inactivo!'
+    showclass: 'La clase &e%1%&r se disfrazará de: &a%2%'
+    showteam: 'El equipo %1% será disfrazado de: &a%2%'
+  spawncollections:
+    saved: 'La colección de spawn «%1%» ha sido guardada'
+    use: 'A partir de ahora, la arena utiliza los spawns de la colección de spawns «%1%»'
+    notexist: 'La colección de spawn «%1%» no existe'
+    removed: 'La colección de spawn «%1%» ha sido eliminada'
+    list: 'Colecciones de spawn guardadas para la arena: %1%'
+    empty: 'No hay ninguna colección de spawn guardada'
+  squads:
+    nosquad: 'Sin brigadas existentes! Crealas con: /pa <arena> !sq add <name>'
+    listhead: 'Brigada para la arena &b%1%'
+    listitem: 'Brigada %1% (máx: %2%) %3%'
+    added: 'Brigada %1% ha sido añadida'
+    set: 'Brigada %1% ha sido creada'
+    removed: 'Brigada %1% ha sido eliminada'
+    notexist: '¡La brigada %1% no existe!'
+    join: '¡Te has unido a la brigada &b%1%&r!'
+    leave: '¡Has abandonado la brigada &b%1%&r!'
+    error: '¡Error al editar la/s brigada/s, la sintaxis no es correcta!'
+    full: '¡Esta brigada está llena!'
+    help: |-
+      /pa !sq | mostrar los brigada de la arena
+      /pa !sq add <name> <limit> | crear brigada con limite de jugadores (0 sin límite)
+      /pa !sq set <name> <limit> | fijar limite jugadores por brigada
+      /pa !sq remove <name> | elimina el brigada
+  startfreeze:
+    announce: '¡El juego comenzará en %1% segundos!'
+  tempperms:
+    noperms: 'Plugin de permisos no encontrado, por defecto OP.'
+    head: 'Permisos temporales de &e%1%&r:'
+    added: 'Permisos temporales &e%1%&r añadidos a &a%2%&r.'
+    removed: 'Permisos temporales &e%1%&r eliminados de &a%2%&r.'
+  vault:
+    notenough: 'No tienes %1%.'
+    noaccount: 'Se requiere una cuenta bancaria para usar este comando o jugar en esta arena.'
+    theynotenough: '¡%1% no tiene suficiente dinero!'
+    bettimeover: '¡Se acabó el tiempo de apuesta!'
+    beforebettime: '¡Aún no ha empezado el tiempo de apuestas! Por favor, espere hasta el comienzo del partido.'
+    betnotyours: '¡No puede apostar en su propio partido!'
+    betonlyteams: '¡Sólo puede apostar a equipos (no vacíos)!'
+    betonlyplayers: '¡Sólo puede apostar por jugadores!'
+    wrongamount: '¡El importe de la apuesta debe estar entre %1% y %2%!'
+    invalidamount: 'Importe no válido: %1%'
+    betplaced: 'Su apuesta %1% en %2% ha sido realizada.'
+    betchanged: 'Su apuesta ha sido cambiada. A partir de ahora, apuesta %1% a %2%».'
+    youearned: '¡Has ganado %1%!'
+    joinpay: '¡Pagaste %1% para unirte a la arena!'
+    killreward: '¡Has recibido %1% por matar a %2%!'
+    refunding: '¡Reembolsando %1%!'
+  walls:
+    fallingin: 'Las muros caerán en: %1%'
+    separator: '--------------------'
+    timer: '¡Los muros se retirarán en %1%!'
+  worldedit:
+    created: 'Región creada: &e%1%&r'
+    list:
+      added: '&e%1%&r ha sido añadida a la lista de regiones.'
+      removed: '&e%1%&r ha sido eliminada de la lista de regiones.'
+      show: 'Estas regiones se guardarán o cargarán automáticamente (dependiendo de la configuración de autosave/autoload): &e%1%&r'
+      empty: 'No se ha añadido ninguna región a la lista. Por lo tanto, todas las regiones de BATALLA serán guardadas o cargadas en su lugar (dependiendo de la configuración de autoguardado/autoload).'
+    loaded: 'Región cargada: &e%1%&r'
+    saved: 'Región guardada: &e%1%&r'
+time_intervals:
+  '1': 1...
+  '2': 2...
+  '3': 3...
+  '4': 4...
+  '5': 5...
+  '10': 10 %s
+  '20': 20 %s
+  '30': 30 %s
+  '60': 60 %s
+  '120': 2 %m
+  '180': 3 %m
+  '240': 4 %m
+  '300': 5 %m
+  '600': 10 %m
+  '1200': 20 %m
+  '1800': 30 %m
+  '2400': 40 %m
+  '3000': 50 %m
+  '3600': 60 %m
