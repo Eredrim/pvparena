@@ -15,7 +15,6 @@ import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.StatisticsManager;
 import net.slipcor.pvparena.managers.WorkflowManager;
-import net.slipcor.pvparena.regions.ArenaRegion;
 import net.slipcor.pvparena.regions.RegionFlag;
 import net.slipcor.pvparena.regions.RegionProtection;
 import net.slipcor.pvparena.runnables.DamageResetRunnable;
@@ -43,15 +42,15 @@ import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static net.slipcor.pvparena.config.Debugger.debug;
 
@@ -343,11 +342,6 @@ public class EntityListener implements Listener {
         ProjectileSource eDamager = event.getEntity().getShooter();
         final Entity eDamagee = event.getHitEntity();
 
-
-        if (eDamager instanceof Player && ArenaPlayer.fromPlayer(((Player) eDamager).getName()).getStatus() == PlayerStatus.LOST) {
-            return;
-        }
-
         if(eDamager instanceof Player && eDamagee instanceof Player) {
             final Player attacker = (Player) eDamager;
             final Player defender = (Player) eDamagee;
@@ -355,7 +349,7 @@ public class EntityListener implements Listener {
             final ArenaPlayer apAttacker = ArenaPlayer.fromPlayer(attacker.getName());
             final Arena arena = apDefender.getArena();
 
-            if (arena == null || apAttacker.getArena() == null || apDefender.getStatus() == PlayerStatus.LOST || !arena.isFightInProgress()) {
+            if (arena == null || apAttacker.getArena() == null || !arena.isFightInProgress() || apDefender.getStatus() == PlayerStatus.LOST) {
                 return;
             }
 
@@ -366,52 +360,42 @@ public class EntityListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public static void onEntityDamage(final EntityDamageEvent event) {
-        final Entity entity = event.getEntity();
-
-        debug("onEntityDamage: cause: {} : {} => {}", event.getCause().name(), event.getEntity().toString(),
-                event.getEntity().getLocation());
+        Entity entity = event.getEntity();
 
         if (!(entity instanceof Player)) {
             return;
         }
 
-        if (ArenaPlayer.fromPlayer(entity.getName()).getStatus() == PlayerStatus.LOST) {
-            event.setCancelled(true);
-            return;
-        }
+        Player defender = (Player) entity;
+        ArenaPlayer apDefender = ArenaPlayer.fromPlayer(defender);
+        Arena arena = apDefender.getArena();
 
-        final Arena arena = ArenaPlayer.fromPlayer(entity.getName()).getArena();
-        if (arena == null) {
-            // defender no arena player => out
-            return;
-        }
+        if (arena != null) {
 
-        final Player defender = (Player) entity;
+            debug("onEntityDamage: cause: {} : {} => {}", event.getCause().name(), entity, entity.getLocation());
 
-        final ArenaPlayer apDefender = ArenaPlayer.fromPlayer(defender.getName());
-
-        if (arena.realEndRunner != null
-                || (!apDefender.getStatus().equals(PlayerStatus.NULL) && !apDefender
-                .getStatus().equals(PlayerStatus.FIGHT))) {
-            event.setCancelled(true);
-            return;
-        }
-
-        for (ArenaRegion ars : arena.getRegions()) {
-            if (ars.getFlags().contains(RegionFlag.NODAMAGE)
-                    && ars.getShape().contains(new PABlockLocation(defender.getLocation()))) {
+            PlayerStatus status = apDefender.getStatus();
+            if (arena.realEndRunner != null || Stream.of(PlayerStatus.FIGHT, PlayerStatus.NULL).noneMatch(status::equals)) {
                 event.setCancelled(true);
                 return;
             }
-        }
 
-        // Faking death if damage is higher than player health
-        if ((defender.getHealth() - event.getFinalDamage()) <= 0) {
-            // Event is not cancelled to keep attack effects, we set damage to 0 instead
-            event.setDamage(0);
+            boolean isInNoDamageRegion = arena.getRegions().stream()
+                    .anyMatch(reg -> reg.getFlags().contains(RegionFlag.NODAMAGE) && reg.containsLocation(apDefender.getLocation()));
 
-            playFakeDeathEffects(defender);
-            WorkflowManager.handlePlayerDeath(arena, defender, event);
+            if(isInNoDamageRegion) {
+                event.setCancelled(true);
+                return;
+            }
+
+            // Faking death if damage is higher than player health
+            if ((defender.getHealth() - event.getFinalDamage()) <= 0) {
+                // Event is not cancelled to keep attack effects, we set damage to 0 instead
+                event.setDamage(0);
+
+                playFakeDeathEffects(defender);
+                WorkflowManager.handlePlayerDeath(arena, defender, event);
+            }
         }
     }
 
@@ -435,36 +419,36 @@ public class EntityListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onEntityDamage(final EntityTargetLivingEntityEvent event) {
-        for (Arena arena : ArenaManager.getArenas()) {
-            if (arena.hasEntity(event.getEntity())) {
+        if (event.getTarget() != null) {
+            ArenaManager.getArenas().stream()
+                    .filter(arena -> arena.hasEntity(event.getEntity()))
+                    .findAny()
+                    .ifPresent(arena -> {
+                        Player entityOwner = arena.getEntityOwner(event.getEntity());
+                        ArenaPlayer aPlayer = ArenaPlayer.fromPlayer(entityOwner);
 
-                Player player = arena.getEntityOwner(event.getEntity());
-                ArenaPlayer aPlayer = ArenaPlayer.fromPlayer(player);
-
-                if (event.getEntity().equals(player)) {
-                    event.setCancelled(true);
-                    return;
-                }
-
-                if (!arena.getConfig().getBoolean(CFG.PERMS_TEAMKILL)) {
-                    for (ArenaPlayer ap : aPlayer.getArenaTeam().getTeamMembers()) {
-                        if (event.getTarget().equals(ap.getPlayer())) {
+                        if (event.getTarget().equals(entityOwner)) {
                             event.setCancelled(true);
+                            return;
                         }
-                    }
-                }
-            }
+
+                        if (!arena.getConfig().getBoolean(CFG.PERMS_TEAMKILL)) {
+                            for (ArenaPlayer ap : aPlayer.getArenaTeam().getTeamMembers()) {
+                                if (event.getTarget().equals(ap.getPlayer())) {
+                                    event.setCancelled(true);
+                                }
+                            }
+                        }
+                    });
         }
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onEntityDeath(final EntityDeathEvent event) {
-        for (Arena arena : ArenaManager.getArenas()) {
-            if (arena.hasEntity(event.getEntity())) {
-
-                arena.removeEntity(event.getEntity());
-            }
-        }
+        ArenaManager.getArenas().stream()
+                .filter(arena -> arena.hasEntity(event.getEntity()))
+                .findAny()
+                .ifPresent(arena -> arena.removeEntity(event.getEntity()));
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
@@ -472,8 +456,8 @@ public class EntityListener implements Listener {
         if (event.getEntity() instanceof Tameable) {
             Tameable t = (Tameable) event.getEntity();
 
-            if (t.isTamed()) {
-                ArenaPlayer ap = ArenaPlayer.fromPlayer(t.getOwner().getName());
+            if (t.isTamed() && t.getOwner() instanceof Player) {
+                ArenaPlayer ap = ArenaPlayer.fromPlayer((Player) t.getOwner());
                 if (ap.getArena() != null) {
                     event.setCancelled(true);
                 }
@@ -484,70 +468,42 @@ public class EntityListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public static void onPotionSplash(final PotionSplashEvent event) {
 
+        ProjectileSource projectileSource = event.getEntity().getShooter();
+        if(!(projectileSource instanceof Player)) {
+            return;
+        }
+
         debug("onPotionSplash");
-        boolean affectTeam = true;
+        ArenaPlayer shooter = ArenaPlayer.fromPlayer(((Player) projectileSource).getName());
 
-        final Collection<PotionEffect> pot = event.getPotion().getEffects();
-        for (PotionEffect eff : pot) {
-            debug(">{}", eff.getType().getName());
-            if (TEAMEFFECT.containsKey(eff.getType())) {
-                affectTeam = TEAMEFFECT.get(eff.getType());
-                debug(">{}", affectTeam);
-                break;
-            }
-        }
+        if (shooter.getArena() != null && shooter.getArenaTeam() != null && shooter.getStatus().equals(PlayerStatus.FIGHT)) {
+            debug(shooter, "is a regular arena player");
 
-        ArenaPlayer shooter;
-
-        try {
-            shooter = ArenaPlayer.fromPlayer(((Player) event.getEntity()
-                    .getShooter()).getName());
-        } catch (Exception e) {
-            return;
-        }
-
-        debug(shooter, "legit player");
-
-        if (shooter.getArena() == null
-                || !shooter.getStatus().equals(PlayerStatus.FIGHT)) {
-            debug(shooter, "something is null!");
-            return;
-        }
-
-        if (shooter.getArena().getConfig().getBoolean(CFG.PERMS_TEAMKILL)) {
-            return; // if teamkill allowed, don't check, just ignore
-        }
-
-        final Collection<LivingEntity> entities = event.getAffectedEntities();
-        for (LivingEntity e : entities) {
-            if (!(e instanceof Player)) {
-                debug("skipping non-player {}", e.getName());
-                continue;
-            }
-            final ArenaPlayer damagee = ArenaPlayer.fromPlayer(e.getName());
-
-            if (damagee.getArena() == null || shooter.getArena() == null ||
-                    (damagee.getArena() != shooter.getArena()) ||
-                    damagee.getArenaTeam() == null || shooter.getArenaTeam() == null) {
-                /*
-                  some people obviously allow non arena players to mess with potions around arena players
-
-                  this check should cover any of the entities not being in the same arena, or not arena at all
-                 */
-                debug("skipping {}", e.getName());
-                continue;
+            if (shooter.getArena().getConfig().getBoolean(CFG.PERMS_TEAMKILL)) {
+                return; // if teamkill allowed, don't check, just ignore
             }
 
-            final boolean sameTeam = damagee.getArenaTeam().equals(shooter.getArenaTeam());
+            boolean hasOnlyNegativeEffects = event.getPotion().getEffects().stream()
+                    .noneMatch(effect -> TEAMEFFECT.get(effect.getType()) == true);
 
+            // If potion has only negative effects, cancel the effect for teammates
+            if (hasOnlyNegativeEffects) {
 
-            if (sameTeam != affectTeam) {
-                // different team and only team should be affected
-                // same team and the other team should be affected
-                // ==> cancel!
-                event.setIntensity(e, 0);
-                debug("setting intensity to 0 for {}", e.getName());
-                break;
+                /* some people obviously allow non arena players to mess with potions around arena players
+                  these checks should ignore (and not cancel) any of external entities to the arena/team */
+
+                event.getAffectedEntities().stream()
+                        .filter(e -> e instanceof Player)
+                        .map(e -> ArenaPlayer.fromPlayer((Player) e))
+                        .filter(damagee -> damagee.getArena() != null
+                                && damagee.getArena().equals(shooter.getArena())
+                                && damagee.getStatus() == PlayerStatus.FIGHT
+                                && Objects.equals(damagee.getArenaTeam(), shooter.getArenaTeam()))
+                        .forEach(sameTeamDamagee -> {
+                            // Do not affect same team players
+                            debug("setting intensity to 0 for {}", sameTeamDamagee);
+                            event.setIntensity(sameTeamDamagee.getPlayer(), 0);
+                        });
             }
         }
     }
