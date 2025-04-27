@@ -53,8 +53,8 @@ public class PAP_PlayerJoin extends AbstractSuperUserCommand {
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
         final CommandTree<String> result = new CommandTree<>(null);
-        for (String team : arena.getTeamNames()) {
-            result.define(new String[]{"{Player}", team});
+        if (arena != null) {
+            arena.getTeamNames().forEach(team -> result.define(new String[]{"{Player}", team}));
         }
         return result;
     }
