@@ -99,6 +99,47 @@ NB: For the 3rd option, you have to specify a class for each team. There is no d
 
 <br>
 
+## How to reward players at the end of a match?
+
+In PVP Arena, there are 3 ways to reward players:
+1. With items
+2. With money
+3. Running a command
+
+#### 1. Reward players with items
+That's quite easy, you just have to set the `items.rewards` setting in your arena config file. To do this, you can use 
+the [`/pa <arena> set inventory`](commands/set.md) command, it will load all your current inventory in reward setting.
+
+NB: You can also use [`/pa <arena> set hand`](commands/set.md) to only load item in your hand.
+
+By default, only one random item of the reward setting will be given to each player. If you want to give all items,
+set `items.randomReward` to `false`.
+
+#### 2. Reward players with money
+Install and configure [Vault module](mods/vault.md), it has been designed for that ;)
+
+#### 3. Run a command for winners
+You can use [EventActions](mods/eventactions.md) module. The module is a little bit complex to use, but it makes 
+possible to bind commands or special actions (like power a redstone block) to arena events, like join, start, win, lose,
+etc.
+
+<br>
+
+## My other plugins/mods are unable to detect when someone is killed, is it a bug?
+
+PVPArena emulates kills to prevent death screens, animation issues and many other bugs. So, plugins and mods that use 
+server death events may don't work correctly.  
+If you need to make them work, switch `uses.deathEvents` to `true` in your arena config. It will generate a death event 
+on the server to call hooks of other plugins and mods, even if players don't really die. But be careful, support of this 
+setting strongly depends on your Minecraft version and server software:
+* Servers running Spigot/Paper (or a fork of), in 1.20.6+ version, send full causes of deaths in PVPArena to other 
+plugins (or mods), including the killer information
+* Servers running Paper (or a fork of), in a version lower than 1.20.6, specify killer information of kills in PVPArena 
+to other plugins (or mods)
+* Other servers, like a Spigot in 1.19.4, only send a DeathEvent without any circumstances information
+
+<br>
+
 ## How can I use placeholders in signs/holograms/scoreboard?
 
 PVPArena provides multiple [placeholders](placeholders.md), and they are all based on PlaceholderAPI. So to use them, 
