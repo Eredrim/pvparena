@@ -117,7 +117,7 @@ items:
   keepOnRespawn: [] #List of items of death inventory kept on respawn (if keepAllOnRespawn is disabled)
   keepAllOnRespawn: false #Keep death inventory on respawn
   minPlayersForReward: 2 #Minimum players to give rewards at the end of the game
-  random: true #If true, only one (random) reward in the list is given to winners. If false, winners get the whole reward list.
+  randomReward: true #If true, only one (random) reward in the list is given to winners. If false, winners get the whole reward list.
   rewards: [] #List of rewards given to winners
   takeOutOfGame: [] #List of items kept from player inventory out the game
 time:
