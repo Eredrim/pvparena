@@ -91,3 +91,6 @@ All of these commands have to be used prefixing the arena name.
 | [/pa playerleave](commands/playerleave.md)           | /pa !pl   | Make a player leave the arena                        |
 | [/pa playerarenaclass](commands/playerarenaclass.md) | /pa !pac  | Change a player arena class                          |
 | [/pa playerready](commands/playerready.md)           | /pa !pr   | Make a player ready                                  |
+
+> 🚩 **Tip:**  
+> All of super-user commands can be used with [Minecraft target selectors](https://minecraft.wiki/w/Target_selectors).

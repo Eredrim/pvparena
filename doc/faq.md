@@ -36,8 +36,7 @@ a command block, you have to use PVPArena super-user commands instead of player 
 `playerjoin` or `playerleave` and they are listed in [command documentation page](commands.md#arena-super-user-commands).
 
 > ⚙ **Technical precision:**  
-> Since Minecraft 1.13, spigot based servers does no longer support command selectors (like `@p`). If you want to use it
-> you will have to use a plugin like [CommandHook](https://www.spigotmc.org/resources/commandhook.61415/).
+> All PVPArena super-user commands support target selectors (like `@p` or `@a`) natively.
 
 <br>
 
