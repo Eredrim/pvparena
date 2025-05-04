@@ -258,9 +258,15 @@ public class ArenaPlayer {
      */
     public static ArenaPlayer fromPlayer(final Player player) {
         synchronized (ArenaPlayer.class) {
-            ArenaPlayer aPlayer = new ArenaPlayer(player);
-            totalPlayers.putIfAbsent(player.getUniqueId(), aPlayer);
-            return totalPlayers.get(player.getUniqueId());
+            ArenaPlayer existingPlayer = totalPlayers.get(player.getUniqueId());
+
+            if (existingPlayer == null) {
+                ArenaPlayer newPlayer = new ArenaPlayer(player);
+                totalPlayers.put(player.getUniqueId(), newPlayer);
+                return newPlayer;
+            }
+
+            return existingPlayer;
         }
     }
 
@@ -654,7 +660,6 @@ public class ArenaPlayer {
 
     public void readDump() {
         debug(this, "reading dump: {}", this.player.getName());
-        this.debugPrint();
         final File file = new File(PVPArena.getInstance().getDataFolder().getPath()
                 + "/dumps/" + this.player.getName() + ".yml");
         if (!file.exists()) {
@@ -672,8 +677,6 @@ public class ArenaPlayer {
 
         this.arena = ArenaManager.getArenaByName(cfg.getString("arena"));
         this.savedInventory = cfg.getList("inventory").toArray(new ItemStack[0]);
-                /*StringParser.getItemStacksFromString(cfg.getString(
-                "inventory", "AIR"));*/
         this.location = Config.parseLocation(cfg.getString("loc"));
 
         if (this.arena != null) {
@@ -689,8 +692,8 @@ public class ArenaPlayer {
             this.state = PlayerState.undump(cfg, this.player.getName());
         }
 
-        file.delete();
         this.debugPrint();
+        file.delete();
     }
 
     /**

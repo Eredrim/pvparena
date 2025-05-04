@@ -405,12 +405,16 @@ public class PlayerListener implements Listener {
             // players
             // and makes sure every player is an arenaplayer ^^
 
-            aPlayer.readDump();
-            Arena loadedArena = aPlayer.getArena();
+            Bukkit.getScheduler().runTask(PVPArena.getInstance(), () -> {
+                aPlayer.readDump();
+                Arena loadedArena = aPlayer.getArena();
 
-            if (loadedArena != null) {
-                loadedArena.playerLeave(player, CFG.TP_EXIT, true, true, false);
-            }
+                if (loadedArena != null) {
+                    aPlayer.reloadBukkitPlayer();
+                    loadedArena.playerLeave(player, CFG.TP_EXIT, true, false, false);
+                }
+            });
+
         }
 
         debug(player, "OP joins the game");

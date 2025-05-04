@@ -940,13 +940,12 @@ public class Arena {
             }
         }
 
-        for (ArenaPlayer arenaPlayer : players) {
-
+        players.forEach(arenaPlayer -> {
             arenaPlayer.debugPrint();
             if (arenaPlayer.getStatus() != null && this.isWinner(arenaPlayer)) {
                 // TODO enhance wannabe-smart exploit fix for people that
                 // spam join and leave the arena to make one of them win
-                final Player player = arenaPlayer.getPlayer();
+                Player player = arenaPlayer.getPlayer();
                 if (!force && this.fightInProgress) {
                     // if we are remaining, give reward!
                     arenaPlayer.getStats().incWins();
@@ -954,29 +953,35 @@ public class Arena {
                 }
                 this.callExitEvent(player);
                 this.resetPlayer(arenaPlayer, this.config.getString(CFG.TP_WIN, OLD), false, force);
+                arenaPlayer.reset();
             } else {
                 final PALoseEvent loseEvent = new PALoseEvent(this, arenaPlayer.getPlayer());
                 Bukkit.getPluginManager().callEvent(loseEvent);
 
-                final Player player = arenaPlayer.getPlayer();
+                Player player = arenaPlayer.getPlayer();
                 if (!force) {
                     arenaPlayer.getStats().incLosses();
                 }
-                this.callExitEvent(player);
-                this.resetPlayer(arenaPlayer, this.config.getString(CFG.TP_LOSE, OLD), false, force);
-            }
 
-            arenaPlayer.reset();
-        }
-        for (ArenaPlayer player : ArenaPlayer.getAllArenaPlayers()) {
-            if (this.equals(player.getArena()) && player.getStatus() == PlayerStatus.WATCH) {
-
-                this.callExitEvent(player.getPlayer());
-                this.resetPlayer(player, this.config.getString(CFG.TP_EXIT, OLD), false, force);
-                player.setArena(null);
-                player.reset();
+                if (arenaPlayer.getStatus() == PlayerStatus.OFFLINE) {
+                    // For offline players, just break the link with arena and keep dump to restore inventory afterward
+                    arenaPlayer.setArena(null);
+                } else {
+                    this.callExitEvent(player);
+                    this.resetPlayer(arenaPlayer, this.config.getString(CFG.TP_LOSE, OLD), false, force);
+                    arenaPlayer.reset();
+                }
             }
-        }
+        });
+
+        ArenaPlayer.getAllArenaPlayers().stream()
+                .filter(player -> this.equals(player.getArena()) && player.getStatus() == PlayerStatus.WATCH)
+                .forEach(player -> {
+                        this.callExitEvent(player.getPlayer());
+                        this.resetPlayer(player, this.config.getString(CFG.TP_EXIT, OLD), false, force);
+                        player.setArena(null);
+                        player.reset();
+                });
     }
 
     /**
