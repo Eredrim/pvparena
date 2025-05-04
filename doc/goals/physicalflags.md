@@ -26,8 +26,7 @@ of the following material (color prefix doesn't matter):
 <br>
 
 To set a flag, use `/pa <arenaname> flag set <teamname>`. It enables block selection.
-Just left click on your flag block. Clicked block must have same type as defined in your config. However nothing will
-happen.
+Just left-click on your flag block. All flag blocks must have same type.
 
 > 🚩 **One more thing:**  
 You can activate a special "touchdown" way of playing. Set a flag called "touchdown", it will be BLACK ingame. 
