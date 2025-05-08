@@ -35,6 +35,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageModifier;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
@@ -45,6 +46,7 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -391,7 +393,9 @@ public class EntityListener implements Listener {
             // Faking death if damage is higher than player health
             if ((defender.getHealth() - event.getFinalDamage()) <= 0) {
                 // Event is not cancelled to keep attack effects, we set damage to 0 instead
-                event.setDamage(0);
+                Arrays.stream(DamageModifier.values())
+                        .filter(event::isApplicable)
+                        .forEach(modifier -> event.setDamage(modifier, 0));
 
                 playFakeDeathEffects(defender);
                 WorkflowManager.handlePlayerDeath(arena, defender, event);
