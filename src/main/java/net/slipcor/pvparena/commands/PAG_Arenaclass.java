@@ -66,7 +66,7 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
         if (args.length < 1) {
             Set<String> classes = new TreeSet<>();
             for (ArenaClass ac : arena.getClasses()) {
-                if (ac.getName().equals("custom")) {
+                if (isDisabledPlayerClass(arena, ac) || isProtectedGoalClass(ac)) {
                     continue;
                 }
                 classes.add(ChatColor.GREEN + ac.getName() + ChatColor.WHITE);
@@ -76,7 +76,7 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
         }
 
         final ArenaClass arenaClass = arena.getArenaClass(args[0]);
-        if (arenaClass == null) {
+        if (arenaClass == null || isDisabledPlayerClass(arena, arenaClass) || isProtectedGoalClass(arenaClass)) {
             sender.sendMessage(Language.parse(MSG.ERROR_CLASS_NOT_FOUND, args[0]));
             return;
         }
@@ -150,10 +150,18 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
 
         if (arena != null) {
             arena.getClasses().stream()
-                    .filter(aClass -> !"custom".equalsIgnoreCase(aClass.getName()))
+                    .filter(aClass -> !isDisabledPlayerClass(arena, aClass) && !isProtectedGoalClass(aClass))
                     .forEach(aClass -> result.define(new String[]{aClass.getName()}));
         }
 
         return result;
+    }
+
+    private static boolean isDisabledPlayerClass(Arena arena, ArenaClass arenaClass) {
+        return !arena.getConfig().getBoolean(CFG.USES_PLAYER_OWN_INVENTORY) && "custom".equalsIgnoreCase(arenaClass.getName());
+    }
+
+    private static boolean isProtectedGoalClass(ArenaClass arenaClass) {
+        return arenaClass.getName().matches("%\\w+%");
     }
 }
