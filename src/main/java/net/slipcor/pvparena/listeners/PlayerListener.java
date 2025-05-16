@@ -409,8 +409,9 @@ public class PlayerListener implements Listener {
                 aPlayer.readDump();
                 Arena loadedArena = aPlayer.getArena();
 
+                aPlayer.reloadBukkitPlayer();
+
                 if (loadedArena != null) {
-                    aPlayer.reloadBukkitPlayer();
                     loadedArena.playerLeave(player, CFG.TP_EXIT, true, false, false);
                 }
             });
