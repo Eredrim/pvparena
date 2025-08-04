@@ -14,9 +14,9 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class PAA_ArenaClassChest extends AbstractArenaCommand {
-    public PAA_ArenaClassChest() {
-        super(new String[]{"pvparena.cmds.arenaclasschest"});
+public class PAA_ClassChest extends AbstractArenaCommand {
+    public PAA_ClassChest() {
+        super(new String[]{"pvparena.cmds.classchest"});
     }
 
     @Override

@@ -2,8 +2,8 @@ package net.slipcor.pvparena;
 
 import net.slipcor.pvparena.api.PVPArenaPlaceholderExpansion;
 import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.arena.GlobalClasses;
 import net.slipcor.pvparena.commands.*;
 import net.slipcor.pvparena.config.Debugger;
 import net.slipcor.pvparena.config.SpawnOffset;
@@ -138,10 +138,10 @@ public class PVPArena extends JavaPlugin {
     }
 
     private void loadArenaCommands() {
-        this.arenaCommands.add(new PAA_ArenaClassChest());
         this.arenaCommands.add(new PAA_BlackList());
         this.arenaCommands.add(new PAA_Check());
         this.arenaCommands.add(new PAA_Class());
+        this.arenaCommands.add(new PAA_ClassChest());
         this.arenaCommands.add(new PAA_Disable());
         this.arenaCommands.add(new PAA_Edit());
         this.arenaCommands.add(new PAA_Enable());
@@ -183,6 +183,7 @@ public class PVPArena extends JavaPlugin {
 
     private void loadGlobalCommands() {
         this.globalCommands.add(new PAA_Create());
+        this.globalCommands.add(new PAA_GlobalClass());
         this.globalCommands.add(new PAA_Debug());
         this.globalCommands.add(new PAA_Modules());
         this.globalCommands.add(new PAA_ReloadAll());
@@ -375,7 +376,7 @@ public class PVPArena extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new InventoryListener(), this);
 
         Debugger.load(this, Bukkit.getConsoleSender());
-        ArenaClass.loadGlobalClasses();
+        GlobalClasses.getInstance().load();
         ArenaManager.loadAllArenas();
 
         this.loadDatabase();

@@ -1,29 +1,18 @@
 package net.slipcor.pvparena.arena;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.classes.PABlockLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.block.Chest;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.IllegalPluginAccessException;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static net.slipcor.pvparena.config.Debugger.debug;
-import static net.slipcor.pvparena.core.ItemStackUtils.getItemStacksFromConfig;
 
 /**
  * <pre>Arena Class class</pre>
@@ -41,77 +30,7 @@ public final class ArenaClass {
     private final ItemStack offHand;
     private final ItemStack[] armors;
 
-    private static final Map<String, ArenaClass> globals = new HashMap<>();
-
     private static final List<Material> OTHER_HELMET_LIST = asList(Material.PUMPKIN, Material.JACK_O_LANTERN, Material.PLAYER_HEAD);
-
-
-    public static void loadGlobalClasses() {
-        globals.clear();
-        final File classFile = new File(PVPArena.getInstance().getDataFolder(), "classes.yml");
-        final YamlConfiguration cfg = YamlConfiguration.loadConfiguration(classFile);
-
-        if(cfg.get("classes") == null) {
-            cfg.addDefault("classes", new HashMap<>());
-            cfg.options().copyDefaults(true);
-
-            try {
-                cfg.save(classFile);
-                cfg.load(classFile);
-            } catch (IOException|InvalidConfigurationException e1) {
-                e1.printStackTrace();
-            }
-        }
-
-        ConfigurationSection classesSection = cfg.getConfigurationSection("classes");
-        if(classesSection != null) {
-            for (final String className : classesSection.getKeys(false)) {
-                ItemStack[] items;
-                ItemStack offHand;
-                ItemStack[] armors;
-
-                try {
-                    ConfigurationSection classesCfg = classesSection.getConfigurationSection(className);
-                    items = getItemStacksFromConfig(classesCfg.getList("items"));
-                    offHand = getItemStacksFromConfig(classesCfg.getList("offhand"))[0];
-                    armors = getItemStacksFromConfig(classesCfg.getList("armor"));
-                } catch (final Exception e) {
-                    PVPArena.getInstance().getLogger().warning(
-                            "(classes.yml) Error while parsing class, skipping: " + className);
-                    debug("Error details: {}, Cause: {}", e.getMessage(), e.getCause());
-                    continue;
-                }
-
-                final String classChest;
-                if (cfg.contains("classchests." + className)) {
-                    classChest = (String) cfg.getConfigurationSection("classchests").get(className);
-                    try {
-                        PABlockLocation loc = new PABlockLocation(classChest);
-                        Chest c = (Chest) loc.toLocation().getBlock().getState();
-                        ItemStack[] contents = c.getInventory().getContents();
-                        items = Arrays.copyOfRange(contents, 0, contents.length-5);
-                        offHand = contents[contents.length-5];
-                        armors = Arrays.copyOfRange(contents, contents.length-4, contents.length);
-                    } catch (Exception e) {
-                        PVPArena.getInstance().getLogger().warning(
-                                "(classes.yml) Error while parsing location of classchest, skipping: " + className);
-                        debug("Error details: {}, Cause: {}", e.getMessage(), e.getCause());
-                        continue;
-                    }
-                }
-
-                globals.put(className, new ArenaClass(className, items, offHand, armors));
-            }
-        }
-
-    }
-
-
-    public static void loadGlobalClasses(final Arena arena) {
-        for (Map.Entry<String, ArenaClass> stringArenaClassEntry : globals.entrySet()) {
-            arena.addClass(stringArenaClassEntry.getKey(), stringArenaClassEntry.getValue().items, stringArenaClassEntry.getValue().offHand, stringArenaClassEntry.getValue().armors);
-        }
-    }
 
     public static void equip(final Player player, final ItemStack[] items) {
         int i = 0;
@@ -239,6 +158,10 @@ public final class ArenaClass {
 
     public ItemStack[] getItems() {
         return this.items.clone();
+    }
+
+    public ItemStack getOffHand() {
+        return this.offHand.clone();
     }
 
     private static boolean isHelmetItem(Material material) {

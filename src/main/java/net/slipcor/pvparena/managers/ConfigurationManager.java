@@ -2,8 +2,8 @@ package net.slipcor.pvparena.managers;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.arena.GlobalClasses;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.commands.PAA_Edit;
 import net.slipcor.pvparena.core.Config;
@@ -32,11 +32,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static net.slipcor.pvparena.config.Debugger.debug;
 import static net.slipcor.pvparena.core.ItemStackUtils.getItemStacksFromConfig;
@@ -135,7 +135,12 @@ public final class ConfigurationManager {
         final Map<String, Object> classes = config.getConfigurationSection(CLASSITEMS).getValues(false);
         arena.getClasses().clear();
         debug(arena, "reading class items");
-        ArenaClass.loadGlobalClasses(arena);
+
+        if (cfg.getBoolean(CFG.USES_GLOBAL_CLASSES)) {
+            debug(arena, "loading global classes");
+            GlobalClasses.getInstance().addToArena(arena);
+        }
+
         for (Map.Entry<String, Object> stringObjectEntry1 : classes.entrySet()) {
 
             ItemStack[] items;
@@ -158,11 +163,12 @@ public final class ConfigurationManager {
                 String classChest = (String) config.getConfigurationSection("classchests").get(stringObjectEntry1.getKey());
                 PABlockLocation loc = new PABlockLocation(classChest);
                 Chest c = (Chest) loc.toLocation().getBlock().getState();
+                int chestSize = c.getInventory().getSize();
                 ItemStack[] contents = c.getInventory().getContents();
 
-                items = Arrays.copyOfRange(contents, 0, contents.length - 5);
-                offHand = contents[contents.length - 5];
-                armors = Arrays.copyOfRange(contents, contents.length - 4, contents.length);
+                items = Arrays.copyOfRange(contents, 0, chestSize - 5);
+                offHand = ofNullable(contents[chestSize - 5]).orElse(new ItemStack(Material.AIR));
+                armors = Arrays.copyOfRange(contents, chestSize - 4, chestSize);
 
                 arena.addClass(stringObjectEntry1.getKey(), items, offHand, armors);
                 debug(arena, "adding class chest items to class " + stringObjectEntry1.getKey());
@@ -289,13 +295,13 @@ public final class ConfigurationManager {
             }
         }
 
-        Optional.ofNullable(SpawnManager.isSpawnsSetup(arena)).ifPresent(errors::add);
+        ofNullable(SpawnManager.isSpawnsSetup(arena)).ifPresent(errors::add);
 
         if(errors.isEmpty()) {
-            Optional.ofNullable(SpawnManager.areSpawnsInBattlefield(arena)).ifPresent(errors::add);
+            ofNullable(SpawnManager.areSpawnsInBattlefield(arena)).ifPresent(errors::add);
         }
 
-        Optional.ofNullable(SpawnManager.isBlocksSetup(arena)).ifPresent(errors::add);
+        ofNullable(SpawnManager.isBlocksSetup(arena)).ifPresent(errors::add);
 
         return errors;
     }

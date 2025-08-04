@@ -1,5 +1,20 @@
 # Frequently Asked Questions
 
+## Table of Contents
+- [How I can create a spleef arena?](#how-i-can-create-a-spleef-arena)
+- [Can my players use their own inventories?](#can-my-players-use-their-own-inventories)
+- [How can I use arena commands from a command block?](#how-can-i-use-arena-commands-from-a-command-block)
+- [How to create a join sign for an arena?](#how-to-create-a-join-sign-for-an-arena)
+- [How to regen my battlefield after a game?](#how-to-regen-my-battlefield-after-a-game)
+- [Is there a way to automatically put a player into spectator mode on death instead of them having to leave the match and then rejoin as a spectator?](#is-there-a-way-to-automatically-put-a-player-into-spectator-mode-on-death-instead-of-them-having-to-leave-the-match-and-then-rejoin-as-a-spectator)
+- [Is it possible to automatically affect a class to all players or to a specific team?](#is-it-possible-to-automatically-affect-a-class-to-all-players-or-to-a-specific-team)
+- [How to reward players at the end of a match?](#how-to-reward-players-at-the-end-of-a-match)
+- [My other plugins/mods are unable to detect when someone is killed, is it a bug?](#my-other-pluginsmods-are-unable-to-detect-when-someone-is-killed-is-it-a-bug)
+- [How can I use placeholders in signs/holograms/scoreboard?](#how-can-i-use-placeholders-in-signshologramsscoreboard)
+- [I want to use special items from a datapack or a mod in my arena classes, how can I do that?](#i-want-to-use-special-items-from-a-datapack-or-a-mod-in-my-arena-classes-how-can-i-do-that)
+- [Can I create common classes for multiple arenas?](#can-i-create-common-classes-for-multiple-arenas)
+- [Still have questions?](#still-have-questions)
+
 ## How I can create a spleef arena?
 
 When you create a minigame with PVPArena, you have to ask yourself "How will work score calculation?". In spleef case,
@@ -66,13 +81,13 @@ Currently, there are two ways to regen battlefield after a match. You can use ei
 
 Here is a quick list of precisions to support your choice:
 * BlockRestore:
-    * Reset only blocks, chests, 
-    * Asynchronous
-    * Perfect for arena where few blocks are destroyed (like spleef)
+    * Reset only blocks and chests (not entities), 
+    * Asynchronous and superfast
+    * Reset only changed blocks, so battlefield size has no impact on performance
 * WorldEdit:
     * Needs WorldEdit plugin (obviously)
-    * Regenerates everything
-    * Can regen large areas but is synchronous
+    * Regenerates everything (including entities)
+    * Regen is synchronous and depends on the size of your battlefield, so it can freeze the server for few seconds
 
 Check dedicated documentation pages to get more information.
 
@@ -151,6 +166,25 @@ Here is a quick (and non-exhaustive) list of compatible plugins:
 * **Scoreboards:** [SimpleScore](https://www.spigotmc.org/resources/simplescore-animated-scoreboard.23243/), 
 [RealScoreboard](https://www.spigotmc.org/resources/realscoreboard-1-13-to-1-20-4.22928/), 
 [AnimatedScoreboard](https://www.spigotmc.org/resources/animatedscoreboard.20848/)
+
+<br>
+
+## I want to use special items from a datapack or a mod in my arena classes, how can I do that?
+
+By default, PVPArena only saves generic items attributes in your configuration when you save a class. That's why some
+special items (like custom ones from a datapack or a mod) are not saved correctly and lost their properties when you
+try to use them in your arena.
+
+A good way to handle this is to save your class using [classchest](commands/classchest.md) command. It saves
+items for the class in a chest, and load them as-is when class is selected.
+
+<br>
+
+## Can I create common classes for multiple arenas?
+
+PVPArena provides a global classes system that makes possible to create shared classes between all arenas.
+Use the [`/pa globalclass`](commands/globalclass.md) command to manage these classes.
+Then, you can enable access to global classes in your arena by setting `uses.globalClasses` to `true`.
 
 <br>
 

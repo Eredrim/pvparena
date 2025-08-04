@@ -43,6 +43,9 @@ cmd:
   arenaclass:
     selected: Vous utilisez maintenant la classe &e%1%&r.
     selectedrespawn: Vous utiliserez la classe &e%1%&f au prochain respawn.
+  globalclass:
+    preview: "Vous prévisualisez la classe globale : %1%. Entrez &e/pa !gc leave&r pour quitter le mode de prévisualisation."
+    quit: Vous avez quitté le mode de prévisualisation.
   classchest:
     done: La classe %1% utilisera dorénavant le contenu du coffre %2%. Veuillez recharger la config
       de l'arène une fois que vous avez terminé de remplir les coffres.

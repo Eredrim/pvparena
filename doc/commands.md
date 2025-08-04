@@ -34,11 +34,12 @@ Click on a command to get its syntax, usage examples and more information about 
 
 > ℹ Permission: pvparena.admin
 
-| Command                            | Shorthand | Definition           |
-|------------------------------------|-----------|----------------------|
-| [/pa debug](commands/debug.md)     | /pa !d    | Debug nodes          |
-| [/pa modules](commands/modules.md) | /pa !mi   | Manage modules       |
-| [/pa reload](commands/reload.md)   | /pa !r    | Reload arena configs |
+| Command                                    | Shorthand | Definition            |
+|--------------------------------------------|-----------|-----------------------|
+| [/pa debug](commands/debug.md)             | /pa !d    | Debug nodes           |
+| [/pa modules](commands/modules.md)         | /pa !mi   | Manage modules        |
+| [/pa reload](commands/reload.md)           | /pa !r    | Reload arena configs  |
+| [/pa globalclass](commands/globalclass.md) | /pa !gc   | Manage global classes |
 
 ## Arena Administration Commands
 

@@ -65,6 +65,8 @@ public final class Language {
         CMD_ARENACLASS_SELECTED("cmd.arenaclass.selected", "You have switched to the &e%1%&r class."),
         CMD_ARENACLASS_SELECTED_RESPAWN("cmd.arenaclass.selectedrespawn", "You will switch to the &e%1%&f class on next respawn."),
 
+        CMD_GLOBALCLASS_PREVIEW("cmd.globalclass.preview", "You are now previewing the global class: %1%. Run &e/pa !gc leave&r to quit preview mode."),
+        CMD_GLOBALCLASS_QUIT("cmd.globalclass.quit", "Class preview has been closed."),
         CMD_CLASSCHEST("cmd.classchest.done", "Successfully set the class items of %1% to the contents of %2%. Please reload the arena when you are done setting chests!"),
 
         CMD_GOAL_SET("cmd.goal.added", "Goal set: &a%1%&r"),
