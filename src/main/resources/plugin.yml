@@ -13,11 +13,7 @@ commands:
         permission: pvparena.user
         aliases: ['pa']
         usage: |
-            /<command> help
-            /<command> help admin | help administrating
-            /<command> help setup | help setting up
-            /<command> help game | help ingame
-            /<command> help info | help getting information
+            /pa help
 permissions:
     pvparena.*:
         description: Allows all
@@ -53,12 +49,13 @@ permissions:
             pvparena.cmds.blacklist: true
             pvparena.cmds.check: true
             pvparena.cmds.class: true
+            pvparena.cmds.classchest: true
+            pvparena.cmds.globalclass: true
             pvparena.cmds.create: true
             pvparena.cmds.debug: true
             pvparena.cmds.disable: true
             pvparena.cmds.edit: true
             pvparena.cmds.enable: true
-            pvparena.cmds.gamemode: true
             pvparena.cmds.goal: true
             pvparena.cmds.modules: true
             pvparena.cmds.playerjoin: true
@@ -79,7 +76,6 @@ permissions:
             pvparena.cmds.stop: true
             pvparena.cmds.teams: true
             pvparena.cmds.teleport: true
-            pvparena.cmds.template: true
             pvparena.cmds.togglemod: true
             pvparena.cmds.whitelist: true
             pvparena.cmds.info: true
@@ -87,9 +83,6 @@ permissions:
             pvparena.cmds.version: true
     pvparena.create:
         description: Allows you to create and administrate an arena
-        default: op
-    pvparena.override:
-        description: Allows you to override some checks
         default: op
     pvparena.telepass:
         description: Allows you to teleport while in an arena
@@ -102,6 +95,12 @@ permissions:
         default: op
     pvparena.cmds.class:
         description: Allows you to run /pvparena class
+        default: op
+    pvparena.cmds.classchest:
+        description: Allows you to run /pvparena class
+        default: op
+    pvparena.cmds.globalclass:
+        description: Allows you to run /pvparena globalclass
         default: op
     pvparena.cmds.create:
         description: Allows you to run /pvparena create
@@ -118,14 +117,11 @@ permissions:
     pvparena.cmds.enable:
         description: Allows you to run /pvparena enable
         default: op
-    pvparena.cmds.gamemode:
-        description: Allows you to run /pvparena gamemode
-        default: op
     pvparena.cmds.goal:
         description: Allows you to run /pvparena goal
         default: op
-    pvparena.cmds.install:
-        description: Allows you to run /pvparena install
+    pvparena.cmds.modules:
+        description: Allows you to run /pvparena modules
         default: op
     pvparena.cmds.playerjoin:
         description: Allows you to run /pvparena playerjoin
@@ -169,9 +165,6 @@ permissions:
     pvparena.cmds.setowner:
         description: Allows you to run /pvparena setowner
         default: op
-    pvparena.cmds.setup:
-        description: Allows you to run /pvparena setup
-        default: op
     pvparena.cmds.spawn:
         description: Allows you to run /pvparena spawn
         default: op
@@ -187,17 +180,8 @@ permissions:
     pvparena.cmds.teleport:
         description: Allows you to run /pvparena teleport
         default: op
-    pvparena.cmds.template:
-        description: Allows you to run /pvparena template
-        default: op
     pvparena.cmds.togglemod:
         description: Allows you to run /pvparena togglemod
-        default: op
-    pvparena.cmds.uninstall:
-        description: Allows you to run /pvparena uninstall
-        default: op
-    pvparena.cmds.update:
-        description: Allows you to run /pvparena update
         default: op
     pvparena.cmds.whitelist:
         description: Allows you to run /pvparena whitelist
