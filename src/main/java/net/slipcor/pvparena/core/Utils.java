@@ -2,7 +2,9 @@ package net.slipcor.pvparena.core;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,5 +41,11 @@ public final class Utils {
 
     public static Location getCenteredLocation(Location loc) {
         return new Location(loc.getWorld(), loc.getBlockX() + 0.5, loc.getBlockY() + 0.5, loc.getBlockZ() + 0.5);
+    }
+
+    public static boolean hasApplicableTotem(PlayerInventory inventory, DamageCause cause) {
+        return cause != DamageCause.VOID && cause != DamageCause.SUICIDE &&
+                (inventory.getItemInMainHand().getType() == Material.TOTEM_OF_UNDYING
+                || inventory.getItemInOffHand().getType() == Material.TOTEM_OF_UNDYING);
     }
 }

@@ -55,6 +55,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static net.slipcor.pvparena.config.Debugger.debug;
+import static net.slipcor.pvparena.core.Utils.hasApplicableTotem;
 
 /**
  * <pre>
@@ -392,6 +393,12 @@ public class EntityListener implements Listener {
 
             // Faking death if damage is higher than player health
             if ((defender.getHealth() - event.getFinalDamage()) <= 0) {
+
+                if (hasApplicableTotem(defender.getInventory(), event.getCause())) {
+                    // let the totem do its work
+                    return;
+                }
+
                 // Event is not cancelled to keep attack effects, we set damage to 0 instead
                 Arrays.stream(DamageModifier.values())
                         .filter(event::isApplicable)
