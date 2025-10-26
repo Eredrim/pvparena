@@ -54,7 +54,7 @@ public class PVPArenaPlaceholderExpansion extends PlaceholderExpansion {
      */
     @Override
     public @NotNull String getVersion() {
-        return "1.0.0";
+        return "1.0.1";
     }
 
     /**
@@ -157,7 +157,12 @@ public class PVPArenaPlaceholderExpansion extends PlaceholderExpansion {
             if(rowIndex >= 0 && rowIndex < MULTILINE_LIMIT) {
                 StatEntry statEntry = StatEntry.parse(phArgs.getArg(2));
                 Supplier<List<PlayerArenaStats>> statsSupplier = () -> statsDao.findBestStatByArena(statEntry, phArgs.getArena(), MULTILINE_LIMIT);
-                return this.cache.getPlayerStat(phArgs, statEntry, statsSupplier).get(rowIndex);
+                List<String> playerStatList = this.cache.getPlayerStat(phArgs, statEntry, statsSupplier);
+
+                if (playerStatList.isEmpty()) {
+                    return "";
+                }
+                return playerStatList.get(rowIndex);
             }
         } catch (NullPointerException | NumberFormatException | IndexOutOfBoundsException e) {
             Debugger.trace("Exception caught while parsing stat placeholder '{}': {}", phArgs.getIdentifier(), e);

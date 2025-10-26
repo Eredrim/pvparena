@@ -16,6 +16,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.function.Supplier;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static net.slipcor.pvparena.arena.PlayerStatus.*;
 
@@ -53,7 +54,7 @@ public class PlaceholderMultilineCache {
     public List<String> getPlayerStat(PlaceholderArgs phArgs, StatEntry statEntry, Supplier<List<PlayerArenaStats>> statsSupplier) {
         String commonId = phArgs.getIdentifierUntil(2);
         String accessKey = phArgs.getIdentifierUntil(3);
-        return ofNullable(this.cacheMap.get(accessKey))
+        return ofNullable(this.cacheMap.getOrDefault(accessKey, emptyList()))
                 .orElseGet(() -> {
                     List<PlayerArenaStats> statsList = statsSupplier.get();
                     String scoreKey = String.format("%s_%s", commonId, "score");
@@ -68,7 +69,7 @@ public class PlaceholderMultilineCache {
                     });
                     this.cacheMap.put(scoreKey, scoreListCache);
                     this.cacheMap.put(playerKey, playerListCache);
-                    return this.cacheMap.get(accessKey);
+                    return this.cacheMap.getOrDefault(accessKey, emptyList());
                 });
     }
 
