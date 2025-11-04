@@ -291,13 +291,20 @@ public class ArenaPlayer {
         debug(this, "respawning player");
         
         final Config config = this.arena.getConfig();
-        double iHealth = config.getInt(CFG.PLAYER_HEALTH, -1);
+        double healthCfg = config.getInt(CFG.PLAYER_HEALTH, -1);
+        double iHealth;
 
-        if (iHealth < 1) {
+        if (healthCfg < 1) {
             iHealth = this.player.getAttribute(AttributeAdapter.MAX_HEALTH.getValue()).getBaseValue();
+        } else {
+            iHealth = healthCfg;
         }
 
-        PlayerState.playersetHealth(this.player, iHealth);
+        Bukkit.getScheduler().runTask(PVPArena.getInstance(), () -> {
+            PlayerState.playersetHealth(this.player, iHealth);
+            this.player.setNoDamageTicks(config.getInt(CFG.TIME_TELEPORTPROTECT) * 20);
+        });
+
         this.player.setFoodLevel(config.getInt(CFG.PLAYER_FOODLEVEL, 20));
         this.player.setSaturation(config.getInt(CFG.PLAYER_SATURATION, 20));
         this.player.setExhaustion((float) config.getDouble(CFG.PLAYER_EXHAUSTION, 0.0));
@@ -338,7 +345,6 @@ public class ArenaPlayer {
             }, 5L);
         } catch (Exception ignored) {
         }
-        this.player.setNoDamageTicks(config.getInt(CFG.TIME_TELEPORTPROTECT) * 20);
     }
 
     /**

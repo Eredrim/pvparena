@@ -404,6 +404,10 @@ public class EntityListener implements Listener {
                         .filter(event::isApplicable)
                         .forEach(modifier -> event.setDamage(modifier, 0));
 
+                // Create a fake last damage (1/2 heart remaining) to trigger save of last hurt on Minecraft server
+                defender.setHealth(2);
+                event.setDamage(DamageModifier.BASE, 1);
+
                 playFakeDeathEffects(defender);
                 WorkflowManager.handlePlayerDeath(arena, defender, event);
             }

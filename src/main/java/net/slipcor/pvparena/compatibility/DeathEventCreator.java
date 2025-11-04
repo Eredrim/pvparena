@@ -1,10 +1,8 @@
 package net.slipcor.pvparena.compatibility;
 
+import net.slipcor.pvparena.PVPArena;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
@@ -27,7 +25,6 @@ public class DeathEventCreator {
     private static DeathEventCreator INSTANCE;
 
     private Constructor<PlayerDeathEvent> newConstructor;
-    private Method setKillerMethod;
     private Method getDamageSourceMethod;
 
     private DeathEventCreator() throws ReflectiveOperationException {
@@ -36,11 +33,6 @@ public class DeathEventCreator {
             Class<?>[] argsClass = new Class[]{Player.class, damageSourceClass, List.class, int.class, String.class};
             this.newConstructor = PlayerDeathEvent.class.getConstructor(argsClass);
             this.getDamageSourceMethod = EntityDamageEvent.class.getMethod("getDamageSource");
-        } else {
-            try {
-                this.setKillerMethod = LivingEntity.class.getMethod("setKiller", Player.class);
-            } catch (NoSuchMethodException ignored) {
-            }
         }
     }
 
@@ -54,23 +46,18 @@ public class DeathEventCreator {
     public void sendDeathEvent(Player player, EntityDamageEvent eventSource, List<ItemStack> droppedInv, int droppedExp)
             throws ReflectiveOperationException {
 
+        PlayerDeathEvent playerDeathEvent;
         if (this.newConstructor != null && this.getDamageSourceMethod != null) {
             debug("Sending fake PlayerDeathEvent using Spigot 1.20.6+ API");
             Object damageSource = this.getDamageSourceMethod.invoke(eventSource);
-            PlayerDeathEvent playerDeathEvent = this.newConstructor.newInstance(player, damageSource, droppedInv, droppedExp, null);
-            Bukkit.getPluginManager().callEvent(playerDeathEvent);
+            playerDeathEvent = this.newConstructor.newInstance(player, damageSource, droppedInv, droppedExp, null);
+
         } else {
-            PlayerDeathEvent playerDeathEvent = new PlayerDeathEvent(player, droppedInv, droppedExp, null);
-            Bukkit.getPluginManager().callEvent(playerDeathEvent);
-
-            if (this.setKillerMethod != null && eventSource instanceof EntityDamageByEntityEvent) {
-                Entity damager = ((EntityDamageByEntityEvent) eventSource).getDamager();
-
-                if (damager instanceof Player) {
-                    debug("Improving fake PlayerDeathEvent using PaperMC setKiller() API");
-                    this.setKillerMethod.invoke(player, damager);
-                }
-            }
+            playerDeathEvent = new PlayerDeathEvent(player, droppedInv, droppedExp, null);
         }
+
+        Bukkit.getScheduler().runTask(PVPArena.getInstance(), () ->
+            Bukkit.getPluginManager().callEvent(playerDeathEvent)
+        );
     }
 }
