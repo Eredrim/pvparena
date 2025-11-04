@@ -148,9 +148,8 @@ on the server to call hooks of other plugins and mods, even if players don't rea
 setting strongly depends on your Minecraft version and server software:
 * Servers running Spigot/Paper (or a fork of), in 1.20.6+ version, send full causes of deaths in PVPArena to other 
 plugins (or mods), including the killer information
-* Servers running Paper (or a fork of), in a version lower than 1.20.6, specify killer information of kills in PVPArena 
-to other plugins (or mods)
-* Other servers, like a Spigot in 1.19.4, only send a DeathEvent without any circumstances information
+* Other servers only send a DeathEvent without any circumstance information. Killer information is available on killed
+entity all the same.
 
 <br>
 
