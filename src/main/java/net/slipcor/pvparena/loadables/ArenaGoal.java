@@ -556,9 +556,9 @@ public class ArenaGoal implements IArenaCommandHandler {
 
     protected void updateLives(final ArenaTeam team, final int value) {
         if (this.arena.getConfig().getBoolean(CFG.GENERAL_ADDLIVESPERPLAYER)) {
-            this.getTeamLifeMap().put(team, team.getTeamMembers().size() * value);
+            this.getTeamLifeMap().putIfAbsent(team, team.getTeamMembers().size() * value);
         } else {
-            this.getTeamLifeMap().put(team, value);
+            this.getTeamLifeMap().putIfAbsent(team, value);
         }
     }
 

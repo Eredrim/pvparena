@@ -29,8 +29,6 @@ public abstract class AbstractTeamKillGoal extends ArenaGoal {
         super(name);
     }
 
-    protected static final int PRIORITY = 5;
-
     protected abstract int getScore(ArenaTeam team);
 
     protected abstract int getTeamLivesCfg();
