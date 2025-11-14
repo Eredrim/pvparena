@@ -2,6 +2,7 @@ package net.slipcor.pvparena.compatibility;
 
 import net.slipcor.pvparena.PVPArena;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -26,6 +27,7 @@ public class DeathEventCreator {
 
     private Constructor<PlayerDeathEvent> newConstructor;
     private Method getDamageSourceMethod;
+    private Method setKillerMethod;
 
     private DeathEventCreator() throws ReflectiveOperationException {
         if (USE_NEW_VERSION) {
@@ -33,6 +35,12 @@ public class DeathEventCreator {
             Class<?>[] argsClass = new Class[]{Player.class, damageSourceClass, List.class, int.class, String.class};
             this.newConstructor = PlayerDeathEvent.class.getConstructor(argsClass);
             this.getDamageSourceMethod = EntityDamageEvent.class.getMethod("getDamageSource");
+        }
+
+        // Try to use setKiller method for Paper servers
+        try {
+            this.setKillerMethod = LivingEntity.class.getMethod("setKiller", Player.class);
+        } catch (NoSuchMethodException ignored) {
         }
     }
 
@@ -43,7 +51,7 @@ public class DeathEventCreator {
         return INSTANCE;
     }
 
-    public void sendDeathEvent(Player player, EntityDamageEvent eventSource, List<ItemStack> droppedInv, int droppedExp)
+    public void sendDeathEvent(Player player, Player killer, EntityDamageEvent eventSource, List<ItemStack> droppedInv, int droppedExp)
             throws ReflectiveOperationException {
 
         PlayerDeathEvent playerDeathEvent;
@@ -54,6 +62,11 @@ public class DeathEventCreator {
 
         } else {
             playerDeathEvent = new PlayerDeathEvent(player, droppedInv, droppedExp, null);
+        }
+
+        if(this.setKillerMethod != null && killer != null) {
+            debug("Forcing killer information using PaperMC setKiller() API");
+            this.setKillerMethod.invoke(player, killer);
         }
 
         Bukkit.getScheduler().runTask(PVPArena.getInstance(), () ->

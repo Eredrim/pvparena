@@ -284,7 +284,7 @@ public class WorkflowManager {
 
         if (arena.getConfig().getBoolean(CFG.USES_DEATH_EVENTS)) {
             try {
-                DeathEventCreator.getInstance().sendDeathEvent(player, event, droppedInv, droppedExp);
+                DeathEventCreator.getInstance().sendDeathEvent(player, killer, event, droppedInv, droppedExp);
             } catch (ReflectiveOperationException e) {
                 PVPArena.getInstance().getLogger().warning("Unable to create and send fake PlayerDeathEvent. StackTrace: ");
                 e.printStackTrace();
