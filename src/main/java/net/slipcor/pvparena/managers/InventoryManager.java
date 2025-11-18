@@ -16,6 +16,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static net.slipcor.pvparena.config.Debugger.debug;
+import static net.slipcor.pvparena.core.ItemStackUtils.cloneItemStacks;
 
 /**
  * <pre>Inventory Manager class</pre>
@@ -149,7 +150,7 @@ public final class InventoryManager {
     }
 
     public static void transferItems(final Player player, final Inventory blockInventory) {
-        final ItemStack[] oldItems = blockInventory.getContents().clone();
+        final ItemStack[] oldItems = cloneItemStacks(blockInventory.getContents());
         for (ItemStack items : oldItems) {
             final Map<Integer, ItemStack> remaining = player.getInventory().addItem(items);
             blockInventory.remove(items);

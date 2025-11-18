@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static net.slipcor.pvparena.core.ItemStackUtils.cloneItemStacks;
+
 /**
  * <pre>PVP Arena globalclass command</pre>
  * <p/>
@@ -76,7 +78,7 @@ public class PAA_GlobalClass extends AbstractGlobalCommand {
 
         try {
             if ("load".equalsIgnoreCase(args[0])) {
-                savedInventories.putIfAbsent(player.getUniqueId(), player.getInventory().getContents().clone());
+                savedInventories.putIfAbsent(player.getUniqueId(), cloneItemStacks(player.getInventory().getContents()));
                 InventoryManager.clearInventory(player);
                 equipGlobalClass(player, classname);
             } else if ("leave".equalsIgnoreCase(args[0])) {

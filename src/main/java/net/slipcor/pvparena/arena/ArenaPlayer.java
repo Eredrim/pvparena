@@ -38,7 +38,6 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.projectiles.ProjectileSource;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
@@ -58,6 +57,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static net.slipcor.pvparena.config.Debugger.debug;
+import static net.slipcor.pvparena.core.ItemStackUtils.cloneItemStacks;
 
 /**
  * <pre>
@@ -279,7 +279,8 @@ public class ArenaPlayer {
         debug(player, "saving player inventory: {}", player);
 
         final ArenaPlayer arenaPlayer = fromPlayer(player);
-        arenaPlayer.savedInventory = player.getInventory().getContents().clone();
+        arenaPlayer.savedInventory = cloneItemStacks(player.getInventory().getContents());
+
         InventoryManager.clearInventory(player);
     }
 
@@ -426,25 +427,14 @@ public class ArenaPlayer {
             debug(this.player, "adding saved inventory");
             this.player.getInventory().setContents(this.savedInventory);
         } else {
-            class GiveLater extends BukkitRunnable {
-                final ItemStack[] inv;
-
-                GiveLater(final ItemStack[] inv) {
-                    this.inv = inv.clone();
-                }
-
-                @Override
-                public void run() {
-                    debug(ArenaPlayer.this.player, "adding saved inventory");
-                    ArenaPlayer.this.player.getInventory().setContents(this.inv);
-                }
-            }
-
-            final GiveLater giveLater = new GiveLater(this.savedInventory);
             try {
-                giveLater.runTaskLater(PVPArena.getInstance(), 60L);
+                Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), () -> {
+                    debug(ArenaPlayer.this.player, "adding saved inventory");
+                    ArenaPlayer.this.player.getInventory().setContents(ArenaPlayer.this.savedInventory);
+                },60L);
             } catch (final Exception e) {
-                giveLater.run();
+                debug(this.player, "Fail to schedule adding of saved inventory. Adding now.");
+                this.player.getInventory().setContents(this.savedInventory);
             }
         }
     }

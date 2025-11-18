@@ -13,6 +13,7 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static net.slipcor.pvparena.config.Debugger.debug;
+import static net.slipcor.pvparena.core.ItemStackUtils.cloneItemStacks;
 
 /**
  * <pre>Arena Class class</pre>
@@ -144,8 +145,8 @@ public final class ArenaClass {
     public ArenaClass(final String className, final ItemStack[] classItems, final ItemStack offHand, final ItemStack[] armors) {
         this.name = className;
         this.offHand = offHand;
-        this.items = classItems.clone();
-        this.armors = armors.clone();
+        this.items = cloneItemStacks(classItems);
+        this.armors = cloneItemStacks(armors);
     }
 
     public String getName() {
@@ -153,11 +154,11 @@ public final class ArenaClass {
     }
 
     public ItemStack[] getArmors() {
-        return this.armors.clone();
+        return cloneItemStacks(this.armors);
     }
 
     public ItemStack[] getItems() {
-        return this.items.clone();
+        return cloneItemStacks(this.items);
     }
 
     public ItemStack getOffHand() {
