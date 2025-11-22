@@ -5,6 +5,9 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.managers.InventoryManager;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.Arrays;
 
 /**
  * <pre>Arena Runnable class "DamageReset"</pre>
@@ -15,7 +18,7 @@ import org.bukkit.inventory.ItemStack;
  * @version v0.9.8
  */
 
-public class DamageResetRunnable implements Runnable {
+public class DamageResetRunnable extends BukkitRunnable {
 
     private final Arena arena;
     private final Player attacker;
@@ -36,22 +39,20 @@ public class DamageResetRunnable implements Runnable {
                     this.attacker.getItemInHand().setDurability((short) 0);
                     this.attacker.updateInventory();
                 }
-            } catch (final Exception e) {
+            } catch (Exception ignored) {
             }
         }
 
         if (!this.arena.getConfig().getBoolean(CFG.DAMAGE_ARMOR)) {
             try {
-                final ItemStack[] items = this.defender.getInventory().getArmorContents();
+                ItemStack[] items = this.defender.getInventory().getArmorContents();
 
-                for (ItemStack is : items) {
-                    if (is == null || !is.getType().name().endsWith("_HELMET")) {
-                        continue;
-                    }
-                    is.setDurability((short) 0);
-                }
+                Arrays.stream(items)
+                        .filter(is -> is != null && is.getType().name().endsWith("_HELMET"))
+                        .forEach(is -> is.setDurability((short) 0));
                 this.defender.updateInventory();
-            } catch (final Exception e) {
+
+            } catch (Exception ignored) {
             }
         }
     }

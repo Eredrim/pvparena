@@ -18,7 +18,6 @@ import net.slipcor.pvparena.managers.WorkflowManager;
 import net.slipcor.pvparena.regions.RegionFlag;
 import net.slipcor.pvparena.regions.RegionProtection;
 import net.slipcor.pvparena.runnables.DamageResetRunnable;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
@@ -55,6 +54,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static net.slipcor.pvparena.config.Debugger.debug;
+import static net.slipcor.pvparena.config.Debugger.trace;
 import static net.slipcor.pvparena.core.Utils.hasApplicableTotem;
 
 /**
@@ -165,8 +165,7 @@ public class EntityListener implements Listener {
             return;
         }
         final Player player = (Player) entity;
-        debug(arena, player, "onEntityRegainHealth => fighing player");
-        debug(arena, "reason: " + event.getRegainReason());
+        trace(player, "onEntityRegainHealth => fighing player. Reason: {}", event.getRegainReason());
         if (!arena.isFightInProgress()) {
             return;
         }
@@ -234,8 +233,7 @@ public class EntityListener implements Listener {
             return;
         }
 
-        final Arena arena = ArenaPlayer.fromPlayer(eDamagee.getName())
-                .getArena();
+        final Arena arena = ArenaPlayer.fromPlayer(eDamagee.getName()).getArena();
         if (arena == null) {
             // defender no arena player => out
             return;
@@ -265,10 +263,8 @@ public class EntityListener implements Listener {
         final ArenaPlayer apAttacker = ArenaPlayer.fromPlayer(attacker.getName());
 
         for (ArenaTeam team : arena.getTeams()) {
-            defTeam = defTeam || team.getTeamMembers().contains(
-                    apDefender);
-            attTeam = attTeam || team.getTeamMembers().contains(
-                    apAttacker);
+            defTeam = defTeam || team.getTeamMembers().contains(apDefender);
+            attTeam = attTeam || team.getTeamMembers().contains(apAttacker);
         }
 
         if (!defTeam || !attTeam || arena.realEndRunner != null) {
@@ -282,13 +278,11 @@ public class EntityListener implements Listener {
         debug(arena, defender, "both players part of the arena");
 
         if (PVPArena.getInstance().getConfig().getBoolean("onlyPVPinArena")) {
-            event.setCancelled(false); // uncancel events for regular no PVP
-            // servers
+            event.setCancelled(false); // uncancel events for regular no PVP servers
         }
 
         if ((!arena.getConfig().getBoolean(CFG.PERMS_TEAMKILL))
-                && (apAttacker.getArenaTeam())
-                .equals(apDefender.getArenaTeam())) {
+                && (apAttacker.getArenaTeam()).equals(apDefender.getArenaTeam())) {
             // no team fights!
             debug(arena, attacker, "team hit, cancel!");
             debug(arena, defender, "team hit, cancel!");
@@ -306,19 +300,28 @@ public class EntityListener implements Listener {
         }
 
         // cancel if defender or attacker are not fighting
-        if (apAttacker.getStatus() != PlayerStatus.FIGHT || apDefender.getStatus() != PlayerStatus.FIGHT ) {
+        if (apAttacker.getStatus() != PlayerStatus.FIGHT || apDefender.getStatus() != PlayerStatus.FIGHT) {
             debug(arena, attacker, "player or target is not fighting, cancel!");
             debug(arena, defender, "player or target is not fighting, cancel!");
             event.setCancelled(true);
             return;
         }
 
-        Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.getInstance(),
-                new DamageResetRunnable(arena, attacker, defender), 1L);
+        if (!arena.getConfig().getBoolean(CFG.DAMAGE_WEAPONS) || !arena.getConfig().getBoolean(CFG.DAMAGE_ARMOR)) {
+            DamageResetRunnable damageResetRunnable = new DamageResetRunnable(arena, attacker, defender);
+            damageResetRunnable.runTask(PVPArena.getInstance());
+        }
 
-        if (arena.getConfig().getInt(CFG.PROTECT_SPAWN) > 0
-                && SpawnManager.isNearSpawn(arena, defender, arena
-                .getConfig().getInt(CFG.PROTECT_SPAWN))) {
+        boolean isInNoDamageRegion = arena.getRegions().stream()
+                .anyMatch(reg -> reg.getFlags().contains(RegionFlag.NODAMAGE) && reg.containsLocation(apDefender.getLocation()));
+
+        if (isInNoDamageRegion) {
+            event.setCancelled(true);
+            return;
+        }
+
+        int spawnProtectRadius = arena.getConfig().getInt(CFG.PROTECT_SPAWN);
+        if (spawnProtectRadius > 0 && SpawnManager.isNearSpawn(arena, defender, spawnProtectRadius)) {
             // spawn protection!
             debug(arena, attacker, "spawn protection! damage cancelled!");
             debug(arena, defender, "spawn protection! damage cancelled!");
@@ -338,6 +341,8 @@ public class EntityListener implements Listener {
         if (arena.getConfig().getBoolean(CFG.DAMAGE_BLOODPARTICLES)) {
             apDefender.showBloodParticles();
         }
+
+        handleDeathIfNeeded(event, defender, arena);
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
@@ -361,8 +366,17 @@ public class EntityListener implements Listener {
         }
     }
 
+    /**
+     * Parsing any kind of entity damage EXCEPT Entity vs Entity
+     * @param event the triggering event
+     */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public static void onEntityDamage(final EntityDamageEvent event) {
+        if (event instanceof EntityDamageByEntityEvent) {
+            // handled in onEntityDamageByEntity - no double processing
+            return;
+        }
+
         Entity entity = event.getEntity();
 
         if (!(entity instanceof Player)) {
@@ -386,31 +400,43 @@ public class EntityListener implements Listener {
             boolean isInNoDamageRegion = arena.getRegions().stream()
                     .anyMatch(reg -> reg.getFlags().contains(RegionFlag.NODAMAGE) && reg.containsLocation(apDefender.getLocation()));
 
-            if(isInNoDamageRegion) {
+            if (isInNoDamageRegion) {
                 event.setCancelled(true);
                 return;
             }
 
-            // Faking death if damage is higher than player health
-            if ((defender.getHealth() - event.getFinalDamage()) <= 0) {
+            handleDeathIfNeeded(event, defender, arena);
+        }
+    }
 
-                if (hasApplicableTotem(defender.getInventory(), event.getCause())) {
-                    // let the totem do its work
-                    return;
-                }
+    /**
+     * Faking death if damage is higher than player health
+     * @param event The damage event
+     * @param defender Player receiving the damage
+     * @param arena The arena the player is in
+     */
+    private static void handleDeathIfNeeded(EntityDamageEvent event, Player defender, Arena arena) {
+        if ((defender.getHealth() - event.getFinalDamage()) <= 0) {
 
-                // Event is not cancelled to keep attack effects, we set damage to 0 instead
-                Arrays.stream(DamageModifier.values())
-                        .filter(event::isApplicable)
-                        .forEach(modifier -> event.setDamage(modifier, 0));
+            debug(defender, "Handling death for player. Remaining life: {}. Final damage: {}. Type of event is {}",
+                    defender.getHealth(), event.getFinalDamage(), event.getClass());
 
-                // Create a fake last damage (1/2 heart remaining) to trigger save of last hurt on Minecraft server
-                defender.setHealth(2);
-                event.setDamage(DamageModifier.BASE, 1);
-
-                playFakeDeathEffects(defender);
-                WorkflowManager.handlePlayerDeath(arena, defender, event);
+            if (hasApplicableTotem(defender.getInventory(), event.getCause())) {
+                // let the totem do its work
+                return;
             }
+
+            // Event is not cancelled to keep attack effects, we set damage to 0 instead
+            Arrays.stream(DamageModifier.values())
+                    .filter(event::isApplicable)
+                    .forEach(modifier -> event.setDamage(modifier, 0));
+
+            // Create a fake last damage (1/2 heart remaining) to trigger save of last hurt on Minecraft server
+            defender.setHealth(2);
+            event.setDamage(DamageModifier.BASE, 1);
+
+            playFakeDeathEffects(defender);
+            WorkflowManager.handlePlayerDeath(arena, defender, event);
         }
     }
 
