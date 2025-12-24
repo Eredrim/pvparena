@@ -182,6 +182,7 @@ public final class ConfigurationManager {
                 new ItemStack[]{new ItemStack(Material.AIR, 1)},
                 new ItemStack(Material.AIR, 1),
                 new ItemStack[]{new ItemStack(Material.AIR, 1)});
+        arena.setUuid(cfg.getString(CFG.ID));
         arena.setOwner(cfg.getString(CFG.GENERAL_OWNER));
         arena.setLocked(!cfg.getBoolean(CFG.GENERAL_ENABLED));
         if (config.getConfigurationSection("arenaregion") == null) {

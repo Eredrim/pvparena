@@ -25,6 +25,12 @@ public class PlaceholderArgs {
         this.identifier = String.join("_", this.args);
     }
 
+    public PlaceholderArgs(String identifier) {
+        this.arena = null;
+        this.args = String.format("global_%s", identifier).split("_");
+        this.identifier = String.join("_", this.args);
+    }
+
     public String getIdentifier() {
         return this.identifier;
     }

@@ -94,6 +94,7 @@ public class Arena {
 
     private final Map<Player, UUID> entities = new HashMap<>();
 
+    private String uuid;
     private final String name;
     private String prefix = "PVP Arena";
     private String owner = "%server%";
@@ -231,6 +232,22 @@ public class Arena {
 
     public void setValid(boolean valid) {
         this.valid = valid;
+    }
+
+    public String getUuid() {
+        return this.uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public long getRemainingSeconds() {
+        int timerSeconds = this.config.getInt(CFG.GENERAL_TIMER);
+        if (timerSeconds > 0) {
+            return Math.min(timerSeconds - this.getPlayedSeconds(), 0);
+        }
+        return -1;
     }
 
     public Set<ArenaModule> getMods() {
