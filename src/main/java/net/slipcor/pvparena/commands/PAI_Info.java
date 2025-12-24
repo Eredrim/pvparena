@@ -44,7 +44,7 @@ public class PAI_Info extends AbstractArenaCommand {
             displayMode = args[0];
         }
 
-        arena.msg(sender, MSG.INFO_HEAD_HEADLINE, arena.getName(), arena.getPrefix());
+        arena.msg(sender, MSG.INFO_HEAD_HEADLINE, arena.getName(), arena.getPrefix(), arena.getUuid());
 
         arena.msg(sender, MSG.INFO_HEAD_TEAMS, StringParser.joinSet(arena.getTeamNamesColored(), ChatColor.COLOR_CHAR + "r, "));
 

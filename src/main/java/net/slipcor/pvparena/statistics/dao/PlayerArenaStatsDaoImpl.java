@@ -7,7 +7,6 @@ import com.j256.ormlite.stmt.SelectArg;
 import com.j256.ormlite.support.ConnectionSource;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.statistics.model.PlayerArenaStats;
 import net.slipcor.pvparena.statistics.model.StatEntry;
 import org.bukkit.entity.Player;
@@ -50,7 +49,7 @@ public class PlayerArenaStatsDaoImpl extends BaseDaoImpl<PlayerArenaStats, Long>
                     .where()
                     .eq(StatEntry.PLAYER_UUID.getColumn(), player.getUniqueId().toString())
                     .and()
-                    .eq(StatEntry.ARENA_UUID.getColumn(), arena.getConfig().getString(Config.CFG.ID))
+                    .eq(StatEntry.ARENA_UUID.getColumn(), arena.getUuid())
                     .prepare();
 
             return ofNullable(super.queryForFirst(preparedQuery));
@@ -92,7 +91,7 @@ public class PlayerArenaStatsDaoImpl extends BaseDaoImpl<PlayerArenaStats, Long>
                     .orderBy(entryName.getColumn(), false)
                     .limit(limit)
                     .where()
-                    .eq(StatEntry.ARENA_UUID.getColumn(), arena.getConfig().getString(Config.CFG.ID))
+                    .eq(StatEntry.ARENA_UUID.getColumn(), arena.getUuid())
                     .prepare();
 
             return super.query(preparedQuery);

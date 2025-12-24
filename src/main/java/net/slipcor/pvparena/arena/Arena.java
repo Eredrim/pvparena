@@ -94,6 +94,7 @@ public class Arena {
 
     private final Map<Player, UUID> entities = new HashMap<>();
 
+    private String uuid;
     private final String name;
     private String prefix = "PVP Arena";
     private String owner = "%server%";
@@ -102,6 +103,7 @@ public class Arena {
     private boolean fightInProgress;
     private boolean locked;
     private boolean valid;
+    private boolean resetting;
     private int startCount;
 
     private ArenaGoal goal;
@@ -233,6 +235,22 @@ public class Arena {
         this.valid = valid;
     }
 
+    public String getUuid() {
+        return this.uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public long getRemainingSeconds() {
+        int timerSeconds = this.config.getInt(CFG.GENERAL_TIMER);
+        if (timerSeconds > 0) {
+            return Math.max(timerSeconds - this.getPlayedSeconds(), 0);
+        }
+        return -1;
+    }
+
     public Set<ArenaModule> getMods() {
         return this.mods;
     }
@@ -270,6 +288,14 @@ public class Arena {
 
     public void setLocked(final boolean locked) {
         this.locked = locked;
+    }
+
+    public boolean isResetting() {
+        return this.resetting;
+    }
+
+    public void setResetting(boolean resetting) {
+        this.resetting = resetting;
     }
 
     public String getName() {

@@ -89,6 +89,15 @@ public class WorkflowManager {
         return arena.getGoal().getLives(aPlayer);
     }
 
+    public static int handleGetScore(final Arena arena, final ArenaPlayer aPlayer) {
+
+        if (aPlayer.getStatus() == PlayerStatus.LOUNGE || aPlayer.getStatus() == PlayerStatus.WATCH) {
+            return 0;
+        }
+
+        return arena.getGoal().getScore(aPlayer);
+    }
+
     public static void handleInteract(final Arena arena, final Player player, final PlayerInteractEvent event) {
         ArenaGoal goal = arena.getGoal();
         if (goal != null && goal.checkInteract(player, event)) {

@@ -70,9 +70,15 @@ public class GoalTeamPlayerLives extends AbstractPlayerLivesGoal {
     }
 
     @Override
-    public int getLives(ArenaPlayer arenaPlayer) {
+    public int getScore(ArenaPlayer arenaPlayer) {
         // sum of all team members lives
-        return arenaPlayer.getArenaTeam().getTeamMembers().stream()
+        return this.getScore(arenaPlayer.getArenaTeam());
+    }
+
+    @Override
+    public int getScore(ArenaTeam team) {
+        // sum of all team members lives
+        return team.getTeamMembers().stream()
                 .mapToInt(ap -> this.getPlayerLifeMap().getOrDefault(ap, 0))
                 .sum();
     }

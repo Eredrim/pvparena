@@ -493,6 +493,18 @@ public class GoalFood extends ArenaGoal {
         }
     }
 
+    @Override
+    public int getScore(ArenaTeam arenaTeam) {
+        int teamLives = this.getTeamLifeMap().get(arenaTeam);
+        int maxILives = this.arena.getConfig().getInt(CFG.GOAL_FOOD_FMAXITEMS);
+        return maxILives - teamLives;
+    }
+
+    @Override
+    public int getScore(ArenaPlayer arenaPlayer) {
+        return this.getScore(arenaPlayer.getArenaTeam());
+    }
+
     private void reduceLives(final ArenaTeam team, final int amount) {
         final int iLives = this.getTeamLifeMap().get(team);
 

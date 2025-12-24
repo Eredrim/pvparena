@@ -37,11 +37,6 @@ public class GoalTeamLives extends AbstractTeamKillGoal {
     }
 
     @Override
-    protected int getScore(ArenaTeam team) {
-        return this.getTeamLifeMap().getOrDefault(team, 0);
-    }
-
-    @Override
     protected int getTeamLivesCfg() {
         return this.arena.getConfig().getInt(CFG.GOAL_TLIVES_LIVES);
     }

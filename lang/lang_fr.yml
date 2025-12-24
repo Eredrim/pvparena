@@ -1,4 +1,4 @@
-__version__: 2.0.0
+__version__: 2.1.0
 arena:
   create:
     done: L'arène '%1%' a été créée avec le goal %2% !
@@ -20,6 +20,12 @@ arena:
     done: Le match a été démarré (de force) !
   stop:
     done: Le match a été stoppé (de force) !
+  status:
+    idle: disponible
+    lounge: en attente de joueurs
+    fighting: combat en cours
+    resetting: en cours de restauration
+    disabled: désactivée
 cmd:
   blacklist:
     added: L'item &a%1%&r a été ajouté à la blacklist &e%2%&r !
@@ -274,7 +280,7 @@ permission:
 info:
   classes: "Classes : &a%1%&r"
   goal_active: "Goal : &a%1%&r"
-  head_headlin: "Informations sur l'arène : &a%1%&r | [&a%2%&r]"
+  head_headlin: "Informations sur l'arène : &a%1%&r | [&a%2%&r] | (uuid: &a%3%&r)"
   head_teams: "Équipes : &a%1%&r"
   mod_active: "Module : &a%1%&r"
   owner: "Propriétaire : &a%1%&r"

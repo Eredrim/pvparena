@@ -46,7 +46,7 @@ public class GoalTeamDeathConfirm extends AbstractTeamKillGoal {
     }
 
     @Override
-    protected int getScore(ArenaTeam team) {
+    public int getScore(ArenaTeam team) {
         return this.getTeamLivesCfg() - (this.getTeamLifeMap().getOrDefault(team, 0));
     }
 

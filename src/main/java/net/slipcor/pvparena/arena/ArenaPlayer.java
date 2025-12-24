@@ -745,7 +745,7 @@ public class ArenaPlayer {
                 statsToUpdate.mergeWithDiff(this.statistics);
                 statsDao.save(statsToUpdate);
             } else if (this.arena != null) {
-                this.statistics.setArenaUuid(this.arena.getConfig().getString(CFG.ID));
+                this.statistics.setArenaUuid(this.arena.getUuid());
                 this.statistics.setPlayerUuid(this.player.getUniqueId().toString());
                 statsDao.save(this.statistics);
             }

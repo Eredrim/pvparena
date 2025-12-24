@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.api;
 
 import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.managers.WorkflowManager;
 import net.slipcor.pvparena.statistics.model.PlayerArenaStats;
 import net.slipcor.pvparena.statistics.model.StatEntry;
@@ -54,7 +55,7 @@ public class PlaceholderMultilineCache {
     public List<String> getPlayerStat(PlaceholderArgs phArgs, StatEntry statEntry, Supplier<List<PlayerArenaStats>> statsSupplier) {
         String commonId = phArgs.getIdentifierUntil(2);
         String accessKey = phArgs.getIdentifierUntil(3);
-        return ofNullable(this.cacheMap.getOrDefault(accessKey, emptyList()))
+        return ofNullable(this.cacheMap.get(accessKey))
                 .orElseGet(() -> {
                     List<PlayerArenaStats> statsList = statsSupplier.get();
                     String scoreKey = String.format("%s_%s", commonId, "score");
@@ -92,7 +93,7 @@ public class PlaceholderMultilineCache {
                     String scoreKey = String.format("%s_%s", commonId, "value");
                     String playerKey = String.format("%s_%s", commonId, "player");
                     phArgs.getArena().getEveryone().forEach(arenaPlayer -> {
-                        int value = WorkflowManager.handleGetLives(phArgs.getArena(), arenaPlayer);
+                        int value = WorkflowManager.handleGetScore(phArgs.getArena(), arenaPlayer);
                         if (value >= 0 && asList(FIGHT, DEAD, LOST).contains(arenaPlayer.getStatus())) {
                             sortableMap.put(arenaPlayer.getName(), String.valueOf(value));
                         }
@@ -127,12 +128,11 @@ public class PlaceholderMultilineCache {
                     List<String> teamListCache = new ArrayList<>();
                     String scoreKey = String.format("%s_%s", commonId, "value");
                     String teamKey = String.format("%s_%s", commonId, "team");
-                    phArgs.getArena().getTeams().forEach(team ->
-                        team.getTeamMembers().stream().findAny().ifPresent(randomTeamPlayer -> {
-                            int value = WorkflowManager.handleGetLives(phArgs.getArena(), randomTeamPlayer);
-                            sortableMap.put(team.getName(), String.valueOf(value));
-                        })
-                    );
+                    Arena arena = phArgs.getArena();
+                    arena.getTeams().forEach(team -> {
+                        int value = arena.getGoal().getScore(team);
+                        sortableMap.put(team.getName(), String.valueOf(value));
+                    });
                     sortableMap.entrySet().stream()
                             .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
                             .forEach(entry -> {

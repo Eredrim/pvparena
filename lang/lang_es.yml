@@ -280,7 +280,7 @@ info:
   classes: 'Clases: &a%1%&r'
   goal_active: 'Objetivo: &a%1%&r'
   goal_inactive: 'Objetivo: &b%1%&r &7== INACTIVO =='
-  head_headlin: 'Informacion de: &e[%2%&e]&r'
+  head_headlin: 'Informacion de: &e[%2%&e]&r (uuid: &a%3%&r)'
   head_teams: 'Equipos: &a%1%&r'
   mod_active: 'Modulo/s: &a%1%&r'
   mod_inactive: 'Modulo/s : &b%1%&r &7== INACTIVO =='

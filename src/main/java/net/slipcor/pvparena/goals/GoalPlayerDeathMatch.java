@@ -211,6 +211,12 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
     }
 
     @Override
+    public int getScore(ArenaPlayer arenaPlayer) {
+        int maxLives = this.arena.getConfig().getInt(CFG.GOAL_PDM_LIVES);
+        return maxLives - (this.getPlayerLifeMap().getOrDefault(arenaPlayer, 0));
+    }
+
+    @Override
     public void initiate(final ArenaPlayer arenaPlayer) {
         this.updateLives(arenaPlayer, this.arena.getConfig().getInt(CFG.GOAL_PDM_LIVES));
     }

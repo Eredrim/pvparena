@@ -29,8 +29,6 @@ public abstract class AbstractTeamKillGoal extends ArenaGoal {
         super(name);
     }
 
-    protected abstract int getScore(ArenaTeam team);
-
     protected abstract int getTeamLivesCfg();
 
     @Override
@@ -91,11 +89,6 @@ public abstract class AbstractTeamKillGoal extends ArenaGoal {
         }
 
         new EndRunnable(this.arena, this.arena.getConfig().getInt(CFG.TIME_ENDCOUNTDOWN));
-    }
-
-    @Override
-    public int getLives(ArenaPlayer arenaPlayer) {
-        return this.getScore(arenaPlayer.getArenaTeam());
     }
 
     @Override

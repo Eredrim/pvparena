@@ -171,7 +171,7 @@ public class ArenaScoreboard {
             Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), () -> {
                 if (this.arena.isFreeForAll()) {
                     for (ArenaPlayer arenaPlayer : this.arena.getEveryone()) {
-                        int value = WorkflowManager.handleGetLives(this.arena, arenaPlayer);
+                        int value = WorkflowManager.handleGetScore(this.arena, arenaPlayer);
                         if (value >= 0 && asList(FIGHT, DEAD, LOST).contains(arenaPlayer.getStatus())) {
                             ofNullable(this.getLivesObjective()).ifPresent(objective ->
                                     objective.getScore(arenaPlayer.getName()).setScore(value)
@@ -187,7 +187,7 @@ public class ArenaScoreboard {
                         team.getTeamMembers().stream().findFirst().ifPresent(randomTeamPlayer ->
                                 this.getLivesObjective()
                                         .getScore(team.getName())
-                                        .setScore(WorkflowManager.handleGetLives(this.arena, randomTeamPlayer))
+                                        .setScore(this.arena.getGoal().getScore(team))
                         );
                     }
                     for (ArenaPlayer arenaPlayer : this.arena.getEveryone()) {
@@ -352,7 +352,7 @@ public class ArenaScoreboard {
             if (ap.getArenaTeam() != null) {
                 this.getLivesObjective()
                         .getScore(this.arena.isFreeForAll() ? player.getName() : ap.getArenaTeam().getName())
-                        .setScore(WorkflowManager.handleGetLives(this.arena, ap));
+                        .setScore(WorkflowManager.handleGetScore(this.arena, ap));
             }
 
             if(player.isOnline()) {

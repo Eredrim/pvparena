@@ -380,6 +380,17 @@ public class ArenaGoal implements IArenaCommandHandler {
         }
     }
 
+    public int getScore(ArenaTeam arenaTeam) {
+        return this.getTeamLifeMap().getOrDefault(arenaTeam, 0);
+    }
+
+    public int getScore(ArenaPlayer arenaPlayer) {
+        if (this.arena.isFreeForAll()) {
+            return this.getPlayerLifeMap().getOrDefault(arenaPlayer, 0);
+        }
+        return this.getScore(arenaPlayer.getArenaTeam());
+    }
+
     /**
      * does a goal know this spawn?
      *

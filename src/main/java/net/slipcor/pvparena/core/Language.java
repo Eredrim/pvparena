@@ -30,7 +30,7 @@ public final class Language {
     private static FileConfiguration config;
 
     public enum MSG {
-        __VERSION__("__version__", "2.0.0"),
+        __VERSION__("__version__", "2.1.0"),
         ARENA_CREATE_DONE("arena.create.done", "Arena '%1%' with goal %2% created!"),
         ARENA_DISABLE_DONE("arena.disable.done", "Arena disabled!"),
         ARENA_EDIT_DISABLED("arena.edit.disabled", "Disabled edit mode for arena: %1%"),
@@ -43,6 +43,12 @@ public final class Language {
         ARENA_STARTING_IN("arena.startingin", "Enough players ready. Starting in %1%!"),
         ARENA_START_DONE("arena.start.done", "Arena force started!"),
         ARENA_STOP_DONE("arena.stop.done", "Arena force stopped!"),
+
+        ARENA_STATUS_IDLE("arena.status.idle", "available"),
+        ARENA_STATUS_LOUNGE("arena.status.lounge", "waiting for players"),
+        ARENA_STATUS_FIGHTING("arena.status.fighting", "game in progress"),
+        ARENA_STATUS_RESETTING("arena.status.resetting", "restoration in progress"),
+        ARENA_STATUS_DISABLED("arena.status.disabled", "disabled"),
 
         CMD_BLACKLIST_ADDED("cmd.blacklist.added", "Added &a%1%&r to &e%2%&r blacklist!"),
         CMD_BLACKLIST_ALLCLEARED("cmd.blacklist.allcleared", "All blacklists cleared!"),
@@ -291,7 +297,7 @@ public final class Language {
 
         INFO_CLASSES("info.classes", "Classes: &a%1%&r"),
         INFO_GOAL_ACTIVE("info.goal_active", "Goal: &a%1%&r"),
-        INFO_HEAD_HEADLINE("info.head_headlin", "Arena Information about: &a%1%&r | [&a%2%&r]"),
+        INFO_HEAD_HEADLINE("info.head_headlin", "Arena Information about: &a%1%&r | [&a%2%&r] | (uuid: &a%3%&r)"),
         INFO_HEAD_TEAMS("info.head_teams", "Teams: &a%1%&r"),
         INFO_MOD_ACTIVE("info.mod_active", "Module: &a%1%&r"),
         INFO_OWNER("info.owner", "Owner: &a%1%&r"),

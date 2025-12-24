@@ -142,6 +142,17 @@ public class GoalDomination extends ArenaGoal {
         return SpawnManager.getMissingBlocksCustom(this.arena, blocks, FLAG + "1");
     }
 
+    @Override
+    public int getScore(ArenaTeam arenaTeam) {
+        final int max = this.arena.getConfig().getInt(CFG.GOAL_DOM_LIVES);
+        return max - this.getTeamLifeMap().getOrDefault(arenaTeam, 0);
+    }
+
+    @Override
+    public int getScore(ArenaPlayer arenaPlayer) {
+        return this.getScore(arenaPlayer.getArenaTeam());
+    }
+
     /**
      * return a hashset of players names being near a specified location, except
      * one player
@@ -393,15 +404,14 @@ public class GoalDomination extends ArenaGoal {
             return;
         }
 
-        final int lives = this.getTeamLifeMap().get(arenaTeam);
-
-        if ((max - lives) % this.announceOffset != 0) {
+        int score = this.getScore(arenaTeam);
+        if (score % this.announceOffset != 0) {
             return;
         }
 
         this.arena.broadcast(Language.parse(MSG.GOAL_DOMINATION_SCORE,
                 arenaTeam.getColoredName()
-                        + ChatColor.YELLOW, (max - lives) + "/" + max));
+                        + ChatColor.YELLOW, score + "/" + max));
     }
 
     @Override

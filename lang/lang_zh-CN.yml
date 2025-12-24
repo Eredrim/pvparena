@@ -271,7 +271,7 @@ permission:
 info:
   classes: 职业：&a%1%&r
   goal_active: 目标：&a%1%&r
-  head_headlin: 竞技场信息：&a%1%&r | [&a%2%&r]
+  head_headlin: '竞技场信息：&a%1%&r | [&a%2%&r] | (uuid: &a%3%&r)'
   head_teams: 队伍：&a%1%&r
   mod_active: 模块：&a%1%&r
   owner: 所有者：&a%1%&r
