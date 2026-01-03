@@ -410,7 +410,7 @@ public class WorkflowManager {
     public static Boolean handleStart(final Arena arena, final CommandSender sender, final boolean force) {
         debug(arena, "handling start!");
 
-        if (!force && arena.getFighters().size() < Math.min(2, arena.getConfig().getInt(CFG.READY_MINPLAYERS))) {
+        if (!force && arena.getFighters().size() < Math.max(2, arena.getConfig().getInt(CFG.READY_MINPLAYERS))) {
             debug(arena, "not forcing and we have less than minplayers");
             return null;
         }
