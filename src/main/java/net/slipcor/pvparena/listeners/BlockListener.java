@@ -15,7 +15,6 @@ import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.regions.RegionProtection;
 import net.slipcor.pvparena.runnables.DamageResetRunnable;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -145,8 +144,8 @@ public class BlockListener implements Listener {
 
         ArenaModuleManager.onBlockBreak(arena, event.getBlock());
 
-        Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.getInstance(),
-                new DamageResetRunnable(arena, event.getPlayer(), null), 1L);
+        DamageResetRunnable damageResetTask = new DamageResetRunnable(arena, event.getPlayer(), null);
+        damageResetTask.runTaskLater(PVPArena.getInstance(), 1);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
