@@ -53,6 +53,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static net.slipcor.pvparena.compatibility.NewerEntityType.WIND_CHARGE;
 import static net.slipcor.pvparena.config.Debugger.debug;
 import static net.slipcor.pvparena.config.Debugger.trace;
 import static net.slipcor.pvparena.core.Utils.hasApplicableTotem;
@@ -125,14 +126,14 @@ public class EntityListener implements Listener {
         Location eventLocation = event.getLocation();
         Arena arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(eventLocation));
 
-        if(arena == null) {
+        if (arena == null || WIND_CHARGE.equates(event.getEntity().getType())) {
             return;
         }
 
-        if(arena.hasRegionsProtectingLocation(eventLocation, RegionProtection.TNT)) {
+        if (arena.hasRegionsProtectingLocation(eventLocation, RegionProtection.TNT)) {
             debug(arena, "explosion inside an TNT protected arena, TNT should be blocked");
             event.setCancelled(true);
-        } if(arena.hasRegionsProtectingLocation(eventLocation, RegionProtection.TNTBREAK)) {
+        } else if (arena.hasRegionsProtectingLocation(eventLocation, RegionProtection.TNTBREAK)) {
             debug(arena, "explosion inside an TNTBREAK protected arena, TNT should be blocked");
             Location location = event.getLocation();
             location.getWorld().playSound(location, Sound.ENTITY_GENERIC_EXPLODE, 1, 1);
