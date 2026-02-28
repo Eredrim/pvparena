@@ -4,6 +4,7 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.arena.PlayerStatus;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.commands.PAA_Edit;
 import net.slipcor.pvparena.core.Config.CFG;
@@ -520,10 +521,11 @@ public class PlayerListener implements Listener {
         final Player player = (Player) event.getEntity();
 
         ArenaPlayer arenaPlayer = ArenaPlayer.fromPlayer(player);
-        final Arena arena = arenaPlayer.getArena();
+        PlayerStatus playerStatus = arenaPlayer.getStatus();
+        Arena arena = arenaPlayer.getArena();
 
-        if (arenaPlayer.getStatus() == LOST) {
-            debug(arenaPlayer, "cancelling because LOST");
+        if (playerStatus != NULL && playerStatus != FIGHT && playerStatus != WARM) {
+            debug(arenaPlayer, "onPlayerPickupItem cancelled because of arena status {}", playerStatus);
             event.setCancelled(true);
             return;
         }
