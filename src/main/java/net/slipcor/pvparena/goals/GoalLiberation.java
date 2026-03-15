@@ -15,7 +15,6 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringUtils;
-
 import net.slipcor.pvparena.events.goal.PAGoalEndEvent;
 import net.slipcor.pvparena.events.goal.PAGoalJailReleaseEvent;
 import net.slipcor.pvparena.events.goal.PAGoalPlayerDeathEvent;
@@ -25,13 +24,12 @@ import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.PermissionManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.TeamManager;
+import net.slipcor.pvparena.managers.TeleportManager;
 import net.slipcor.pvparena.managers.WorkflowManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
 import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
-import net.slipcor.pvparena.runnables.RespawnRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -50,6 +48,7 @@ import java.util.Set;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static net.slipcor.pvparena.config.Debugger.debug;
+import static net.slipcor.pvparena.managers.SpawnManager.getPASpawnsStartingWith;
 
 /**
  * <pre>
@@ -67,6 +66,7 @@ public class GoalLiberation extends ArenaGoal {
 
     private static final String BUTTON = "button";
     private static final String JAIL = "jail";
+    private static final String BUTTON_SUFFIX = "_BUTTON";
 
     public GoalLiberation() {
         super("Liberation");
@@ -137,7 +137,7 @@ public class GoalLiberation extends ArenaGoal {
         }
         debug(this.arena, player, "checking interact");
 
-        if (Tag.BUTTONS.isTagged(block.getType())) {
+        if (!block.getType().name().endsWith(BUTTON_SUFFIX)) {
             debug(this.arena, player, "block, but not button");
             return false;
         }
@@ -212,7 +212,7 @@ public class GoalLiberation extends ArenaGoal {
             return false;
         }
 
-        if (block == null || !Tag.BUTTONS.isTagged(block.getType())) {
+        if (block == null || !block.getType().name().endsWith(BUTTON_SUFFIX)) {
             debug(player, "Block {} is not a button", block);
             return false;
         }
@@ -223,22 +223,12 @@ public class GoalLiberation extends ArenaGoal {
     @Override
     public Boolean shouldRespawnPlayer(ArenaPlayer arenaPlayer, PADeathInfo deathInfo) {
         ArenaTeam arenaTeam = arenaPlayer.getArenaTeam();
-        final int pos = this.getTeamLifeMap().get(arenaTeam);
-        debug(arenaPlayer, "lives before death: " + pos);
-        if (pos <= 1) {
-            this.getTeamLifeMap().put(arenaTeam, 1);
-
-            final ArenaTeam team = arenaPlayer.getArenaTeam();
-            boolean someoneAlive = false;
-
-            for (ArenaPlayer temp : team.getTeamMembers()) {
-                if (temp.getStatus() == PlayerStatus.FIGHT) {
-                    someoneAlive = true;
-                    break;
-                }
-            }
-
-            return someoneAlive;
+        int teamLeaves = this.getTeamLifeMap().get(arenaTeam);
+        debug(arenaPlayer, "lives before death: {}", teamLeaves);
+        if (teamLeaves <= 1) {
+            return arenaPlayer.getArenaTeam().getTeamMembers()
+                    .stream()
+                    .anyMatch(ap -> ap.getStatus() == PlayerStatus.FIGHT);
         }
         return true;
     }
@@ -324,24 +314,18 @@ public class GoalLiberation extends ArenaGoal {
         }
         final PAGoalPlayerDeathEvent gEvent = new PAGoalPlayerDeathEvent(this.arena, this, arenaPlayer, deathInfo, false);
         Bukkit.getPluginManager().callEvent(gEvent);
-        int lives = this.getTeamLifeMap().get(arenaTeam);
-        debug(arenaPlayer, "lives before death: " + lives);
+        int teamLives = this.getTeamLifeMap().get(arenaTeam);
+        debug(arenaPlayer, "teamLives before death: {}", teamLives);
 
-        if (lives <= 1) {
+        if (teamLives <= 1) {
             this.getTeamLifeMap().put(arenaTeam, 1);
 
             arenaPlayer.setStatus(PlayerStatus.DEAD);
 
             final ArenaTeam team = arenaPlayer.getArenaTeam();
 
-            boolean someoneAlive = false;
-
-            for (ArenaPlayer temp : team.getTeamMembers()) {
-                if (temp.getStatus() == PlayerStatus.FIGHT) {
-                    someoneAlive = true;
-                    break;
-                }
-            }
+            boolean someoneAlive = team.getTeamMembers().stream()
+                    .anyMatch(pl -> pl.getStatus() == PlayerStatus.FIGHT);
 
             if (someoneAlive) {
 
@@ -356,11 +340,8 @@ public class GoalLiberation extends ArenaGoal {
 
                 player.getInventory().clear();
 
-                String teamName = arenaPlayer.getArenaTeam().getName();
-
-                new RespawnRunnable(this.arena, arenaPlayer, teamName + JAIL).runTaskLater(PVPArena.getInstance(), 1L);
-
                 arenaPlayer.revive(deathInfo);
+                TeleportManager.teleportPlayerToRandomSpawn(this.arena, arenaPlayer, getPASpawnsStartingWith(this.arena, JAIL, team.getName()));
 
                 if (this.arena.getConfig().getBoolean(CFG.GOAL_LIBERATION_JAILED_SCOREBOARD)) {
                     player.getScoreboard().getObjective("lives").getScore(arenaPlayer.getName()).setScore(101);
@@ -380,11 +361,11 @@ public class GoalLiberation extends ArenaGoal {
             }
 
         } else {
-            lives--;
-            this.getTeamLifeMap().put(arenaTeam, lives);
+            int remainingLives = teamLives - 1;
+            this.getTeamLifeMap().put(arenaTeam, remainingLives);
 
             if (this.arena.getConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-                this.broadcastDeathMessage(MSG.FIGHT_KILLED_BY_REMAINING, arenaPlayer, deathInfo, lives);
+                this.broadcastDeathMessage(MSG.FIGHT_KILLED_BY_REMAINING, arenaPlayer, deathInfo, remainingLives);
             }
 
             arenaPlayer.setMayDropInventory(true);
