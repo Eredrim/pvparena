@@ -22,6 +22,12 @@ arena:
     done: 竞技场已强制开始！
   stop:
     done: 竞技场已强制停止！
+  status:
+    idle: 可用
+    lounge: 等待玩家中
+    fighting: 战斗中
+    resetting: 重置中
+    disabled: 禁用
 cmd:
   blacklist:
     added: 已将 &a%1%&r 添加到 &e%2%&r 的黑名单中！

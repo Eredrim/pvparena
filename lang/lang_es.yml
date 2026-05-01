@@ -20,6 +20,12 @@ arena:
     done: Arena forzada a iniciarse!
   stop:
     done: Arena forzada a pararse!
+  status:
+    idle: disponible
+    lounge: esperando jugadores
+    fighting: partida en marcha
+    resetting: reseteo en progreso
+    disabled: desactivada
 cmd:
   blacklist:
     added: 'Añadido &a%1%&r a la &e%2%&r blacklist!'
