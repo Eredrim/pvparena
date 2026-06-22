@@ -442,7 +442,7 @@ public final class Language {
         GOAL_CHECKPOINTS_YOUMISSED("goal.checkpoints.youmissed", "You missed checkpoint #%1%! This is #%2%"),
 
         GOAL_DOMINATION_BOSSBAR_CLAIMING("goal.dom.bossbar_claiming", "Claiming..."),
-        GOAL_DOMINATION_BOSSBAR_UNCLAIMING("goal.dom.bossbar_claiming", "Unclaiming..."),
+        GOAL_DOMINATION_BOSSBAR_UNCLAIMING("goal.dom.bossbar_unclaiming", "Unclaiming..."),
         GOAL_DOMINATION_CLAIMING("goal.dom.claiming", "&eTeam %1% is claiming a flag!"),
         GOAL_DOMINATION_CLAIMED("goal.dom.claimed", "&eTeam %1% has claimed a flag!"),
         GOAL_DOMINATION_SCORE("goal.dom.score", "&eTeam %1% scored %2% points by holding a flag!"),

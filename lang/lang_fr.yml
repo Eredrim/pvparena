@@ -434,7 +434,8 @@ goal:
     score: "%1%&e a passé le checkpoint n°%2% !"
     youmissed: "Vous avez manqué le checkpoint n°%1% ! Celui-ci est le n°%2%"
   dom:
-    bossbar_claiming: Libération en cours...
+    bossbar_claiming: Capture en cours...
+    bossbar_unclaiming: Libération en cours...
     claiming: "&eL'équipe %1% est en train de capturer un drapeau !"
     claimed: "&eL'équipe %1% a capturé un drapeau !"
     score: "&eL'équipe %1% marque %2% points grâce aux drapeaux possédés !"
