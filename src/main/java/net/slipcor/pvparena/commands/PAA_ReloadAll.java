@@ -37,11 +37,10 @@ public class PAA_ReloadAll extends AbstractGlobalCommand {
             return;
         }
 
-        final PAA_Reload scmd = new PAA_Reload();
+        PVPArena paInstance = PVPArena.getInstance();
+        paInstance.reloadConfig();
 
-        PVPArena.getInstance().reloadConfig();
-
-        final FileConfiguration config = PVPArena.getInstance().getConfig();
+        final FileConfiguration config = paInstance.getConfig();
         Language.init(config.getString("language", "en"));
 
         if (args.length > 1 && args[1].equalsIgnoreCase("ymls")) {
@@ -49,15 +48,10 @@ public class PAA_ReloadAll extends AbstractGlobalCommand {
             return;
         }
 
-        final String[] emptyArray = new String[0];
-
-        for (Arena a : ArenaManager.getArenas()) {
-            scmd.commit(a, sender, emptyArray);
-        }
-
         GlobalClasses.getInstance().load(); // reload classes.yml
-        ArenaManager.loadAllArenas();
+        ArenaManager.reloadAllArenas();
         RegionManager.getInstance().reloadCache();
+        Arena.pmsg(sender, Language.MSG.CMD_RELOADALL_DONE);
     }
 
     @Override

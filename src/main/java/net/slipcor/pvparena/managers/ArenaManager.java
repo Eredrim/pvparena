@@ -217,6 +217,18 @@ public final class ArenaManager {
         return StringParser.joinSet(ARENAS.keySet(), ", ");
     }
 
+    public static void reloadAllArenas() {
+        debug("Reloading all arenas and goals");
+        ARENAS.forEach((name, arena) -> {
+            if (!arena.getFighters().isEmpty()) {
+                arena.stop(true);
+            }
+        });
+        ARENAS.clear();
+        PVPArena.getInstance().getAgm().reload(); // reloading goals
+        loadAllArenas();
+    }
+
     /**
      * load all configs in the PVP Arena folder
      */
@@ -225,8 +237,7 @@ public final class ArenaManager {
         debug("reading 'arenas' folder...");
         File[] files = null;
         try {
-            final File path = new File(PVPArena.getInstance().getDataFolder().getPath(),
-                    "arenas");
+            final File path = new File(PVPArena.getInstance().getDataFolder().getPath(), "arenas");
             files = path.listFiles();
         } catch (final Exception e) {
             PVPArena.getInstance().getLogger().severe(String.format("Can't create PvpArena folder: %s.", e.getMessage()));
@@ -242,7 +253,7 @@ public final class ArenaManager {
                     debug("arena: {}", sName);
                     if (!ARENAS.containsKey(sName.toLowerCase())) {
                         Arena arena = new Arena(sName);
-                        loadArena(arena);
+                        loadArenaConfig(arena, arenaConfigFile);
                     }
                 }
             }
@@ -266,6 +277,11 @@ public final class ArenaManager {
             PVPArena.getInstance().getLogger().severe(String.format("Can't load arena %s: file %s not found.", arena.getName(), file.getName()));
             return false;
         }
+        return loadArenaConfig(arena, file);
+    }
+
+    /** Load an arena from a config file **/
+    private static boolean loadArenaConfig(Arena arena, File file) {
         try {
             final Config cfg = new Config(file);
             arena.setConfig(cfg);

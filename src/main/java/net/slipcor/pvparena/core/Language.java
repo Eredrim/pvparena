@@ -81,6 +81,7 @@ public final class Language {
         CMD_HELP_MESSAGE("cmd.help.message", "Documentation and all help about commands are available online on &9%1%&r"),
         CMD_HELP_LINK("cmd.help.link", "https://github.com/Eredrim/pvparena"),
 
+        CMD_RELOADALL_DONE("cmd.reloadall.done", "Arenas, goals and language files have been reloaded!"),
         CMD_SETOWNER_DONE("cmd.setowner.done", "&a%1%&r is now owner of arena &a%2%&r!"),
 
         CMD_SPAWN_NOTSET("cmd.spawn.notset", "Spawn not set: &a%1%&r"),
