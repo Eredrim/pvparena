@@ -11,6 +11,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -66,6 +68,30 @@ public abstract class ArenaRegionShape {
                     PABlockLocation blockLocation =  new PABlockLocation(min.getWorldName(), x, y, z);
                     if(this.contains(blockLocation)) {
                         result.add(blockLocation);
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Get all blocks of a region ordered from bottom to top
+     * @return A double entries queue of block locations
+     */
+    public Deque<PABlockLocation> getAllBlocksOrdered() {
+        PABlockLocation min = this.getMinimumLocation();
+        PABlockLocation max = this.getMaximumLocation();
+        Deque<PABlockLocation> result = new ArrayDeque<>();
+
+
+        for(int y = min.getY(); y <= max.getY(); y++) {
+            for(int x = min.getX(); x <= max.getX(); x++) {
+                for(int z = min.getZ(); z <= max.getZ(); z++) {
+                    PABlockLocation blockLocation =  new PABlockLocation(min.getWorldName(), x, y, z);
+                    if(this.contains(blockLocation)) {
+                        result.push(blockLocation);
                     }
                 }
             }

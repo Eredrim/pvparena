@@ -10,7 +10,9 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -344,4 +346,22 @@ public class CuboidRegion extends ArenaRegionShape {
 
         return result;
     }
+
+    public Deque<PABlockLocation> getAllBlocksOrdered() {
+        PABlockLocation min = this.getMinimumLocation();
+        PABlockLocation max = this.getMaximumLocation();
+        Deque<PABlockLocation> result = new ArrayDeque<>();
+
+
+        for(int y = min.getY(); y <= max.getY(); y++) {
+            for(int x = min.getX(); x <= max.getX(); x++) {
+                for(int z = min.getZ(); z <= max.getZ(); z++) {
+                    result.push(new PABlockLocation(min.getWorldName(), x, y, z));
+                }
+            }
+        }
+
+        return result;
+    }
+
 }

@@ -51,7 +51,7 @@ Hook into many different aspects of the game!
 | [Titles](mods/titles.md)                       | send messages to players as the "title" command would do                         |          | ✔️️    |
 | [Turrets](mods/turrets.md)                     | add turrets where players fire projectiles                                       |          | ❌️     |
 | [Vault](mods/vault.md)                         | add economy, money rewards and bet features                                      |          | ✔️️    |
-| [Walls](mods/walls.md)                         | define wall regions to simulate "The Walls"                                      |          | ❌️     |
+| [Walls](mods/walls.md)                         | define wall regions to simulate "The Walls"                                      |          | ✔️️    |
 | [WarmupJoin](mods/warmupjoin.md)               | ???                                                                              | JOIN     | ❌️     |
 | [WorldEdit](mods/worldedit.md)                 | backup/restore regions                                                           |          | ✔️️    |
 

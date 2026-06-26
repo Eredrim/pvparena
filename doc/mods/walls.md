@@ -2,7 +2,8 @@
 
 ## Description
 
-Yep. It's walls. Simple as can be. Make walls disappear ingame and reappear afterwards.
+Yep. It's walls. Simple as can be.
+This module create walls when the match starts and remove them after a while.
 
 ## Installation
 
@@ -10,28 +11,32 @@ Installation of this module can be done in a normal way. You'll find installatio
 
 ## Setup
 
-You need to create regions that define the walls. Just hit the walls you might have prepared anyways, top left, bottom right. 
+You need to create region(s) to define the walls (if you don't know how to do it, please [read this](../regions.md)). 
+Regions will be filled with your wall material at the beginning of the match. **Only air blocks** will be replaced with 
+your wall material.
 
-If you have a standard "The Walls" setup, you will need 2 regions, one for the X axis and one for the Z axis. 
-
-Do NOT(!) call any region in a way that it contains the word "wall", because that is what determins the filling. 
-
-Name them as you wish. "wallX", "wall2", regions with that name will be found and used.
+**Name the wall regions using `wall` prefix** (e.g. *wall1*, *wall*, *wallX*). There's no need to set a specific region 
+type and the regions can overlap other ones (battle ones and other walls).
 
 ## Config settings
 
-- wallseconds \- the seconds that the walls will stay. Default: 300, so 5 minutes!
-- wallmaterial \- the material the wall is made of. Default: SAND 
+- **modules.walls.wallseconds**: the time (in seconds) during the walls will stay. (default: 300 - i.e. 5 minutes)
+- **modules.walls.wallmaterial**: the material the wall is made of (default: SAND)
 
-## Commands
+<br>
 
-- `/pa <arena> wallseconds 1000` \- set the walls timer to 1000 seconds (short: !ww)
-- `/pa <arena> wallmaterial STONE` \- set the walls material to smoothstone (short: !wm)
+> **🚩 Tips:**
+>- You can edit settings in-game using [`/pa set` command](../commands/set.md). Therefore, material can be set by
+> using item in your hand with the command `/pa <arena> set modules.walls.wallmaterial hand`.  
+>- Mind to reload your arena with `/pa <arena> reload` after each setting edition.
+>- Remember to include underground layers in your region if they are accessible.
+>- You can check region borders using [`/pa <arena> region <region> border`](../commands/region.md)
 
-## Warnings
+<br>
 
-Do NOT(!) call any region in a way that it contains the word "wall", because that is what determins the filling.
-
-## Dependencies
-
-\-
+> ⚙️ **Technical precisions:**
+> - To prevent lags, wall building and removal are asynchronous. Action is run at 2000 blocks created/removed per second.
+> - Walls are built from bottom up and removed from the top down. So you can use gravity-affected blocks like sand or
+> concrete powder.
+> - Avoid making wall regions too large (1 block large is sufficient in most cases). Otherwise, walls may make too much
+> time to be built at the beginning of the match.
