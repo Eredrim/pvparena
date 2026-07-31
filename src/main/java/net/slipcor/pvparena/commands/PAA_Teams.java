@@ -7,7 +7,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -120,8 +119,8 @@ public class PAA_Teams extends AbstractArenaCommand {
         }
         for (String team : arena.getTeamNames()) {
             result.define(new String[]{"remove", team});
-            Arrays.stream(DyeColor.values()).forEach(color ->
-                    result.define(new String[]{"set", team, color.name()})
+            TEAM_DYE_COLORS.forEach(color ->
+                    result.define(new String[]{"set", team, color})
             );
         }
         return result;
