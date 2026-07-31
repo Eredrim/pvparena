@@ -78,8 +78,8 @@ public class PAG_Chat extends AbstractArenaCommand {
         // usage: /pa {arenaname} chat {value}
 
         arena.msg(sender, MSG.ERROR_INVALID_VALUE, args[0]);
-        arena.msg(sender, MSG.ERROR_POSITIVES, StringParser.joinSet(StringParser.positive, " | "));
-        arena.msg(sender, MSG.ERROR_NEGATIVES, StringParser.joinSet(StringParser.negative, " | "));
+        arena.msg(sender, MSG.ERROR_POSITIVES, String.join(" | ", StringParser.positive));
+        arena.msg(sender, MSG.ERROR_NEGATIVES, String.join(" | ", StringParser.negative));
 
     }
 

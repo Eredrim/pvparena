@@ -78,7 +78,7 @@ public class PAI_Ready extends AbstractArenaCommand {
                     names.add("&a" + player.getName() + "&r");
                 }
             }
-            arena.msg(sender, MSG.READY_LIST, StringParser.joinSet(names, ", "));
+            arena.msg(sender, MSG.READY_LIST, String.join(", ", names));
         }
     }
 

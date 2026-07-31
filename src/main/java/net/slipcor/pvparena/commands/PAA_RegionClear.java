@@ -48,7 +48,7 @@ public class PAA_RegionClear extends AbstractArenaCommand {
             // usage: /pa {arenaname} regionclear | show region clearance exceptions
 
             final List<String> list = arena.getConfig().getStringList(CFG.GENERAL_REGIONCLEAREXCEPTIONS.getNode(), new ArrayList<String>());
-            arena.msg(sender, MSG.REGION_CLEAR_LIST, StringParser.joinList(list, ", "));
+            arena.msg(sender, MSG.REGION_CLEAR_LIST, String.join(", ", list));
             return;
         }
         if (args.length >= 2) {
@@ -76,7 +76,7 @@ public class PAA_RegionClear extends AbstractArenaCommand {
                 valids.add(type.name());
             }
 
-            arena.msg(sender, MSG.ERROR_ARGUMENT, args[1], StringParser.joinList(valids, ", "));
+            arena.msg(sender, MSG.ERROR_ARGUMENT, args[1], String.join(", ", valids));
         }
     }
 

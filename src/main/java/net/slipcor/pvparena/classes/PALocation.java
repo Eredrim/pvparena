@@ -201,6 +201,6 @@ public class PALocation {
         aLoc[3] = "z:" + this.z;
         aLoc[4] = "P:" + this.getPitch();
         aLoc[5] = "Y:" + this.getYaw();
-        return StringParser.joinArray(aLoc, "|");
+        return String.join("|", aLoc);
     }
 }

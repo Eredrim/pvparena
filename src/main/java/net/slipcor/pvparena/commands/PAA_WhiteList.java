@@ -63,7 +63,7 @@ public class PAA_WhiteList extends AbstractArenaCommand {
             // usage: /pa {arenaname} whitelist [type] clear
             String listType = args[0].toLowerCase();
             if (!SUBTYPES.contains(listType)) {
-                arena.msg(sender, MSG.ERROR_WHITELIST_UNKNOWN_TYPE, StringParser.joinSet(SUBTYPES, "|"));
+                arena.msg(sender, MSG.ERROR_WHITELIST_UNKNOWN_TYPE, String.join("|", SUBTYPES));
                 return;
             }
 
@@ -79,12 +79,12 @@ public class PAA_WhiteList extends AbstractArenaCommand {
         }
 
         if (!SUBTYPES.contains(args[0].toLowerCase())) {
-            arena.msg(sender, MSG.ERROR_WHITELIST_UNKNOWN_TYPE, StringParser.joinSet(SUBTYPES, "|"));
+            arena.msg(sender, MSG.ERROR_WHITELIST_UNKNOWN_TYPE, String.join("|", SUBTYPES));
             return;
         }
 
         if (!SUBCOMMANDS.contains(args[1].toLowerCase())) {
-            arena.msg(sender, MSG.ERROR_WHITELIST_UNKNOWN_SUBCOMMAND, StringParser.joinSet(SUBCOMMANDS, "|"));
+            arena.msg(sender, MSG.ERROR_WHITELIST_UNKNOWN_SUBCOMMAND, String.join("|", SUBCOMMANDS));
             return;
         }
 

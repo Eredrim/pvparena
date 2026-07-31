@@ -47,7 +47,7 @@ public class GoalPlayerLives extends AbstractPlayerLivesGoal {
     @Override
     public boolean checkEnd() {
         debug(this.arena, "checkEnd - " + this.arena.getName());
-        debug(this.arena, () -> "lives: " + StringParser.joinSet(this.getActivePlayerLifeMap().keySet(), "|"));
+        debug(this.arena, () -> "lives: " + StringParser.join("|", this.getActivePlayerLifeMap().keySet()));
         final int count = this.getActivePlayerLifeMap().size();
         return (count <= 1); // yep. only one player left. go!
     }

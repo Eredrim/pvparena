@@ -48,7 +48,7 @@ public class PAA_Protection extends AbstractArenaCommand {
             regionProtection = RegionProtection.valueOf(args[1].toUpperCase());
         } catch (final Exception e) {
             if (!"all".equalsIgnoreCase(args[1])) {
-                arena.msg(sender, MSG.ERROR_REGION_PROTECTION_NOTFOUND, args[1], StringParser.joinArray(RegionProtection.values(), " "));
+                arena.msg(sender, MSG.ERROR_REGION_PROTECTION_NOTFOUND, args[1], StringParser.join(" ", RegionProtection.values()));
                 return;
             }
         }
@@ -81,8 +81,8 @@ public class PAA_Protection extends AbstractArenaCommand {
         // usage: /pa {arenaname} protection [regionname] [regionflag] {value}
 
         arena.msg(sender, MSG.ERROR_INVALID_VALUE, args[2]);
-        arena.msg(sender, MSG.ERROR_POSITIVES, StringParser.joinSet(StringParser.positive, " | "));
-        arena.msg(sender, MSG.ERROR_NEGATIVES, StringParser.joinSet(StringParser.negative, " | "));
+        arena.msg(sender, MSG.ERROR_POSITIVES, String.join(" | ", StringParser.positive));
+        arena.msg(sender, MSG.ERROR_NEGATIVES, String.join(" | ", StringParser.negative));
     }
 
     @Override

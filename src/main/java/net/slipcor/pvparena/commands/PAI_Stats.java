@@ -40,7 +40,7 @@ public class PAI_Stats extends AbstractArenaCommand {
         final StatEntry statType = StatEntry.parse(args[0]);
 
         if (statType == null) {
-            Arena.pmsg(sender, MSG.STATS_TYPENOTFOUND, StringParser.joinArray(StatEntry.getStatTypes(), ", "));
+            Arena.pmsg(sender, MSG.STATS_TYPENOTFOUND, StringParser.join(", ", StatEntry.getStatTypes()));
             return;
         }
 

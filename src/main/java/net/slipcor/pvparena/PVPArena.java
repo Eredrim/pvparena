@@ -214,7 +214,7 @@ public class PVPArena extends JavaPlugin {
                     Bukkit.getServer().dispatchCommand(
                             sender,
                             "pa " + arena.getName() + ' '
-                                    + StringParser.joinArray(newArgs, " "));
+                                    + String.join(" ", newArgs));
                 } catch (final Exception e) {
                     this.getLogger().warning("arena null!");
                 }

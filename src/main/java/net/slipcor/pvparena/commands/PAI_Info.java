@@ -46,7 +46,7 @@ public class PAI_Info extends AbstractArenaCommand {
 
         arena.msg(sender, MSG.INFO_HEAD_HEADLINE, arena.getName(), arena.getPrefix(), arena.getUuid());
 
-        arena.msg(sender, MSG.INFO_HEAD_TEAMS, StringParser.joinSet(arena.getTeamNamesColored(), ChatColor.COLOR_CHAR + "r, "));
+        arena.msg(sender, MSG.INFO_HEAD_TEAMS, String.join(ChatColor.COLOR_CHAR + "r, ", arena.getTeamNamesColored()));
 
         arena.msg(sender, StringParser.colorVar("fighting", arena.isFightInProgress()) + " | " +
                 StringParser.colorVar("enabled", !arena.isLocked()));
@@ -58,7 +58,7 @@ public class PAI_Info extends AbstractArenaCommand {
             }
         }
 
-        arena.msg(sender, MSG.INFO_CLASSES, StringParser.joinSet(classes, ", "));
+        arena.msg(sender, MSG.INFO_CLASSES, String.join(", ", classes));
         arena.msg(sender, MSG.INFO_OWNER, arena.getOwner() == null ? "server" : arena.getOwner());
 
         Config cfg = arena.getConfig();
@@ -217,7 +217,7 @@ public class PAI_Info extends AbstractArenaCommand {
                     regions.add(ar.getRegionName());
                 }
 
-                arena.msg(sender, MSG.INFO_REGIONS, StringParser.joinSet(regions, ", "));
+                arena.msg(sender, MSG.INFO_REGIONS, String.join(", ", regions));
             }
         }
 

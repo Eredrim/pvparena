@@ -37,7 +37,7 @@ public abstract class AbstractArenaCommand implements IArenaCommandHandler {
 
         final String msg = Language.parse(MSG.ERROR_INVALID_ARGUMENT_COUNT,
                 String.valueOf(args.length),
-                StringParser.joinArray(validCounts, "|"));
+                StringParser.join("|", validCounts));
 
         if (arena == null) {
             Arena.pmsg(sender, msg);

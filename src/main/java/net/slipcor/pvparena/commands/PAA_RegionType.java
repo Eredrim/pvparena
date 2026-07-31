@@ -48,7 +48,7 @@ public class PAA_RegionType extends AbstractArenaCommand {
         try {
             regionType = RegionType.valueOf(args[1].toUpperCase());
         } catch (final Exception e) {
-            arena.msg(sender, MSG.ERROR_REGION_TYPE_NOTFOUND, args[1], StringParser.joinArray(RegionType.values(), " "));
+            arena.msg(sender, MSG.ERROR_REGION_TYPE_NOTFOUND, args[1], StringParser.join(" ", RegionType.values()));
             return;
         }
 

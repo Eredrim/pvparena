@@ -7,7 +7,6 @@ import net.slipcor.pvparena.core.CollectionUtils;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.regions.ArenaRegion;
 import net.slipcor.pvparena.regions.RegionProtection;
 import net.slipcor.pvparena.regions.RegionType;
@@ -214,7 +213,7 @@ public final class ArenaManager {
      * @return a string with all arena names joined with comma
      */
     public static String getNames() {
-        return StringParser.joinSet(ARENAS.keySet(), ", ");
+        return String.join(", ", ARENAS.keySet());
     }
 
     public static void reloadAllArenas() {

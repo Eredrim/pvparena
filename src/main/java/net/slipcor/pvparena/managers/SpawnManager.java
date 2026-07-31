@@ -222,7 +222,7 @@ public final class SpawnManager {
                     final PASpawn spawn = this.spawns[this.index++ % this.spawns.length];
                     if (spawn == null) {
                         PVPArena.getInstance().getLogger().warning(String.format("Element #%s is null: [%s]",
-                                this.index, StringParser.joinArray(this.spawns, ",")));
+                                this.index, StringParser.join(", ", this.spawns)));
                     } else {
                         arenaPlayer.setStatus(PlayerStatus.FIGHT);
                         TeleportManager.teleportPlayerToSpawn(arena, arenaPlayer, spawn);

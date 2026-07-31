@@ -1086,7 +1086,7 @@ public class Config {
         result[4] = String.valueOf(loc.getYaw());
         result[5] = String.valueOf(loc.getPitch());
         // "world,x,y,z,yaw,pitch"
-        return StringParser.joinArray(result, ",");
+        return String.join(",", result);
     }
 
     public static String parseToString(final PABlockLocation loc) {
@@ -1096,7 +1096,7 @@ public class Config {
         result[2] = String.valueOf(loc.getY());
         result[3] = String.valueOf(loc.getZ());
         // "world,x,y,z"
-        return StringParser.joinArray(result, ",");
+        return String.join(",", result);
     }
 
     public static Map<String, Object> parseToConfigMap(final ArenaRegion region,

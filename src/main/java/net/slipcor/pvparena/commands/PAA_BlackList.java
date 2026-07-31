@@ -4,11 +4,14 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.core.StringParser;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * <pre>PVP Arena BLACKLIST Command class</pre>
@@ -63,7 +66,7 @@ public class PAA_BlackList extends AbstractArenaCommand {
             // usage: /pa {arenaname} blacklist [type] clear
             String listType = args[0].toLowerCase();
             if (!SUBTYPES.contains(listType)) {
-                arena.msg(sender, MSG.ERROR_BLACKLIST_UNKNOWN_TYPE, StringParser.joinSet(SUBTYPES, "|"));
+                arena.msg(sender, MSG.ERROR_BLACKLIST_UNKNOWN_TYPE, String.join("|", SUBTYPES));
                 return;
             }
 
@@ -79,12 +82,12 @@ public class PAA_BlackList extends AbstractArenaCommand {
         }
 
         if (!SUBTYPES.contains(args[0].toLowerCase())) {
-            arena.msg(sender, MSG.ERROR_BLACKLIST_UNKNOWN_TYPE, StringParser.joinSet(SUBTYPES, "|"));
+            arena.msg(sender, MSG.ERROR_BLACKLIST_UNKNOWN_TYPE, String.join("|", SUBTYPES));
             return;
         }
 
         if (!SUBCOMMANDS.contains(args[1].toLowerCase())) {
-            arena.msg(sender, MSG.ERROR_BLACKLIST_UNKNOWN_SUBCOMMAND, StringParser.joinSet(SUBCOMMANDS, "|"));
+            arena.msg(sender, MSG.ERROR_BLACKLIST_UNKNOWN_SUBCOMMAND, String.join("|", SUBCOMMANDS));
             return;
         }
 

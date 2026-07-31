@@ -71,7 +71,7 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
                 }
                 classes.add(ChatColor.GREEN + ac.getName() + ChatColor.WHITE);
             }
-            arena.msg(sender, MSG.CMD_CLASS_LIST, StringParser.joinSet(classes, ", "));
+            arena.msg(sender, MSG.CMD_CLASS_LIST, String.join(", ", classes));
             return;
         }
 

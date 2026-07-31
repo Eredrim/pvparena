@@ -82,33 +82,17 @@ public final class StringParser {
         return (value ? ChatColor.GREEN.toString() : ChatColor.RED.toString()) + string + ChatColor.WHITE;
     }
 
-    public static String joinArray(final Object[] array, final String glue) {
+    public static String join(final String glue, final Object[] array) {
+        return joinEntries(glue, array);
+    }
+
+    public static String join(final String glue, final Collection<?> array) {
+        return joinEntries(glue, array);
+    }
+
+    private static String joinEntries(final String glue, final Object... array) {
         final StringBuilder result = new StringBuilder();
         for (Object o : array) {
-            result.append(glue);
-            result.append(o);
-        }
-        if (result.length() <= glue.length()) {
-            return result.toString();
-        }
-        return result.substring(glue.length());
-    }
-
-    public static String joinList(final List<?> set, final String glue) {
-        final StringBuilder result = new StringBuilder();
-        for (Object o : set) {
-            result.append(glue);
-            result.append(o);
-        }
-        if (result.length() <= glue.length()) {
-            return result.toString();
-        }
-        return result.substring(glue.length());
-    }
-
-    public static String joinSet(final Set<?> set, final String glue) {
-        final StringBuilder result = new StringBuilder();
-        for (Object o : set) {
             result.append(glue);
             result.append(o);
         }

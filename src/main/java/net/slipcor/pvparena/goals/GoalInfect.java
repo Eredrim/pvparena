@@ -239,7 +239,7 @@ public class GoalInfect extends ArenaGoal {
                 values.add((PlayerPrevention.has(value, pp) ?
                         ChatColor.GREEN.toString() : ChatColor.RED.toString()) + pp.name());
             }
-            this.arena.msg(sender, MSG.GOAL_INFECTED_IPROTECT, StringParser.joinList(values, (ChatColor.WHITE + ", ")));
+            this.arena.msg(sender, MSG.GOAL_INFECTED_IPROTECT, String.join((ChatColor.WHITE + ", "), values));
 
         } else if (SETPROTECT.equalsIgnoreCase(args[0])) {
             // setprotect [value] {true|false}
@@ -287,7 +287,7 @@ public class GoalInfect extends ArenaGoal {
                 for (PlayerPrevention pp : PlayerPrevention.values()) {
                     values.add(pp.name());
                 }
-                this.arena.msg(sender, MSG.ERROR_ARGUMENT, args[1], StringParser.joinList(values, ", "));
+                this.arena.msg(sender, MSG.ERROR_ARGUMENT, args[1], String.join(", ", values));
                 return;
             }
             this.arena.getConfig().save();

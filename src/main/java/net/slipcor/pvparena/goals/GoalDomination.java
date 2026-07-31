@@ -214,7 +214,7 @@ public class GoalDomination extends ArenaGoal {
 
             final Set<ArenaTeam> teams = this.checkLocationPresentTeams(loc, checkDistance);
 
-            debug(this.arena, "teams: " + StringParser.joinSet(teams, ", "));
+            debug(this.arena, "teams: " + StringParser.join(", ", teams));
 
             // teams now contains all teams near the flag
 

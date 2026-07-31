@@ -37,7 +37,7 @@ public abstract class AbstractGlobalCommand implements IArenaCommandHandler {
             return true;
         }
 
-        Arena.pmsg(sender, MSG.ERROR_INVALID_ARGUMENT_COUNT, String.valueOf(args.length), StringParser.joinArray(validCounts, "|"));
+        Arena.pmsg(sender, MSG.ERROR_INVALID_ARGUMENT_COUNT, String.valueOf(args.length), StringParser.join("|", validCounts));
         return false;
     }
 

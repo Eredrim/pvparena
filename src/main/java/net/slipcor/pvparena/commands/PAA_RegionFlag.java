@@ -47,7 +47,7 @@ public class PAA_RegionFlag extends AbstractArenaCommand {
         try {
             regionFlag = RegionFlag.valueOf(args[1].toUpperCase());
         } catch (final Exception e) {
-            arena.msg(sender, MSG.ERROR_REGION_FLAG_NOTFOUND, args[1], StringParser.joinArray(RegionFlag.values(), " "));
+            arena.msg(sender, MSG.ERROR_REGION_FLAG_NOTFOUND, args[1], StringParser.join(" ", RegionFlag.values()));
             return;
         }
 
@@ -79,8 +79,8 @@ public class PAA_RegionFlag extends AbstractArenaCommand {
         // usage: /pa {arenaname} regionflag [regionname] [regionflag] {value}
 
         arena.msg(sender, MSG.ERROR_INVALID_VALUE, args[2]);
-        arena.msg(sender, MSG.ERROR_POSITIVES, StringParser.joinSet(StringParser.positive, " | "));
-        arena.msg(sender, MSG.ERROR_NEGATIVES, StringParser.joinSet(StringParser.negative, " | "));
+        arena.msg(sender, MSG.ERROR_POSITIVES, String.join(" | ", StringParser.positive));
+        arena.msg(sender, MSG.ERROR_NEGATIVES, String.join(" | ", StringParser.negative));
     }
 
     @Override
