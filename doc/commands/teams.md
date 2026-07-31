@@ -19,23 +19,7 @@ Examples:
 
 ## Details
 
-You will need a proper color as a value. The possible colors are as follows:
-
--  	AQUA
--  	BLACK
--  	BLUE
--  	DARK_AQUA
--  	DARK_BLUE
--  	DARK_GRAY
--  	DARK_GREEN
--  	DARK_PURPLE
--  	DARK_RED
--  	GOLD
--  	GRAY
--  	GREEN
--  	LIGHT_PURPLE
--  	RED
--  	WHITE
--  	YELLOW
+You will need a proper color as a value. Available colors are ORANGE, MAGENTA, LIGHT_BLUE, LIME, PINK, GRAY, LIGHT_GRAY, 
+PURPLE, BLUE, GREEN, RED, CYAN, YELLOW, BLACK, WHITE.
 
 

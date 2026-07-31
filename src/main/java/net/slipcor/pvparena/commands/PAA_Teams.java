@@ -3,13 +3,15 @@ package net.slipcor.pvparena.commands;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.core.StringParser;
 import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
 import org.bukkit.command.CommandSender;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import static net.slipcor.pvparena.core.ColorUtils.TEAM_DYE_COLORS;
 
 /**
  * <pre>PVP Arena TEAMS Command class</pre>
@@ -43,7 +45,7 @@ public class PAA_Teams extends AbstractArenaCommand {
 
         if (args.length == 0) {
             // show teams
-            arena.msg(sender, MSG.TEAMS_LIST, StringParser.joinSet(arena.getTeamNamesColored(), ChatColor.COLOR_CHAR + "f,"));
+            arena.msg(sender, MSG.TEAMS_LIST, String.join(ChatColor.WHITE + ", ", arena.getTeamNamesColored()));
             return;
         }
 
@@ -66,7 +68,7 @@ public class PAA_Teams extends AbstractArenaCommand {
         } else if ("add".equals(args[0])) {
             try {
 
-                final ChatColor color = ChatColor.valueOf(args[2].toUpperCase());
+                final DyeColor color = DyeColor.valueOf(args[2].toUpperCase());
                 final ArenaTeam newTeam = new ArenaTeam(args[1], color.name());
                 arena.getTeams().add(newTeam);
                 arena.getConfig().setManually("teams." + newTeam.getName(), color.name());
@@ -74,20 +76,20 @@ public class PAA_Teams extends AbstractArenaCommand {
 
                 arena.msg(sender, MSG.TEAMS_ADD, newTeam.getColoredName());
             } catch (final Exception e) {
-                arena.msg(sender, MSG.ERROR_ARGUMENT, args[2], StringParser.joinArray(ChatColor.values(), ","));
+                arena.msg(sender, MSG.ERROR_ARGUMENT, args[2], String.join(", ", TEAM_DYE_COLORS));
             }
         } else if ("set".equals(args[0])) {
             try {
-                final ChatColor color = ChatColor.valueOf(args[2].toUpperCase());
+                final DyeColor color = DyeColor.valueOf(args[2].toUpperCase());
                 final ArenaTeam newTeam = new ArenaTeam(args[1], color.name());
                 arena.getTeams().remove(arena.getTeam(args[1]));
                 arena.getTeams().add(newTeam);
                 arena.getConfig().setManually("teams." + newTeam.getName(), color.name());
                 arena.getConfig().save();
 
-                arena.msg(sender, MSG.TEAMS_REMOVE, newTeam.getColoredName());
+                arena.msg(sender, MSG.TEAMS_SET, newTeam.getColoredName());
             } catch (final Exception e) {
-                arena.msg(sender, MSG.ERROR_ARGUMENT, args[2], StringParser.joinArray(ChatColor.values(), ","));
+                arena.msg(sender, MSG.ERROR_ARGUMENT, args[2], String.join(", ", TEAM_DYE_COLORS));
             }
         } else {
             arena.msg(sender, MSG.ERROR_ARGUMENT, "remove, add, set");
@@ -118,7 +120,7 @@ public class PAA_Teams extends AbstractArenaCommand {
         }
         for (String team : arena.getTeamNames()) {
             result.define(new String[]{"remove", team});
-            Arrays.stream(ChatColor.values()).forEach(color ->
+            Arrays.stream(DyeColor.values()).forEach(color ->
                     result.define(new String[]{"set", team, color.name()})
             );
         }

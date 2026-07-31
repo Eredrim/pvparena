@@ -19,6 +19,9 @@ import static net.slipcor.pvparena.config.Debugger.debug;
 
 public final class ColorUtils {
 
+    public static final List<String> TEAM_DYE_COLORS = Arrays.asList("ORANGE", "MAGENTA", "LIGHT_BLUE", "LIME", "PINK",
+            "GRAY", "LIGHT_GRAY", "PURPLE", "BLUE", "GREEN", "RED", "CYAN");
+
     private ColorUtils() {
     }
 
@@ -66,8 +69,7 @@ public final class ColorUtils {
           colors not being able to parse: chat-AQUA, wool-brown
          */
 
-        final List<String> wool = Arrays.asList("ORANGE", "MAGENTA", "LIGHT_BLUE", "LIME", "PINK", "GRAY", "LIGHT_GRAY",
-                "PURPLE", "BLUE", "GREEN", "RED", "CYAN");
+        final List<String> wool = TEAM_DYE_COLORS;
         final List<String> chat = Arrays.asList("GOLD", "LIGHT_PURPLE", "BLUE", "GREEN", "RED", "DARK_GRAY", "GRAY",
                 "DARK_PURPLE", "DARK_BLUE", "DARK_GREEN", "DARK_RED", "DARK_AQUA");
 
