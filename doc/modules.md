@@ -123,3 +123,16 @@ Just run [`/pa modules upgrade`](commands/modules.md). In some cases, a server r
 
 Browse the `plugins/pvparena` directory. Delete the `files` folder and unzip the new modules archive.  
 Then type [`/pa modules update`](commands/modules.md). In some cases, a server restart may be needed.
+
+
+# Community modules
+
+The following modules are created and maintained with ❤️ by the community. 
+They are not part of the official module pack. Please carefully read their own documentation page to find compatibility
+information, installation instruction and more.
+
+| Mod                                                                    | Description                                        | Type |
+|------------------------------------------------------------------------|----------------------------------------------------|------|
+| [TaczEventCompatible](https://github.com/HarryH2O/TaczEventCompatible) | Adds compatibility with Tacz mod for Forge servers |      |
+
+> ⚠️ Community modules **are not officially supported**. Please test them thoroughly in your environment.
