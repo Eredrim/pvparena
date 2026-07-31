@@ -68,8 +68,7 @@ public class BlockListener implements Listener {
         }
 
         if (arena.isLocked() || !arena.isFightInProgress()) {
-            if (event instanceof Cancellable) {
-                final Cancellable cEvent = (Cancellable) event;
+            if (event instanceof Cancellable cEvent) {
                 cEvent.setCancelled(!PAA_Edit.activeEdits.containsValue(arena));
             }
             return PAA_Edit.activeEdits.containsValue(arena);

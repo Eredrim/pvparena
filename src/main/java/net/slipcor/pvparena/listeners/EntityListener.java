@@ -158,7 +158,7 @@ public class EntityListener implements Listener {
     public void onEntityRegainHealth(final EntityRegainHealthEvent event) {
         final Entity entity = event.getEntity();
 
-        if ((!(entity instanceof Player))) {
+        if ((!(entity instanceof Player player))) {
             return; // no player
         }
         final Arena arena = ArenaPlayer.fromPlayer(entity.getName())
@@ -166,7 +166,6 @@ public class EntityListener implements Listener {
         if (arena == null) {
             return;
         }
-        final Player player = (Player) entity;
         trace(player, "onEntityRegainHealth => fighing player. Reason: {}", event.getRegainReason());
         if (!arena.isFightInProgress()) {
             return;
@@ -196,10 +195,10 @@ public class EntityListener implements Listener {
         debug("onEntityDamageByEntity: cause: {} : {} => {}", event.getCause().name(), event.getDamager(), event.getEntity());
         debug("damage: {}", event.getDamage());
 
-        if (eDamager instanceof Projectile) {
+        if (eDamager instanceof Projectile projectile) {
             debug("parsing projectile");
 
-            ProjectileSource p = ((Projectile) eDamager).getShooter();
+            ProjectileSource p = projectile.getShooter();
 
             if (p instanceof LivingEntity) {
 
@@ -225,8 +224,7 @@ public class EntityListener implements Listener {
             return;
         }
 
-        if (event.getEntity() instanceof Wolf) {
-            final Wolf wolf = (Wolf) event.getEntity();
+        if (event.getEntity() instanceof Wolf wolf) {
             if (wolf.getOwner() != null) {
                 try {
                     eDamager = (Entity) wolf.getOwner();
@@ -242,7 +240,7 @@ public class EntityListener implements Listener {
             // cancel events for regular no PVP servers
         }
 
-        if (!(eDamagee instanceof Player)) {
+        if (!(eDamagee instanceof Player defender)) {
             return;
         }
 
@@ -253,23 +251,15 @@ public class EntityListener implements Listener {
         }
         debug(arena, "onEntityDamageByEntity: fighting player");
 
-        final Player defender = (Player) eDamagee;
         final ArenaPlayer apDefender = ArenaPlayer.fromPlayer(defender.getName());
 
-        if ((!(eDamager instanceof Player))) {
+        if ((!(eDamager instanceof Player attacker))) {
             // attacker is not a player => we compute it as an environmental damage
             handleSimpleDamage(event, apDefender);
             return;
         }
 
         debug(arena, eDamager, "both entities are players");
-        final Player attacker = (Player) eDamager;
-
-
-        if (attacker.equals(defender)) {
-            // player attacking himself. ignore!
-            return;
-        }
 
         boolean defTeam = false;
         boolean attTeam = false;
@@ -294,8 +284,8 @@ public class EntityListener implements Listener {
             event.setCancelled(false); // uncancel events for regular no PVP servers
         }
 
-        if ((!arena.getConfig().getBoolean(CFG.PERMS_TEAMKILL))
-                && (apAttacker.getArenaTeam()).equals(apDefender.getArenaTeam())) {
+        if (!arena.getConfig().getBoolean(CFG.PERMS_TEAMKILL)
+                && (attacker.equals(defender) || apAttacker.getArenaTeam().equals(apDefender.getArenaTeam()))) {
             // no team fights!
             debug(arena, attacker, "team hit, cancel!");
             debug(arena, defender, "team hit, cancel!");
@@ -363,9 +353,7 @@ public class EntityListener implements Listener {
         ProjectileSource eDamager = event.getEntity().getShooter();
         final Entity eDamagee = event.getHitEntity();
 
-        if(eDamager instanceof Player && eDamagee instanceof Player) {
-            final Player attacker = (Player) eDamager;
-            final Player defender = (Player) eDamagee;
+        if (eDamager instanceof Player attacker && eDamagee instanceof Player defender) {
             final ArenaPlayer apDefender = ArenaPlayer.fromPlayer(defender.getName());
             final ArenaPlayer apAttacker = ArenaPlayer.fromPlayer(attacker.getName());
             final Arena arena = apDefender.getArena();
@@ -515,8 +503,7 @@ public class EntityListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onEntityTeleport(final EntityTeleportEvent event) {
-        if (event.getEntity() instanceof Tameable) {
-            Tameable t = (Tameable) event.getEntity();
+        if (event.getEntity() instanceof Tameable t) {
 
             if (t.isTamed() && t.getOwner() instanceof Player) {
                 ArenaPlayer ap = ArenaPlayer.fromPlayer((Player) t.getOwner());
