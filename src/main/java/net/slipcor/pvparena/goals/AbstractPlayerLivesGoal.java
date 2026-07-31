@@ -10,7 +10,6 @@ import net.slipcor.pvparena.events.goal.PAGoalEndEvent;
 import net.slipcor.pvparena.events.goal.PAGoalPlayerDeathEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
-import net.slipcor.pvparena.managers.WorkflowManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -82,9 +81,8 @@ public abstract class AbstractPlayerLivesGoal extends ArenaGoal {
             this.getPlayerLifeMap().remove(arenaPlayer);
 
             debug(arenaPlayer, "no remaining lives -> LOST");
-            arenaPlayer.handleDeathAndLose(deathInfo);
-
-            WorkflowManager.handleEnd(this.arena, false);
+            arenaPlayer.setMayDropInventory(true);
+            arenaPlayer.setLoosingRespawn(true);
         } else {
             int nextPlayerOrTeamLive = currentPlayerOrTeamLive - 1;
             this.getPlayerLifeMap().put(arenaPlayer, nextPlayerOrTeamLive);

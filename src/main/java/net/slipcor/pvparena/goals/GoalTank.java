@@ -17,9 +17,8 @@ import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.InventoryManager;
-import net.slipcor.pvparena.managers.TeleportManager;
 import net.slipcor.pvparena.managers.SpawnManager;
-import net.slipcor.pvparena.managers.WorkflowManager;
+import net.slipcor.pvparena.managers.TeleportManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -164,10 +163,8 @@ public class GoalTank extends ArenaGoal {
             this.getPlayerLifeMap().remove(arenaPlayer);
 
             debug(arenaPlayer, "no remaining lives -> LOST");
-            arenaPlayer.handleDeathAndLose(deathInfo);
+            arenaPlayer.setLoosingRespawn(true);
 
-            // player died => commit death!
-            WorkflowManager.handleEnd(this.arena, false);
         } else {
             final PAGoalPlayerDeathEvent gEvent = new PAGoalPlayerDeathEvent(this.arena, this, arenaPlayer, deathInfo, true);
             Bukkit.getPluginManager().callEvent(gEvent);

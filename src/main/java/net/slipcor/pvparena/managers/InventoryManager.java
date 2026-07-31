@@ -12,8 +12,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import static net.slipcor.pvparena.config.Debugger.debug;
 import static net.slipcor.pvparena.core.ItemStackUtils.cloneItemStacks;
@@ -69,16 +72,16 @@ public final class InventoryManager {
 
         boolean keepAll = false;
 
-        if (ap != null && ap.getArena() != null) {
+        if (ap.getArena() != null) {
             excludedDroppedMaterials = Arrays.stream(ap.getArena().getConfig().getItems(CFG.ITEMS_EXCLUDEFROMDROPS))
                     .filter(Objects::nonNull)
                     .map(ItemStack::getType)
-                    .collect(Collectors.toList());
+                    .toList();
 
             onlyDroppedMaterials = Arrays.stream(ap.getArena().getConfig().getItems(CFG.ITEMS_ONLYDROPS))
                     .filter(Objects::nonNull)
                     .map(ItemStack::getType)
-                    .collect(Collectors.toList());
+                    .toList();
 
             keepAll = ap.getArena().getConfig().getBoolean(CFG.ITEMS_KEEPALLONRESPAWN);
             if (!keepAll) {
@@ -106,7 +109,7 @@ public final class InventoryManager {
                     .filter(item -> !item.hasItemMeta() || item.getItemMeta().getDisplayName().equals(dropped.getItemMeta().getDisplayName()))
                     .filter(item -> !item.hasItemMeta() || !item.getItemMeta().hasLore() || item.getItemMeta().getLore().equals(dropped.getItemMeta().getLore()))
                     .map(ItemStack::clone)
-                    .collect(Collectors.toList());
+                    .toList();
 
             if(!selectedKeptItems.isEmpty()) {
                 keptItems.addAll(selectedKeptItems);

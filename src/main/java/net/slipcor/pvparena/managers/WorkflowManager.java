@@ -265,6 +265,8 @@ public class WorkflowManager {
 
             if (arenaPlayer.mayRespawn()) {
                 handleRespawn(arenaPlayer, deathInfo, droppedInv);
+            } else if (arenaPlayer.isLoosingRespawn()) {
+                arenaPlayer.handleDeathAndLose(deathInfo);
             }
 
         } else {

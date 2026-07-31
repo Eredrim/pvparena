@@ -75,7 +75,8 @@ public class GoalTeamLives extends AbstractTeamKillGoal {
 
         } else {
             debug(respawnPlayer, "no remaining lives -> LOST");
-            respawnPlayer.handleDeathAndLose(deathInfo);
+            respawnPlayer.setMayDropInventory(true);
+            respawnPlayer.setLoosingRespawn(true);
         }
     }
 

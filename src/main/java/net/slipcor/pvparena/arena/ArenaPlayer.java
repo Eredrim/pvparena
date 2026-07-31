@@ -80,6 +80,7 @@ public class ArenaPlayer {
     private boolean teleporting;
     private boolean mayDropInventory;
     private boolean mayRespawn;
+    private boolean loosingRespawn;
     private boolean spectating;
 
     private Boolean flying;
@@ -144,6 +145,14 @@ public class ArenaPlayer {
         this.spectating = spectating;
     }
 
+    public boolean isLoosingRespawn() {
+        return this.loosingRespawn;
+    }
+
+    public void setLoosingRespawn(boolean loosingRespawn) {
+        this.loosingRespawn = loosingRespawn;
+    }
+
     public void reloadBukkitPlayer() {
         this.player.loadData();
         UUID playerUUID = this.player.getUniqueId();
@@ -159,9 +168,8 @@ public class ArenaPlayer {
     public static Player getLastDamagingPlayer(EntityDamageEvent damageEvent) {
         Entity damagee = damageEvent.getEntity();
         debug(damagee, "trying to get the last damaging player");
-        if (damageEvent instanceof EntityDamageByEntityEvent) {
+        if (damageEvent instanceof EntityDamageByEntityEvent event) {
             debug(damagee, "there was an EDBEE");
-            final EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) damageEvent;
 
             Entity eDamager = event.getDamager();
 
@@ -175,8 +183,7 @@ public class ArenaPlayer {
                 }
             }
 
-            if (event.getEntity() instanceof Wolf) {
-                final Wolf wolf = (Wolf) event.getEntity();
+            if (event.getEntity() instanceof Wolf wolf) {
                 if (wolf.getOwner() != null) {
                     eDamager = (Entity) wolf.getOwner();
                     debug(damagee, "tamed wolf is found");
@@ -383,7 +390,7 @@ public class ArenaPlayer {
         PlayerState.fullReset(this.arena, this.player);
 
         Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), () -> {
-            if (!spectateMod.isPresent()) {
+            if (spectateMod.isEmpty()) {
                 new PAG_Leave().commit(this.arena, this.player, new String[0]);
             }
         }, 5L);
@@ -396,7 +403,7 @@ public class ArenaPlayer {
 
         if (this.arena.getConfig().getYamlConfiguration().contains(CFG.ITEMS_TAKEOUTOFGAME.getNode())) {
             ItemStack[] items = this.arena.getConfig().getItems(CFG.ITEMS_TAKEOUTOFGAME);
-            List<Material> allowedMats = Arrays.stream(items).map(ItemStack::getType).collect(Collectors.toList());
+            List<Material> allowedMats = Arrays.stream(items).map(ItemStack::getType).toList();
 
             List<ItemStack> keepItems = Arrays.stream(this.player.getInventory().getContents())
                     .filter(item -> item != null && allowedMats.contains(item.getType()))

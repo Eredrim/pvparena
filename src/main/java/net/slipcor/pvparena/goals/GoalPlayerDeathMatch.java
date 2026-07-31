@@ -15,7 +15,6 @@ import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.SpawnManager;
-import net.slipcor.pvparena.managers.WorkflowManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -189,9 +188,8 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
             }
 
             debug(killedPlayer, "no remaining lives -> LOST");
-            killedPlayer.handleDeathAndLose(deathInfo);
-
-            WorkflowManager.handleEnd(this.arena, false);
+            killedPlayer.setMayDropInventory(true);
+            killedPlayer.setLoosingRespawn(true);
             return true;
         }
         iLives--;

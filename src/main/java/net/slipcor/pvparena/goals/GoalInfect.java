@@ -369,7 +369,8 @@ public class GoalInfect extends ArenaGoal {
                 this.getPlayerLifeMap().remove(aPlayer);
 
                 debug(aPlayer, "no remaining lives -> LOST");
-                aPlayer.handleDeathAndLose(deathInfo);
+
+                aPlayer.setLoosingRespawn(true);
 
                 return;
             }
