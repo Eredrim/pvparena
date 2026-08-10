@@ -17,11 +17,11 @@ public class VersionUtils {
         int currentVerVal = 0;
         int newVerVal = 0;
 
-        final int versionLen = (semVer) ? Math.min(3, currentVerArr.length) : currentVerArr.length;
+        final int versionLen = (semVer) ? 3 : Math.max(currentVerArr.length, newVerArr.length);
         for(int i = 0; i < versionLen; i++) {
             int weight = (versionLen - 1 - i) * 2;
-            long currentVerChunk = Long.parseLong(currentVerArr[i]);
-            long newVerChunk = Long.parseLong(newVerArr[i]);
+            long currentVerChunk = parseLongOrZeroForIndex(currentVerArr, i);
+            long newVerChunk = parseLongOrZeroForIndex(newVerArr, i);
             currentVerVal += (int) (currentVerChunk * Math.pow(10, weight));
             newVerVal += (int) (newVerChunk * Math.pow(10, weight));
         }
@@ -43,5 +43,13 @@ public class VersionUtils {
 
     public static boolean isApiVersionNewerThan(String versionNumber) {
         return isSameVersionOrNewer(getApiVersion(), versionNumber);
+    }
+
+    private static long parseLongOrZeroForIndex(String[] strArray, int idx) {
+        try {
+            return Long.parseLong(strArray[idx]);
+        } catch (NumberFormatException | IndexOutOfBoundsException ignored) {
+            return 0L;
+        }
     }
 }

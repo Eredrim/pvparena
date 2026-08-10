@@ -36,7 +36,15 @@ public class VersionUtilsTest {
                 Arguments.of("2.0.0", "1.99.9", true),
                 Arguments.of("1.99.9", "2.0.0", false),
                 Arguments.of("26.1.2.build.63-stable", "1.21.2", true),
-                Arguments.of("1.21.2", "26.1.2.build.63-stable", false)
+                Arguments.of("1.21.2", "26.1.2.build.63-stable", false),
+                Arguments.of("26.2.build.111-stable", "1.21.2", true),
+                Arguments.of("1.21.2", "26.2.build.111-stable", false),
+                Arguments.of("26.2-111-main@f570646", "1.21.2", true),
+                Arguments.of("1.21.2", "26.2-111-main@f570646", false),
+                Arguments.of("26.2.build.111-stable", "26.2-111-main@f570646", true),
+                Arguments.of("26.2-111-main@f570646", "26.2.build.111-stable", true),
+                Arguments.of("26.2.2", "26.2", true),
+                Arguments.of("26.2", "26.2.2", false)
         );
     }
 }
