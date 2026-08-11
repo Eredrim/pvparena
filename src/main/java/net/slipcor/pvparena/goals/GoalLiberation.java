@@ -40,6 +40,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -76,6 +77,7 @@ public class GoalLiberation extends ArenaGoal {
 
     private EndRunnable endRunner;
     private String blockTeamName;
+    private List<ArenaPlayer> jailedPlayers = new ArrayList<>();
 
     @Override
     public String version() {
@@ -165,6 +167,7 @@ public class GoalLiberation extends ArenaGoal {
             boolean success = false;
             for (ArenaPlayer jailedPlayer : arenaTeam.getTeamMembers()) {
                 if (jailedPlayer.getStatus() == PlayerStatus.DEAD) {
+                    this.jailedPlayers.remove(jailedPlayer);
                     SpawnManager.respawn(jailedPlayer, null);
                     new InventoryRefillRunnable(this.arena, jailedPlayer.getPlayer(), emptyList());
                     if (this.arena.getConfig().getBoolean(CFG.GOAL_LIBERATION_JAILED_SCOREBOARD)) {
@@ -211,7 +214,7 @@ public class GoalLiberation extends ArenaGoal {
         if (teamLeaves <= 1) {
             return arenaPlayer.getArenaTeam().getTeamMembers()
                     .stream()
-                    .anyMatch(ap -> ap.getStatus() == PlayerStatus.FIGHT);
+                    .anyMatch(ap -> !this.jailedPlayers.contains(ap));
         }
         return true;
     }
@@ -308,6 +311,7 @@ public class GoalLiberation extends ArenaGoal {
             this.getTeamLifeMap().put(arenaTeam, 1);
 
             arenaPlayer.setStatus(PlayerStatus.DEAD);
+            this.jailedPlayers.add(arenaPlayer);
 
             if (this.arena.getConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
                 this.broadcastSimpleDeathMessage(arenaPlayer, deathInfo);
@@ -332,52 +336,54 @@ public class GoalLiberation extends ArenaGoal {
         Player player = arenaPlayer.getPlayer();
         ArenaTeam team = arenaPlayer.getArenaTeam();
 
-        boolean someoneAlive = team.getTeamMembers().stream()
-                .anyMatch(pl -> pl.getStatus() == PlayerStatus.FIGHT);
+        if (this.jailedPlayers.contains(arenaPlayer)) {
+            boolean someoneAlive = team.getTeamMembers().stream()
+                    .anyMatch(pl -> !this.jailedPlayers.contains(pl));
 
-        if (someoneAlive) {
-            // Player can still be freed => respawn them to jail
-            debug(arenaPlayer, "player is DEAD - teleporting them to jail");
-            InventoryManager.clearInventory(player);
+            if (someoneAlive) {
+                // Player can still be freed => respawn them to jail
+                debug(arenaPlayer, "player is DEAD - teleporting them to jail");
+                InventoryManager.clearInventory(player);
 
-            arenaPlayer.revive(deathInfo);
-            Set<PASpawn> jailSpawns = getPASpawnsStartingWith(this.arena, JAIL, arenaPlayer.getArenaTeam().getName());
-            TeleportManager.teleportPlayerToRandomSpawn(this.arena, arenaPlayer, jailSpawns);
+                arenaPlayer.revive(deathInfo);
+                Set<PASpawn> jailSpawns = getPASpawnsStartingWith(this.arena, JAIL, arenaPlayer.getArenaTeam().getName());
+                TeleportManager.teleportPlayerToRandomSpawn(this.arena, arenaPlayer, jailSpawns);
 
-            if (this.arena.getConfig().getBoolean(CFG.GOAL_LIBERATION_JAILED_SCOREBOARD)) {
-                player.getScoreboard().getObjective("lives").getScore(arenaPlayer.getName()).setScore(101);
-            }
-        } else {
-            // Last player killed => all their team should be excluded
-            ArenaTeam arenaTeam = arenaPlayer.getArenaTeam();
-            debug(arenaPlayer, "player LOST - all {} team should be excluded", arenaTeam.getName());
-            this.getTeamLifeMap().remove(arenaTeam);
-
-            InventoryManager.clearInventory(player);
-
-            Optional<ArenaModule> spectateMod = this.arena.getMods().stream()
-                    .filter(mod -> mod.getType() == ModuleType.SPECTATE)
-                    .min(Comparator.comparingInt(ArenaModule::getPriority));
-
-            Consumer<Player> spectateConsumer = (p) -> spectateMod.ifPresentOrElse(
-                    arenaModule -> arenaModule.switchToSpectate(p),
-                    () -> Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), () -> new PAG_Leave().commit(this.arena, p, new String[0]), 5L)
-            );
-
-            arenaTeam.getTeamMembers().forEach(member -> {
-                if (member.getStatus() == PlayerStatus.DEAD) {
-                    member.setStatus(PlayerStatus.LOST);
-
-                    this.arena.removePlayer(member, this.arena.getConfig().getString(CFG.TP_DEATH), true, false);
-                    spectateConsumer.accept(member.getPlayer());
-
-                    PlayerState.fullReset(this.arena, member.getPlayer());
-                } else {
-                    member.setStatus(PlayerStatus.LOST);
+                if (this.arena.getConfig().getBoolean(CFG.GOAL_LIBERATION_JAILED_SCOREBOARD)) {
+                    player.getScoreboard().getObjective("lives").getScore(arenaPlayer.getName()).setScore(101);
                 }
-            });
+            } else {
+                // Last player killed => all their team should be excluded
+                ArenaTeam arenaTeam = arenaPlayer.getArenaTeam();
+                debug(arenaPlayer, "player LOST - all {} team should be excluded", arenaTeam.getName());
+                this.getTeamLifeMap().remove(arenaTeam);
 
-            WorkflowManager.handleEnd(this.arena, false);
+                InventoryManager.clearInventory(player);
+
+                Optional<ArenaModule> spectateMod = this.arena.getMods().stream()
+                        .filter(mod -> mod.getType() == ModuleType.SPECTATE)
+                        .min(Comparator.comparingInt(ArenaModule::getPriority));
+
+                Consumer<Player> spectateConsumer = (p) -> spectateMod.ifPresentOrElse(
+                        arenaModule -> arenaModule.switchToSpectate(p),
+                        () -> Bukkit.getScheduler().runTaskLater(PVPArena.getInstance(), () -> new PAG_Leave().commit(this.arena, p, new String[0]), 5L)
+                );
+
+                arenaTeam.getTeamMembers().forEach(member -> {
+                    if (member.getStatus() == PlayerStatus.DEAD) {
+                        member.setStatus(PlayerStatus.LOST);
+
+                        this.arena.removePlayer(member, this.arena.getConfig().getString(CFG.TP_DEATH), true, false);
+                        spectateConsumer.accept(member.getPlayer());
+
+                        PlayerState.fullReset(this.arena, member.getPlayer());
+                    } else {
+                        member.setStatus(PlayerStatus.LOST);
+                    }
+                });
+
+                WorkflowManager.handleEnd(this.arena, false);
+            }
         }
     }
 
@@ -457,6 +463,7 @@ public class GoalLiberation extends ArenaGoal {
     public void reset(final boolean force) {
         this.endRunner = null;
         this.getTeamLifeMap().clear();
+        this.jailedPlayers.clear();
         if (this.arena.getConfig().getBoolean(CFG.GOAL_LIBERATION_JAILED_SCOREBOARD)) {
             this.arena.getScoreboard().removeCustomEntry(null, 102);
             this.arena.getScoreboard().removeCustomEntry(null, 100);
