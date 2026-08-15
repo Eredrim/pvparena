@@ -4,14 +4,19 @@ import be.seeseemelk.mockbukkit.Coordinate;
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.WorldMock;
+import be.seeseemelk.mockbukkit.block.BlockMock;
+import be.seeseemelk.mockbukkit.inventory.PlayerInventoryMock;
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.arena.PlayerStatus;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.commands.PAA_Edit;
+import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Utils;
+import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.WorkflowManager;
@@ -19,6 +24,8 @@ import net.slipcor.pvparena.regions.ArenaRegion;
 import net.slipcor.pvparena.regions.RegionType;
 import net.slipcor.pvparena.regionshapes.CuboidRegion;
 import net.slipcor.pvparena.testUtils.ArenaPlayerTest;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -44,6 +51,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.argumentSet;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -70,12 +79,20 @@ class PlayerListenerInteractTest {
     @Mock(strictness = Mock.Strictness.LENIENT)
     private Config config;
 
+    @Mock
+    private PVPArena pluginInstance;
+
+    @Mock
+    private ArenaGoal arenaGoal;
+
     @InjectMocks
     private PlayerListener listener;
 
     private Arena arena;
 
     private ServerMock server;
+
+    private WorldMock world;
 
     @BeforeAll
     static void beforeAll() {
@@ -86,8 +103,10 @@ class PlayerListenerInteractTest {
     @BeforeEach
     void beforeEach() {
         this.server = MockBukkit.mock();
+        this.world = this.server.addSimpleWorld("world");
         this.arena = new Arena("Test");
         this.arena.setConfig(this.config);
+        this.arena.setGoal(this.arenaGoal, false);
         this.arenaPlayerMock = Mockito.mockStatic(ArenaPlayer.class, withSettings().defaultAnswer(Mockito.CALLS_REAL_METHODS));
     }
 
@@ -105,10 +124,57 @@ class PlayerListenerInteractTest {
         this.arenaPlayerMock.when(() -> ArenaPlayer.fromPlayer(eq(this.player))).thenReturn(apt);
 
         // When
-        listener.onPlayerInteract(this.event);
+        this.listener.onPlayerInteract(this.event);
 
         // Then
         verify(this.event, never()).setCancelled(true);
+    }
+
+    @ParameterizedTest
+    @MethodSource("argumentsForExternalBlockSelection")
+    void shouldPrioritizeRegionSelectIfWandItem(Material itemInHand, boolean shouldSetRegion) {
+        // Given
+        PlayerInventoryMock inventoryMock = new PlayerInventoryMock(this.player);
+        inventoryMock.setItemInMainHand(new ItemStack(itemInHand));
+        ArenaPlayer apt = new ArenaPlayerTest(this.player);
+
+        PAA_Region.activeSelections.put(PLAYER_NAME, this.arena);
+
+        when(this.event.getPlayer()).thenReturn(this.player);
+        when(this.event.getAction()).thenReturn(Action.RIGHT_CLICK_BLOCK);
+        Location location = new Location(this.world, 1, 2, 3);
+        when(this.event.getClickedBlock()).thenReturn(new BlockMock(location.clone()));
+
+        when(this.player.getName()).thenReturn(PLAYER_NAME);
+        when(this.player.getInventory()).thenReturn(inventoryMock);
+        when(this.player.hasPermission(anyString())).thenReturn(true);
+
+        when(this.pluginInstance.getWandItem()).thenReturn(Material.STICK);
+        this.arenaPlayerMock.when(() -> ArenaPlayer.fromPlayer(eq(this.player))).thenReturn(apt);
+
+        MockedConstruction<PABlockLocation> pablMock = mockConstruction(PABlockLocation.class);
+        MockedStatic<ArenaManager> amMock = Mockito.mockStatic(ArenaManager.class);
+        amMock.when(() -> ArenaManager.getArenaByRegionLocation(any(PABlockLocation.class))).thenReturn(null);
+        MockedStatic<PVPArena> pluginMock = Mockito.mockStatic(PVPArena.class);
+        pluginMock.when(PVPArena::getInstance).thenReturn(this.pluginInstance);
+
+        // When
+        this.listener.onPlayerInteract(this.event);
+        pablMock.closeOnDemand();
+        amMock.closeOnDemand();
+        pluginMock.closeOnDemand();
+        PAA_Region.activeSelections.remove(PLAYER_NAME);
+
+        // Then
+        if (shouldSetRegion) {
+            assertThat(apt.getSelection()[0]).isNull();
+            assertThat(apt.getSelection()[1]).isNotNull();
+            verify(this.arenaGoal, never()).checkSetBlock(any(), any());
+        } else {
+            verify(this.arenaGoal).checkSetBlock(any(), any());
+            assertThat(apt.getSelection()[0]).isNull();
+            assertThat(apt.getSelection()[1]).isNull();
+        }
     }
 
     @ParameterizedTest
@@ -136,11 +202,11 @@ class PlayerListenerInteractTest {
         arMock.when(() -> ArenaRegion.handleSetRegionPosition(any(), any())).thenReturn(settingRegion);
 
         // When
-        if(editMode) {
+        if (editMode) {
             PAA_Edit.activeEdits.put(PLAYER_NAME, this.arena);
         }
 
-        listener.onPlayerInteract(this.event);
+        this.listener.onPlayerInteract(this.event);
         PAA_Edit.activeEdits.clear();
 
         pablMock.closeOnDemand();
@@ -173,7 +239,7 @@ class PlayerListenerInteractTest {
         ammMock.when(() -> ArenaModuleManager.onPlayerInteract(any(), any())).thenReturn(moduleCancel);
 
         // When
-        listener.onPlayerInteract(this.event);
+        this.listener.onPlayerInteract(this.event);
         ammMock.closeOnDemand();
 
         // Then
@@ -220,7 +286,7 @@ class PlayerListenerInteractTest {
         ammMock.when(() -> ArenaModuleManager.onPlayerInteract(any(), any())).thenReturn(false);
 
         // When
-        listener.onPlayerInteract(this.event);
+        this.listener.onPlayerInteract(this.event);
         ammMock.closeOnDemand();
 
         // Then
@@ -252,7 +318,7 @@ class PlayerListenerInteractTest {
         this.arenaPlayerMock.when(() -> ArenaPlayer.fromPlayer(eq(this.player))).thenReturn(apt);
 
         // When
-        listener.onPlayerInteract(this.event);
+        this.listener.onPlayerInteract(this.event);
 
         // Then
         if (shouldCancelBlock || shouldCancelItem) {
@@ -321,6 +387,13 @@ class PlayerListenerInteractTest {
                 Arguments.of(PlayerStatus.WATCH, true, false, true),
                 Arguments.of(PlayerStatus.WATCH, false, true, true),
                 Arguments.of(PlayerStatus.NULL, true, true, true)
+        );
+    }
+
+    private static Stream<Arguments> argumentsForExternalBlockSelection() {
+        return Stream.of(
+                argumentSet("with Wand item", Material.STICK, true),
+                argumentSet("without Wand item", Material.AIR, false)
         );
     }
 }
