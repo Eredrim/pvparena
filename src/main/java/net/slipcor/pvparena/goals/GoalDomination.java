@@ -10,7 +10,6 @@ import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PAClaimBar;
 import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.commands.CommandTree;
-import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.core.ColorUtils;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
@@ -417,7 +416,7 @@ public class GoalDomination extends ArenaGoal {
     @Override
     public boolean checkSetBlock(final Player player, final Block block) {
 
-        if (!PAA_Region.activeSelections.containsKey(player.getName())) {
+        if (!SpawnManager.activeSelections.containsKey(player.getName())) {
             return false;
         }
 
@@ -480,11 +479,11 @@ public class GoalDomination extends ArenaGoal {
             this.arena.msg(sender, MSG.ERROR_INVALID_ARGUMENT_COUNT, String.valueOf(args.length), "2, 3");
         } else {
             if("add".equalsIgnoreCase(args[1])) {
-                if (PAA_Region.activeSelections.containsKey(sender.getName())) {
-                    PAA_Region.activeSelections.remove(sender.getName());
+                if (SpawnManager.activeSelections.containsKey(sender.getName())) {
+                    SpawnManager.activeSelections.remove(sender.getName());
                     this.arena.msg(sender, MSG.NOTICE_CLOSED_SELECTION);
                 } else {
-                    PAA_Region.activeSelections.put(sender.getName(), this.arena);
+                    SpawnManager.activeSelections.put(sender.getName(), this.arena);
                     this.arena.msg(sender, MSG.GOAL_DOMINATION_SET_FLAG);
                 }
             } else if("remove".equalsIgnoreCase(args[1])) {

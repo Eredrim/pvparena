@@ -7,7 +7,6 @@ import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.arena.PlayerState;
 import net.slipcor.pvparena.arena.PlayerStatus;
 import net.slipcor.pvparena.classes.PADeathInfo;
-import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.compatibility.AttributeAdapter;
 import net.slipcor.pvparena.compatibility.DeathEventCreator;
 import net.slipcor.pvparena.core.Config.CFG;
@@ -362,7 +361,7 @@ public class WorkflowManager {
      * cancelled
      */
     public static boolean handleSetBlock(final Player player, final Block block) {
-        final Arena arena = PAA_Region.activeSelections.get(player.getName());
+        final Arena arena = SpawnManager.activeSelections.get(player.getName());
 
         if (arena == null) {
             return false;

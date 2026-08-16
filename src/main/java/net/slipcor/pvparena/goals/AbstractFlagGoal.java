@@ -9,7 +9,6 @@ import net.slipcor.pvparena.classes.PABlock;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.commands.CommandTree;
-import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.core.ColorUtils;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
@@ -49,8 +48,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Optional.ofNullable;
-import static net.slipcor.pvparena.config.Debugger.debug;
 import static net.slipcor.pvparena.compatibility.Constants.INFINITE_EFFECT_DURATION;
+import static net.slipcor.pvparena.config.Debugger.debug;
 
 
 public abstract class AbstractFlagGoal extends ArenaGoal {
@@ -218,7 +217,7 @@ public abstract class AbstractFlagGoal extends ArenaGoal {
     @Override
     public boolean checkSetBlock(final Player player, final Block block) {
 
-        if (StringUtils.isBlank(this.blockTeamName) || !PAA_Region.activeSelections.containsKey(player.getName())) {
+        if (StringUtils.isBlank(this.blockTeamName) || !SpawnManager.activeSelections.containsKey(player.getName())) {
             return false;
         }
 
@@ -253,7 +252,7 @@ public abstract class AbstractFlagGoal extends ArenaGoal {
                 this.blockTeamName = teamName;
                 String msg = (TOUCHDOWN.equalsIgnoreCase(teamName)) ? TOUCHDOWN : String.format("%s %s", teamName, FLAG);
                 this.arena.msg(sender, MSG.GOAL_FLAGS_TOSET, msg);
-                PAA_Region.activeSelections.put(sender.getName(), this.arena);
+                SpawnManager.activeSelections.put(sender.getName(), this.arena);
 
             } else {
                 this.arena.msg(sender, MSG.ERROR_TEAM_NOT_FOUND, teamName);
@@ -347,7 +346,7 @@ public abstract class AbstractFlagGoal extends ArenaGoal {
             this.arena.msg(player, MSG.GOAL_FLAGS_SET, coloredFlagName);
         }
 
-        PAA_Region.activeSelections.remove(player.getName());
+        SpawnManager.activeSelections.remove(player.getName());
         this.blockTeamName = null;
 
         return true;

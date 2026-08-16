@@ -19,6 +19,7 @@ import net.slipcor.pvparena.core.Utils;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.ArenaManager;
+import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.WorkflowManager;
 import net.slipcor.pvparena.regions.ArenaRegion;
 import net.slipcor.pvparena.regions.RegionType;
@@ -132,13 +133,24 @@ class PlayerListenerInteractTest {
 
     @ParameterizedTest
     @MethodSource("argumentsForExternalBlockSelection")
-    void shouldPrioritizeRegionSelectIfWandItem(Material itemInHand, boolean shouldSetRegion) {
+    void shouldPrioritizeRegionSelectIfWandItem(Material itemInHand, boolean inRegionSelect, boolean inBlockSelect, boolean shouldSetRegion, boolean shouldSetBlock) {
         // Given
         PlayerInventoryMock inventoryMock = new PlayerInventoryMock(this.player);
         inventoryMock.setItemInMainHand(new ItemStack(itemInHand));
         ArenaPlayer apt = new ArenaPlayerTest(this.player);
 
-        PAA_Region.activeSelections.put(PLAYER_NAME, this.arena);
+        if (inRegionSelect) {
+            PAA_Region.activeSelections.put(PLAYER_NAME, this.arena);
+        }
+
+        if (inBlockSelect) {
+            SpawnManager.activeSelections.put(PLAYER_NAME, this.arena);
+        } else {
+            when(this.player.getInventory()).thenReturn(inventoryMock);
+            when(this.player.hasPermission(anyString())).thenReturn(true);
+
+            when(this.pluginInstance.getWandItem()).thenReturn(Material.STICK);
+        }
 
         when(this.event.getPlayer()).thenReturn(this.player);
         when(this.event.getAction()).thenReturn(Action.RIGHT_CLICK_BLOCK);
@@ -146,10 +158,6 @@ class PlayerListenerInteractTest {
         when(this.event.getClickedBlock()).thenReturn(new BlockMock(location.clone()));
 
         when(this.player.getName()).thenReturn(PLAYER_NAME);
-        when(this.player.getInventory()).thenReturn(inventoryMock);
-        when(this.player.hasPermission(anyString())).thenReturn(true);
-
-        when(this.pluginInstance.getWandItem()).thenReturn(Material.STICK);
         this.arenaPlayerMock.when(() -> ArenaPlayer.fromPlayer(eq(this.player))).thenReturn(apt);
 
         MockedConstruction<PABlockLocation> pablMock = mockConstruction(PABlockLocation.class);
@@ -170,10 +178,13 @@ class PlayerListenerInteractTest {
             assertThat(apt.getSelection()[0]).isNull();
             assertThat(apt.getSelection()[1]).isNotNull();
             verify(this.arenaGoal, never()).checkSetBlock(any(), any());
-        } else {
+            verify(this.event).setCancelled(true);
+        } else if (shouldSetBlock) {
             verify(this.arenaGoal).checkSetBlock(any(), any());
             assertThat(apt.getSelection()[0]).isNull();
             assertThat(apt.getSelection()[1]).isNull();
+        } else {
+            verify(this.event, never()).setCancelled(true);
         }
     }
 
@@ -392,8 +403,13 @@ class PlayerListenerInteractTest {
 
     private static Stream<Arguments> argumentsForExternalBlockSelection() {
         return Stream.of(
-                argumentSet("with Wand item", Material.STICK, true),
-                argumentSet("without Wand item", Material.AIR, false)
+                // Name / Item / inRegionSelect / inBlockSelect / shouldSetRegion / shouldSetBlock
+                argumentSet("with Wand item - select region", Material.STICK, true, false, true, false),
+                argumentSet("with Wand item - select block", Material.STICK, false, true, false, true),
+                argumentSet("with Wand item - select block during region selection", Material.STICK, true, true, false, true),
+                argumentSet("without Wand item - select region", Material.AIR, true, false, false, false),
+                argumentSet("without Wand item - select block", Material.AIR, false, true, false, true),
+                argumentSet("without Wand item - select block during region selection", Material.AIR, true, true, false, true)
         );
     }
 }

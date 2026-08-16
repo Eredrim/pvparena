@@ -10,13 +10,11 @@ import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PADeathInfo;
 import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.commands.CommandTree;
-import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.RandomUtils;
 import net.slipcor.pvparena.core.StringUtils;
-
 import net.slipcor.pvparena.events.goal.PAGoalEndEvent;
 import net.slipcor.pvparena.events.goal.PAGoalScoreEvent;
 import net.slipcor.pvparena.exceptions.GameplayException;
@@ -165,7 +163,7 @@ public class GoalFood extends ArenaGoal {
     @Override
     public boolean checkSetBlock(final Player player, final Block block) {
 
-        if (!PAA_Region.activeSelections.containsKey(player.getName())) {
+        if (!SpawnManager.activeSelections.containsKey(player.getName())) {
             return false;
         }
 
@@ -205,13 +203,13 @@ public class GoalFood extends ArenaGoal {
     }
 
     private void commitAddBlockCommand(CommandSender sender, String blockType, String teamName) {
-        if (PAA_Region.activeSelections.containsKey(sender.getName())) {
-            PAA_Region.activeSelections.remove(sender.getName());
+        if (SpawnManager.activeSelections.containsKey(sender.getName())) {
+            SpawnManager.activeSelections.remove(sender.getName());
             this.arena.msg(sender, MSG.NOTICE_CLOSED_SELECTION);
         } else {
             this.blockTypeName = blockType;
             this.blockTeamName = teamName;
-            PAA_Region.activeSelections.put(sender.getName(), this.arena);
+            SpawnManager.activeSelections.put(sender.getName(), this.arena);
             this.arena.msg(sender, MSG.GOAL_FOOD_TOSET, this.blockTypeName.substring(4));
         }
     }

@@ -5,6 +5,7 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaModule;
+import net.slipcor.pvparena.managers.SpawnManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -51,10 +52,11 @@ public class PAG_Leave extends AbstractArenaCommand {
         }
 
         if (!arena.hasPlayer(aPlayer.getPlayer())) {
-            if (PAA_Region.activeSelections.containsKey(sender.getName())) {
+            if (PAA_Region.activeSelections.containsKey(sender.getName()) || SpawnManager.activeSelections.containsKey(sender.getName())) {
                 PAA_Region.activeSelections.remove(sender.getName());
+                SpawnManager.activeSelections.remove(sender.getName());
                 arena.msg(sender, MSG.NOTICE_CLOSED_SELECTION);
-            } else if(PAA_Edit.activeEdits.containsKey(sender.getName())) {
+            } else if (PAA_Edit.activeEdits.containsKey(sender.getName())) {
                 new PAA_Edit().commit(arena, sender, args);
             } else {
                 arena.msg(sender, MSG.ERROR_NOT_IN_ARENA);

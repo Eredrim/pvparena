@@ -51,6 +51,8 @@ public final class SpawnManager {
     public static final String ROOT_SPAWNS_NODE = "spawns";
     public static final String ROOT_BLOCKS_NODE = "blocks";
 
+    public static final Map<String, Arena> activeSelections = new HashMap<>();
+
     private SpawnManager() {
     }
 

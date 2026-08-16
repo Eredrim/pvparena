@@ -8,6 +8,7 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.managers.ConfigurationManager;
 import net.slipcor.pvparena.managers.PermissionManager;
+import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.WorkflowManager;
 import net.slipcor.pvparena.regions.ArenaRegion;
 import org.bukkit.command.CommandSender;
@@ -74,8 +75,9 @@ public class PAG_Join extends AbstractArenaCommand {
             }
         }
 
-        if (PAA_Region.activeSelections.containsKey(sender.getName())) {
+        if (PAA_Region.activeSelections.containsKey(sender.getName()) || SpawnManager.activeSelections.containsKey(sender.getName())) {
             PAA_Region.activeSelections.remove(sender.getName());
+            SpawnManager.activeSelections.remove(sender.getName());
             arena.msg(sender, MSG.NOTICE_CLOSED_SELECTION);
         }
 

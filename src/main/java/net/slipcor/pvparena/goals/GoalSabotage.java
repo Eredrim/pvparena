@@ -10,7 +10,6 @@ import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PADeathInfo;
 import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.commands.CommandTree;
-import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.compatibility.ParticleAdapter;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
@@ -198,7 +197,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
     @Override
     public boolean checkSetBlock(final Player player, final Block block) {
 
-        if (StringUtils.isBlank(this.blockTeamName) || !PAA_Region.activeSelections.containsKey(player.getName())) {
+        if (StringUtils.isBlank(this.blockTeamName) || !SpawnManager.activeSelections.containsKey(player.getName())) {
             return false;
         }
         if (block == null || block.getType() != Material.TNT) {
@@ -222,7 +221,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
                 this.blockTeamName = teamName;
 
                 if("set".equalsIgnoreCase(args[1])) {
-                    PAA_Region.activeSelections.put(sender.getName(), this.arena);
+                    SpawnManager.activeSelections.put(sender.getName(), this.arena);
                     this.arena.msg(sender, MSG.GOAL_SABOTAGE_TOSET, teamName);
                 } else if ("remove".equalsIgnoreCase(args[1])) {
                     Optional<PABlock> paBlock = this.arena.getBlocks().stream()
@@ -293,7 +292,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
         SpawnManager.setBlock(this.arena, new PABlockLocation(block.getLocation()), TNT, this.blockTeamName);
         this.arena.msg(player, MSG.GOAL_SABOTAGE_SETTNT, this.blockTeamName);
 
-        PAA_Region.activeSelections.remove(player.getName());
+        SpawnManager.activeSelections.remove(player.getName());
         this.blockTeamName = null;
         return true;
     }

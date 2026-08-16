@@ -315,7 +315,7 @@ public class PlayerListener implements Listener {
                 }
 
                 // player is out of any arena
-                if (ArenaRegion.handleSetRegionPosition(event, player) || WorkflowManager.handleSetBlock(player, event.getClickedBlock())) {
+                if (WorkflowManager.handleSetBlock(player, event.getClickedBlock()) || ArenaRegion.handleSetRegionPosition(event, player)) {
                     debug(player, "[Cancel #2] Admin is setting a block or a region");
                     event.setCancelled(true);
                 } else {
