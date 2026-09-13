@@ -8,7 +8,6 @@ import net.slipcor.pvparena.classes.PAClassSign;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.PermissionManager;
@@ -120,7 +119,11 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
             InventoryManager.clearInventory(arenaPlayer.getPlayer());
             arenaPlayer.setArenaClass(arenaClass);
             if (arenaPlayer.getArenaClass() != null) {
-                arenaPlayer.equipPlayerFightItems();
+                if ("custom".equals(arenaClass.getName())) {
+                    arenaPlayer.reloadInventory(true);
+                } else {
+                    arenaPlayer.equipPlayerFightItems();
+                }
                 arena.msg(sender, MSG.CMD_ARENACLASS_SELECTED, arenaClass.getName());
             }
         } else if (arena.getConfig().getBoolean(CFG.GENERAL_CLASSSWITCH_AFTER_RESPAWN) || arenaPlayer.getStatus() == DEAD) {
