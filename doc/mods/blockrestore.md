@@ -49,6 +49,8 @@ Installation of this module can be done in a normal way. You'll find installatio
 > - Due to API limitations on servers that are **not based on PaperMC**, destruction of linked blocks (like wall torches
 >   when the support block is broken) is limited to doors and non-solid blocks on the top of the support block, along 
 >   with directional blocks on the other faces.
+> - `hard` setting loads all the battlefield in memory on arena starts and, indeed, can be laggy because of this. Use
+>   it only with little areas to restore and if you have issues with regular restoration.
 
 
 
