@@ -108,11 +108,11 @@ public class PlayerArenaStatsDaoImpl extends BaseDaoImpl<PlayerArenaStats, Long>
         try {
             // Get the sum of all player stats grouped by arena
             QueryBuilder<PlayerArenaStats, Long> qb = super.queryBuilder()
-                    .selectRaw("id", "player_uuid", "SUM(losses)", "SUM(wins)", "SUM(kills)", "SUM(deaths)",
-                            "SUM(damage)", "MAX(max_damage)", "SUM(damage_taken)", "MAX(max_damage_taken)");
+                    .selectRaw("id", "player_uuid", "SUM(losses) as agg_losses", "SUM(wins) as agg_wins", "SUM(kills) as agg_kills", "SUM(deaths) as agg_deaths",
+                            "SUM(damage) as agg_damage", "MAX(max_damage) as agg_max_damage", "SUM(damage_taken) as agg_damage_taken", "MAX(max_damage_taken) as agg_max_damage_taken");
 
             qb.groupBy(StatEntry.PLAYER_UUID.getColumn())
-                    .orderBy(entryName.getColumn(), false)
+                    .orderByRaw("agg_%s DESC".formatted(entryName.getColumn()))
                     .limit(limit);
 
             return super.queryRaw(qb.prepareStatementString(), PlayerArenaStats::fromSumQueryResult).getResults();

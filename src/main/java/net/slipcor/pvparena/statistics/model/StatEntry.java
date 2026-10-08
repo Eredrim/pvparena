@@ -58,4 +58,13 @@ public enum StatEntry {
         }
         return null;
     }
+
+    public static StatEntry parseCompact(String string) {
+        for (StatEntry e : StatEntry.getStatTypes()) {
+            if (e.name().replace("_", "").equalsIgnoreCase(string)) {
+                return e;
+            }
+        }
+        return null;
+    }
 }

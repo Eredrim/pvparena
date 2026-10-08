@@ -24,7 +24,7 @@ Here is the list of currently implemented placeholders.
   - [Color a team name](#color-a-team-name)
   - [Color a player name](#color-a-player-name)
   - [Get text color code of a team](#get-text-color-code-of-a-team)
-- [Getting global stats and scores](#getting-global-stats-and-scores)
+- [Getting stats and scores](#getting-stats-and-scores)
   - [Get arena statistics / make a leaderboard](#get-arena-statistics--make-a-leaderboard)
   - [Get global statistics / make a leaderboard](#get-global-statistics--make-a-leaderboard)
 
@@ -212,7 +212,7 @@ E.g. `%pvpa_Versus_tcolor_{player_name}%`
 
 <br>
 
-## Getting global stats and scores
+## Getting stats and scores
 
 ### Get arena statistics / make a leaderboard
 
@@ -223,7 +223,7 @@ of each arena.
 %pvpa_<arena>_stats_<stat>_score_<nb>%
 ```
 **\<arena\>**: name/uuid of the arena  
-**\<stat\>**: name of the statistic (can be found [here](commands/stats.md#details))  
+**\<stat\>**: name of the statistic **without underscore** (can be found [here](commands/stats.md#details))  
 **\<nb\>**: line number between **0** and **9**  
 <br>
 
@@ -247,7 +247,7 @@ of each arena.
 %pvpa_stats_<stat>_player_<nb>%
 %pvpa_stats_<stat>_score_<nb>%
 ```
-**\<stat\>**: name of the statistic (can be found [here](commands/stats.md#details))  
+**\<stat\>**: name of the statistic **without underscore** (can be found [here](commands/stats.md#details))  
 **\<nb\>**: line number between **0** and **9**  
 <br>
 

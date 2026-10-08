@@ -8,9 +8,9 @@ import net.slipcor.pvparena.managers.StatisticsManager;
 import net.slipcor.pvparena.statistics.model.StatEntry;
 import org.bukkit.command.CommandSender;
 
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * <pre>PVP Arena STATS Command class</pre>
@@ -53,7 +53,7 @@ public class PAI_Stats extends AbstractArenaCommand {
             }
         }
 
-        Map<String, Long> playersStats = StatisticsManager.getStats(arena, statType, max);
+        List<SimpleEntry<String, Long>> playersStats = StatisticsManager.getStats(arena, statType, max);
 
         final String s2 = Language.parse(MSG.getByName("STATTYPE_" + statType.name()));
 
@@ -62,7 +62,7 @@ public class PAI_Stats extends AbstractArenaCommand {
 
         Arena.pmsg(sender, s1);
 
-        playersStats.forEach((key, value) -> Arena.pmsg(sender, key + " : " + value));
+        playersStats.forEach((entry) -> Arena.pmsg(sender, entry.getKey() + " : " + entry.getValue()));
     }
 
     @Override

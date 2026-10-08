@@ -229,7 +229,7 @@ public class PVPArenaPlaceholderExpansion extends PlaceholderExpansion {
         try {
             int rowIndex = Integer.parseInt(phArgs.getArg(4));
             if(rowIndex >= 0 && rowIndex < MULTILINE_LIMIT) {
-                StatEntry statEntry = StatEntry.parse(phArgs.getArg(2));
+                StatEntry statEntry = StatEntry.parseCompact(phArgs.getArg(2));
                 Supplier<List<PlayerArenaStats>> statsSupplier = () -> statsDao.findBestStatByArena(statEntry, phArgs.getArena(), MULTILINE_LIMIT);
                 List<String> playerStatList = this.cache.getPlayerStat(phArgs, statEntry, statsSupplier);
 
@@ -252,7 +252,7 @@ public class PVPArenaPlaceholderExpansion extends PlaceholderExpansion {
         try {
             int rowIndex = Integer.parseInt(phArgs.getArg(4));
             if(rowIndex >= 0 && rowIndex < MULTILINE_LIMIT) {
-                StatEntry statEntry = StatEntry.parse(phArgs.getArg(2));
+                StatEntry statEntry = StatEntry.parseCompact(phArgs.getArg(2));
                 Supplier<List<PlayerArenaStats>> statsSupplier = () -> statsDao.findBestStat(statEntry, MULTILINE_LIMIT);
                 List<String> playerStatList = this.cache.getPlayerStat(phArgs, statEntry, statsSupplier);
 

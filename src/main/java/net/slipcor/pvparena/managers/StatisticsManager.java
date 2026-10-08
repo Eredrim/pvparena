@@ -12,10 +12,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import java.util.AbstractMap;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static net.slipcor.pvparena.config.Debugger.debug;
 
@@ -73,7 +71,7 @@ public final class StatisticsManager {
      * @param statType the kind of stat
      * @return A map with player name and stat value
      */
-    public static Map<String, Long> getStats(Arena arena, StatEntry statType, Long limit) {
+    public static List<SimpleEntry<String, Long>> getStats(Arena arena, StatEntry statType, Long limit) {
         debug("getting stats: {} sorted by {}", (arena == null ? "global" : arena.getName()), statType);
         PlayerArenaStatsDao statsDao = PlayerArenaStatsDaoImpl.getInstance();
 
@@ -85,9 +83,9 @@ public final class StatisticsManager {
         }
 
         return statsResult.stream()
-                .map(stat -> new AbstractMap.SimpleEntry<>(stat.getPlayerName(), stat.getValueByStatType(statType)))
+                .map(stat -> new SimpleEntry<>(stat.getPlayerName(), stat.getValueByStatType(statType)))
                 .filter(entry -> entry.getKey() != null)
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                .toList();
     }
 
     /**
